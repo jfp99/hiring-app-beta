@@ -35,7 +35,7 @@ export default function Error({
             onClick={() => window.location.href = '/'}
             className="w-full border-2 border-[#3b5335ff] text-[#3b5335ff] py-3 rounded-xl font-bold hover:bg-[#3b5335ff] hover:text-white transition-all duration-300"
           >
-            🏠 Retour à l'accueil
+            🏠 Retour à l&#39;accueil
           </button>
         </div>
       </div>

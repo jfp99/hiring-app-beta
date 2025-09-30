@@ -32,7 +32,7 @@ export default function OffreDetail({ params }: { params: { id: string } }) {
       try {
         const result = await callApi(`/jobs/${params.id}`)
         setOffre(result.offre)
-      } catch (err) {
+      } catch {
         // Erreur gérée par useApi
       }
     }
@@ -52,7 +52,7 @@ export default function OffreDetail({ params }: { params: { id: string } }) {
       <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#ffaf50ff] mb-4"></div>
-          <p className="text-[#3b5335ff] font-semibold">Chargement de l'offre...</p>
+          <p className="text-[#3b5335ff] font-semibold">Chargement de l&#39;offre...</p>
         </div>
       </div>
     )
@@ -173,7 +173,7 @@ export default function OffreDetail({ params }: { params: { id: string } }) {
                         </li>
                         <li className="flex items-center gap-3">
                           <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full"></span>
-                          Possibilités d'évolution rapide
+                          Possibilités d&#39;évolution rapide
                         </li>
                       </ul>
                     </div>
@@ -246,7 +246,7 @@ export default function OffreDetail({ params }: { params: { id: string } }) {
               {/* Carte entreprise */}
               <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-[#3b5335ff] mb-4">À propos de l'entreprise</h3>
+                  <h3 className="text-xl font-bold text-[#3b5335ff] mb-4">À propos de l&#39;entreprise</h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] rounded-xl flex items-center justify-center text-white font-bold">

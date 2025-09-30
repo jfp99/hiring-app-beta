@@ -20,7 +20,7 @@ export function Newsletter() {
       setEmail('')
       alert(result.message || '✅ Inscription réussie !')
       
-    } catch (err) {
+    } catch {
       // Erreur gérée par useApi
     }
   }

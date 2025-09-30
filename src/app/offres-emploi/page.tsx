@@ -42,7 +42,7 @@ export default function OffresEmploi() {
         
         const result = await callApi(`/jobs?${params.toString()}`)
         setOffres(result.offres || [])
-      } catch (err) {
+      } catch {
         setOffres([])
       }
     }
@@ -68,7 +68,7 @@ export default function OffresEmploi() {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Offres 
               <span className="text-[#ffaf50ff] block mt-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent">
-                d'Emploi
+                d&#39;Emploi
               </span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed font-light">
@@ -263,7 +263,7 @@ export default function OffresEmploi() {
                           href={`/offres-emploi/${offre.id}`}
                           className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-center min-w-[140px] shadow-lg"
                         >
-                          Voir l'offre
+                          Voir l&#39;offre
                         </Link>
                       </div>
                     </div>
@@ -292,7 +292,7 @@ export default function OffresEmploi() {
               href="/contact" 
               className="bg-[#ffaf50ff] text-[#3b5335ff] px-12 py-4 rounded-lg text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg"
             >
-              S'inscrire aux alertes
+              S&#39;inscrire aux alertes
             </Link>
             <Link 
               href="/contact" 

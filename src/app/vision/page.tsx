@@ -265,7 +265,7 @@ export default function Vision() {
                   Notre Mission
                 </h2>
                 <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                  Transformer l'expérience du recrutement pour tous les acteurs
+                  Transformer l&#39;expérience du recrutement pour tous les acteurs
                 </p>
               </div>
 
