@@ -4,8 +4,20 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Link from 'next/link'
-import { offresEmploi } from '../lib/data'
 import { useState, useEffect } from 'react'
+import { useApi } from '../hooks/useApi'
+
+interface Offre {
+  id: string
+  titre: string
+  entreprise: string
+  lieu: string
+  typeContrat: string
+  salaire: string
+  description: string
+  datePublication: string
+  categorie: string
+}
 
 export default function OffresEmploi() {
   const [filters, setFilters] = useState({
@@ -14,43 +26,39 @@ export default function OffresEmploi() {
     typeContrat: 'tous'
   })
   const [searchTerm, setSearchTerm] = useState('')
-  const [visibleOffres, setVisibleOffres] = useState(offresEmploi)
+  const [offres, setOffres] = useState<Offre[]>([])
+  
+  const { loading, error, callApi } = useApi()
 
+  // Charger les offres
   useEffect(() => {
-    let filtered = offresEmploi
-
-    if (searchTerm) {
-      filtered = filtered.filter(offre =>
-        offre.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        offre.entreprise.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        offre.description.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+    const loadOffres = async () => {
+      try {
+        const params = new URLSearchParams()
+        if (searchTerm) params.append('search', searchTerm)
+        if (filters.categorie !== 'toutes') params.append('categorie', filters.categorie)
+        if (filters.lieu !== 'tous') params.append('lieu', filters.lieu)
+        if (filters.typeContrat !== 'tous') params.append('typeContrat', filters.typeContrat)
+        
+        const result = await callApi(`/jobs?${params.toString()}`)
+        setOffres(result.offres || [])
+      } catch (err) {
+        setOffres([])
+      }
     }
 
-    if (filters.categorie !== 'toutes') {
-      filtered = filtered.filter(offre => offre.categorie === filters.categorie)
-    }
+    loadOffres()
+  }, [filters, searchTerm, callApi])
 
-    if (filters.lieu !== 'tous') {
-      filtered = filtered.filter(offre => offre.lieu === filters.lieu)
-    }
-
-    if (filters.typeContrat !== 'tous') {
-      filtered = filtered.filter(offre => offre.typeContrat === filters.typeContrat)
-    }
-
-    setVisibleOffres(filtered)
-  }, [filters, searchTerm])
-
-  const categories = [...new Set(offresEmploi.map(offre => offre.categorie))]
-  const lieux = [...new Set(offresEmploi.map(offre => offre.lieu))]
-  const typesContrat = [...new Set(offresEmploi.map(offre => offre.typeContrat))]
+  const categories = ['Technologie', 'Management', 'Data']
+  const lieux = ['Paris', 'Lyon', 'Toulouse']
+  const typesContrat = ['CDI', 'CDD', 'Freelance']
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
       <Header />
       
-      {/* Hero Section améliorée */}
+      {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-24 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute top-10 right-10 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
@@ -70,7 +78,7 @@ export default function OffresEmploi() {
         </div>
       </section>
 
-      {/* Barre de recherche et filtres améliorés */}
+      {/* Barre de recherche et filtres */}
       <section className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6 items-center">
@@ -79,7 +87,7 @@ export default function OffresEmploi() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="🔍 Rechercher un poste, une entreprise, une compétence..."
+                  placeholder="Rechercher un poste, une entreprise, une compétence..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-6 py-4 bg-white border border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent placeholder-gray-400 text-lg"
@@ -97,7 +105,7 @@ export default function OffresEmploi() {
 
             {/* Compteur de résultats */}
             <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-6 py-3 rounded-2xl font-bold shadow-lg">
-              {visibleOffres.length} offre{visibleOffres.length > 1 ? 's' : ''}
+              {offres.length} offre{offres.length > 1 ? 's' : ''}
             </div>
           </div>
 
@@ -108,7 +116,7 @@ export default function OffresEmploi() {
               onChange={(e) => setFilters({...filters, categorie: e.target.value})}
               className="px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
             >
-              <option value="toutes">📊 Toutes les catégories</option>
+              <option value="toutes">Toutes les catégories</option>
               {categories.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -119,7 +127,7 @@ export default function OffresEmploi() {
               onChange={(e) => setFilters({...filters, lieu: e.target.value})}
               className="px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
             >
-              <option value="tous">📍 Tous les lieux</option>
+              <option value="tous">Tous les lieux</option>
               {lieux.map(lieu => (
                 <option key={lieu} value={lieu}>{lieu}</option>
               ))}
@@ -130,7 +138,7 @@ export default function OffresEmploi() {
               onChange={(e) => setFilters({...filters, typeContrat: e.target.value})}
               className="px-4 py-3 bg-white border border-gray-200 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
             >
-              <option value="tous">📝 Tous les types de contrat</option>
+              <option value="tous">Tous les types de contrat</option>
               {typesContrat.map(type => (
                 <option key={type} value={type}>{type}</option>
               ))}
@@ -140,50 +148,76 @@ export default function OffresEmploi() {
               onClick={() => setFilters({categorie: 'toutes', lieu: 'tous', typeContrat: 'tous'})}
               className="px-4 py-3 bg-gray-100 text-gray-600 rounded-xl shadow-md hover:bg-gray-200 transition-colors font-semibold"
             >
-              🔄 Réinitialiser
+              Réinitialiser
             </button>
           </div>
         </div>
       </section>
 
-      {/* Liste des offres améliorée */}
-      <section className="py-16">
+      {/* Liste des offres */}
+      <section className="py-20 bg-white/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {visibleOffres.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-[#3b5335ff] mb-4">
-                Aucune offre ne correspond à vos critères
-              </h3>
-              <p className="text-gray-600 mb-8">
-                Essayez de modifier vos filtres ou votre recherche
-              </p>
-              <button
-                onClick={() => {
-                  setFilters({categorie: 'toutes', lieu: 'tous', typeContrat: 'tous'})
-                  setSearchTerm('')
-                }}
-                className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
-              >
-                Voir toutes les offres
-              </button>
+          {/* États de chargement et d'erreur */}
+          {loading && (
+            <div className="flex justify-center py-16">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#ffaf50ff] mb-4"></div>
+                <p className="text-[#3b5335ff] font-semibold">Chargement des offres...</p>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="group bg-white rounded-2xl shadow-lg border border-gray-100 relative overflow-hidden p-6 mb-8">
+              <div className="flex items-center gap-3 text-red-700">
+                <span className="text-2xl">❌</span>
+                <div>
+                  <p className="font-semibold">Erreur lors du chargement</p>
+                  <p className="text-sm opacity-80">{error}</p>
+                </div>
+              </div>
+              <div className="h-2 bg-gradient-to-r from-red-500 to-red-600 transform origin-left scale-x-100 transition-transform duration-500"></div>
+            </div>
+          )}
+
+          {/* Résultats */}
+          {!loading && offres.length === 0 ? (
+            <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
+              <div className="p-12 text-center">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-2xl font-bold text-[#3b5335ff] mb-4">
+                  Aucune offre ne correspond à vos critères
+                </h3>
+                <p className="text-gray-600 mb-8">
+                  Essayez de modifier vos filtres ou votre recherche
+                </p>
+                <button
+                  onClick={() => {
+                    setFilters({categorie: 'toutes', lieu: 'tous', typeContrat: 'tous'})
+                    setSearchTerm('')
+                  }}
+                  className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  Voir toutes les offres
+                </button>
+              </div>
+              <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
             </div>
           ) : (
             <div className="grid gap-8">
-              {visibleOffres.map((offre, index) => (
+              {offres.map((offre, index) => (
                 <div
                   key={offre.id}
-                  className="group bg-white rounded-3xl shadow-xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden"
                 >
                   <div className="p-8">
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-3 mb-4">
-                          <span className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-4 py-1 rounded-full text-sm font-bold shadow-md">
+                          <span className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-4 py-2 rounded-full text-sm font-bold">
                             NOUVEAU
                           </span>
-                          <span className="bg-[#3b5335ff] text-white px-4 py-1 rounded-full text-sm font-bold">
+                          <span className="bg-[#3b5335ff] text-white px-4 py-2 rounded-full text-sm font-bold">
                             {offre.categorie}
                           </span>
                         </div>
@@ -216,10 +250,10 @@ export default function OffresEmploi() {
                             {offre.typeContrat}
                           </span>
                           <span className="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-semibold">
-                            💰 {offre.salaire}
+                            {offre.salaire}
                           </span>
                           <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold">
-                            ⏱️ Temps plein
+                            Temps plein
                           </span>
                         </div>
                       </div>
@@ -231,13 +265,12 @@ export default function OffresEmploi() {
                         >
                           Voir l'offre
                         </Link>
-                        <button className="text-gray-500 hover:text-[#ffaf50ff] transition-colors flex items-center gap-2 group">
-                          <span>❤️</span>
-                          <span className="group-hover:underline">Sauvegarder</span>
-                        </button>
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Barre colorée en bas avec effet hover */}
+                  <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                 </div>
               ))}
             </div>
@@ -246,7 +279,7 @@ export default function OffresEmploi() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white">
+      <section className="py-20 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Vous ne trouvez pas votre bonheur ?
@@ -254,18 +287,18 @@ export default function OffresEmploi() {
           <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
             Inscrivez-vous pour être alerté des nouvelles offres correspondant à votre profil.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/contact" 
               className="bg-[#ffaf50ff] text-[#3b5335ff] px-12 py-4 rounded-lg text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg"
             >
-              📧 S'inscrire aux alertes
+              S'inscrire aux alertes
             </Link>
             <Link 
               href="/contact" 
               className="border-2 border-white text-white px-12 py-4 rounded-lg text-lg font-bold hover:bg-white hover:text-[#3b5335ff] transform hover:-translate-y-1 transition-all duration-300"
             >
-              💼 Déposer une candidature spontanée
+              Déposer une candidature spontanée
             </Link>
           </div>
         </div>

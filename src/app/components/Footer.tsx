@@ -25,9 +25,10 @@ export default function Footer() {
           
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent">
-              HiringSimple
+            <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent">
+              Hiring
             </h3>
+            <span className="text-lg font-semibold text-[#ffaf50ff]">Cabinet de Conseil en Recrutement</span>
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
               Votre partenaire de confiance pour le recrutement et la mise en relation 
               des talents avec les entreprises les plus innovantes. 
@@ -100,7 +101,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © {currentYear} <span className="text-[#ffaf50ff] font-semibold">HiringSimple</span>. 
+              © {currentYear} <span className="text-[#ffaf50ff] font-semibold">Hiring</span>. 
               Tous droits réservés. 
               <span className="mx-2">•</span>
               <span className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold">
