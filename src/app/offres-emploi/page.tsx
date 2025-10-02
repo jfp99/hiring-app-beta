@@ -260,10 +260,10 @@ export default function OffresEmploi() {
 
                       <div className="flex flex-col gap-4 lg:items-end">
                         <Link
-                          href={`/offres-emploi/${offre.id}`}
-                          className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-center min-w-[140px] shadow-lg"
-                        >
-                          Voir l&#39;offre
+                            href={`/offres-emploi/${offre.id}`}
+                            className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 text-center min-w-[140px] shadow-lg"
+                          >
+                            Voir l&#39;offre
                         </Link>
                       </div>
                     </div>

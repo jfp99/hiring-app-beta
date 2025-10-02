@@ -1,65 +1,93 @@
-// app/api/jobs/[id]/route.ts
-import { NextResponse } from 'next/server'
+// app/api/jobs/route.ts
+import { NextResponse } from 'next/server';
+import { connectToDatabase } from '@/app/lib/mongodb';
 
-const offresEmploi = [
-  {
-    id: '1',
-    titre: 'Développeur Full Stack',
-    entreprise: 'TechInnov',
-    lieu: 'Paris',
-    typeContrat: 'CDI',
-    salaire: '45K-55K €',
-    description: 'Nous recherchons un développeur full stack passionné pour rejoindre notre équipe dynamique.',
-    responsabilites: [
-      'Développer des applications web modernes',
-      'Collaborer avec les équipes produit et design',
-      'Maintenir et améliorer le code existant'
-    ],
-    qualifications: [
-      '3+ ans d\'expérience en développement',
-      'Maîtrise de React et Node.js',
-      'Expérience avec les bases de données SQL'
-    ],
-    avantages: [
-      'Télétravail partiel',
-      'Mutuelle entreprise',
-      'Tickets restaurant'
-    ],
-    datePublication: '2024-01-15',
-    categorie: 'Technologie'
-  }
-]
-
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request) {
   try {
-    const offre = offresEmploi.find(o => o.id === params.id)
-
-    if (!offre) {
-      return NextResponse.json(
-        { error: 'Offre d\'emploi non trouvée' },
-        { status: 404 }
-      )
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search') || '';
+    const categorie = searchParams.get('categorie') || '';
+    const lieu = searchParams.get('lieu') || '';
+    const typeContrat = searchParams.get('typeContrat') || '';
+    
+    console.log('🔍 [JOBS] Fetching jobs with filters:', { search, categorie, lieu, typeContrat });
+    
+    const { db } = await connectToDatabase();
+    
+    // Vérifier si la collection offres existe
+    const collections = await db.listCollections().toArray();
+    const collectionNames = collections.map(col => col.name);
+    
+    if (!collectionNames.includes('offres')) {
+      console.log('📭 [JOBS] No offres collection found');
+      return NextResponse.json({ 
+        success: true,
+        offres: [] 
+      });
     }
-
-    console.log(`📄 Consultation offre: ${offre.titre}`)
-
+    
+    const offresCollection = db.collection('offres');
+    
+    // Construire la requête de filtrage - seulement les offres actives
+    const query: any = { statut: 'active' };
+    
+    if (search) {
+      query.$or = [
+        { titre: { $regex: search, $options: 'i' } },
+        { entreprise: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { competences: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    if (categorie && categorie !== 'toutes') {
+      query.categorie = categorie;
+    }
+    
+    if (lieu && lieu !== 'tous') {
+      query.lieu = { $regex: lieu, $options: 'i' };
+    }
+    
+    if (typeContrat && typeContrat !== 'tous') {
+      query.typeContrat = typeContrat;
+    }
+    
+    console.log('📋 [JOBS] MongoDB query:', JSON.stringify(query, null, 2));
+    
+    const offres = await offresCollection
+      .find(query)
+      .sort({ datePublication: -1 })
+      .toArray();
+    
+    console.log(`📋 [JOBS] Found ${offres.length} job offers matching filters`);
+    
+    // Formater les données pour la page offres-emploi
+    const formattedOffres = offres.map(offre => ({
+      id: offre._id.toString(),
+      titre: offre.titre || '',
+      entreprise: offre.entreprise || '',
+      lieu: offre.lieu || '',
+      typeContrat: offre.typeContrat || '',
+      salaire: offre.salaire || '',
+      description: offre.description || '',
+      datePublication: offre.datePublication || offre.createdAt || new Date().toISOString(),
+      categorie: offre.categorie || 'Technologie'
+    }));
+    
     return NextResponse.json({ 
-      offre,
-      meta: {
-        consultéeLe: new Date().toISOString(),
-        entreprise: offre.entreprise,
-        localisation: offre.lieu
-      }
-    })
-
+      success: true,
+      offres: formattedOffres 
+    });
+    
   } catch (error) {
-    console.error('❌ Erreur API détail offre:', error)
+    console.error('❌ [JOBS] Error fetching jobs:', error);
     return NextResponse.json(
-      { error: 'Erreur lors de la récupération de l\'offre' },
+      { 
+        success: false,
+        error: 'Failed to fetch jobs',
+        offres: [] // Retourner un tableau vide en cas d'erreur
+      }, 
       { status: 500 }
-    )
+    );
   }
 }

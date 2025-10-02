@@ -3,7 +3,7 @@
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useApi } from '../hooks/useApi'
 
 export default function Contact() {
@@ -15,26 +15,47 @@ export default function Contact() {
     message: '',
     type: 'candidat'
   })
+
+  const [isVisible, setIsVisible] = useState(false)
   
-  const { loading, error, callApi, reset } = useApi()
+  const { loading, error, callApi } = useApi()
+
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     })
-    if (error) reset()
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Dans app/contact/page.tsx - modifiez la fonction handleSubmit
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  
+  try {
+    // Validation côté client avant envoi
+    const requiredFields = ['nom', 'email', 'sujet', 'message'];
+    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData] || formData[field as keyof typeof formData].trim() === '');
+
+    if (missingFields.length > 0) {
+      alert(`Veuillez remplir tous les champs obligatoires: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    // Utiliser l'API appropriée selon le type
+    const endpoint = formData.type === 'candidat' ? '/candidats' : '/entreprises';
     
-    try {
-      const result = await callApi('/contact', {
-        method: 'POST',
-        body: JSON.stringify(formData)
-      })
-      
+    console.log('📤 [CONTACT] Sending data to:', endpoint, formData);
+    
+    const result = await callApi(endpoint, {
+      method: 'POST',
+      body: formData
+    })
+    
+    if (result.success) {
       // Reset du formulaire après succès
       setFormData({
         nom: '',
@@ -47,49 +68,40 @@ export default function Contact() {
       
       // Message de succès
       alert(result.message || '✅ Votre message a été envoyé avec succès ! Nous vous recontacterons dans les plus brefs délais.')
-      
-    } catch (err) {
-      // L'erreur est déjà gérée par le hook useApi
-      console.error('Erreur lors de l\'envoi du message:', err)
+    } else {
+      throw new Error(result.error || 'Erreur lors de l\'envoi du message')
     }
+    
+  } catch (err) {
+    console.error('Erreur lors de l\'envoi du message:', err)
+    // L'erreur est déjà affichée par le hook useApi
   }
+}
 
-  const socialLinks = [
+  const contactInfos = [
     {
-      name: 'LinkedIn',
-      icon: (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-        </svg>
-      ),
-      url: 'https://linkedin.com'
+      icon: '🏢',
+      title: 'Notre agence',
+      content: '123 Avenue des Recruteurs\n75001 Paris, France',
+      color: 'from-[#3b5335ff] to-[#2a3d26ff]'
     },
     {
-      name: 'Twitter',
-      icon: (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-        </svg>
-      ),
-      url: 'https://twitter.com'
+      icon: '📞',
+      title: 'Téléphone',
+      content: '+33 1 23 45 67 89',
+      color: 'from-[#ffaf50ff] to-[#ff9500ff]'
     },
     {
-      name: 'Instagram',
-      icon: (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987c6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.24 14.865 3.75 13.714 3.75 12.417s.49-2.448 1.376-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.886.875 1.376 2.026 1.376 3.323s-.49 2.448-1.376 3.323c-.875.807-2.026 1.297-3.323 1.297zm7.718-10.561c-.47 0-.855-.385-.855-.855s.385-.855.855-.855c.47 0 .855.385.855.855s-.385.855-.855.855zm1.435 10.561c-1.297 0-2.448-.49-3.323-1.297-.886-.875-1.376-2.026-1.376-3.323s.49-2.448 1.376-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.886.875 1.376 2.026 1.376 3.323s-.49 2.448-1.376 3.323c-.875.807-2.026 1.297-3.323 1.297z"/>
-        </svg>
-      ),
-      url: 'https://instagram.com'
+      icon: '✉️',
+      title: 'Email',
+      content: 'contact@recrutement.com',
+      color: 'from-[#3b5335ff] to-[#ffaf50ff]'
     },
     {
-      name: 'Facebook',
-      icon: (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-        </svg>
-      ),
-      url: 'https://facebook.com'
+      icon: '🕒',
+      title: 'Horaires',
+      content: 'Lun - Ven: 9h00 - 18h00',
+      color: 'from-[#2a3d26ff] to-[#ff9500ff]'
     }
   ]
 
@@ -98,12 +110,15 @@ export default function Contact() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-24 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-20 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 bg-[#ffaf50ff] rounded-full filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-xl opacity-10 animate-bounce"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center">
+          <div className={`text-center transform transition-all duration-1000 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+          }`}>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               Contactez-
               <span className="text-[#ffaf50ff] block mt-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent">
@@ -111,54 +126,66 @@ export default function Contact() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed font-light">
-              Prêt à transformer votre carrière ou à recruter les meilleurs talents ? <span className="font-semibold text-[#ffaf50ff]">Parlons-en !</span>
+              Prêt à transformer votre carrière ou à recruter les meilleurs talents ?{' '}
+              <span className="font-semibold text-[#ffaf50ff]">Parlons-en !</span>
             </p>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20 bg-white/80 backdrop-blur-sm">
+      {/* Stats Section */}
+      <section className="py-16 bg-white/80 backdrop-blur-sm border-y border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* Informations de contact */}
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] mb-8">
-                Prenons contact
-              </h2>
-              <p className="text-xl text-gray-600 mb-12 leading-relaxed">
-                Que vous soyez candidat à la recherche de nouvelles opportunités ou entreprise en quête de talents, notre équipe est là pour vous accompagner.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            {[
+              { number: '24h', label: 'Délai de réponse moyen', color: 'from-[#3b5335ff] to-[#2a3d26ff]' },
+              { number: '500+', label: 'Candidats accompagnés', color: 'from-[#ffaf50ff] to-[#ff9500ff]' },
+              { number: '98%', label: 'Taux de satisfaction', color: 'from-[#3b5335ff] to-[#ffaf50ff]' }
+            ].map((stat, index) => (
+              <div 
+                key={index}
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden"
+              >
+                <div className="p-8">
+                  <div className="text-4xl font-bold text-[#3b5335ff] mb-2 group-hover:text-[#2a3d26ff] transition-colors">
+                    {stat.number}
+                  </div>
+                  <div className="text-gray-600 font-medium text-lg">{stat.label}</div>
+                </div>
+                
+                <div className={`h-2 bg-gradient-to-r ${stat.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
+                
+                <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl`}></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              <div className="grid grid-cols-1 gap-8">
-                {[
-                  {
-                    title: 'Notre agence',
-                    content: '123 Avenue des Recruteurs\n75001 Paris, France',
-                    color: 'from-[#3b5335ff] to-[#2a3d26ff]'
-                  },
-                  {
-                    title: 'Téléphone',
-                    content: '+33 1 23 45 67 89',
-                    color: 'from-[#ffaf50ff] to-[#ff9500ff]'
-                  },
-                  {
-                    title: 'Email',
-                    content: 'contact@hiringsimple.com',
-                    color: 'from-[#3b5335ff] to-[#ffaf50ff]'
-                  },
-                  {
-                    title: 'Horaires',
-                    content: 'Lun - Ven: 9h00 - 18h00',
-                    color: 'from-[#2a3d26ff] to-[#ff9500ff]'
-                  }
-                ].map((info, index) => (
+      {/* Contact Section */}
+      <section className="py-20 bg-gradient-to-b from-white to-[#f8f7f3ff]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] mb-4">
+              Prenons Contact
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Que vous soyez candidat ou entreprise, notre équipe est là pour vous accompagner
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Informations de contact */}
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 gap-6">
+                {contactInfos.map((info, index) => (
                   <div 
                     key={index}
                     className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden p-6"
                   >
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-3xl">{info.icon}</div>
+                      <div className="flex-1">
                         <h3 className="text-xl font-bold text-[#3b5335ff] mb-2 group-hover:text-[#2a3d26ff] transition-colors">
                           {info.title}
                         </h3>
@@ -168,40 +195,26 @@ export default function Contact() {
                       </div>
                     </div>
                     
-                    {/* Barre colorée en bas avec effet hover */}
                     <div className={`h-2 bg-gradient-to-r ${info.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
                     
-                    {/* Overlay coloré au hover */}
                     <div className={`absolute inset-0 bg-gradient-to-r ${info.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl`}></div>
                   </div>
                 ))}
               </div>
 
-              {/* Réseaux sociaux */}
-              <div className="mt-12">
-                <h3 className="text-2xl font-bold text-[#3b5335ff] mb-6">Suivez-nous</h3>
-                <div className="flex space-x-4">
-                  {socialLinks.map((social, index) => (
-                    <a 
-                      key={index}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden w-14 h-14 flex items-center justify-center"
-                      aria-label={`Suivez-nous sur ${social.name}`}
-                    >
-                      <div className="text-gray-600 group-hover:text-[#3b5335ff] transition-colors duration-300">
-                        {social.icon}
-                      </div>
-                      
-                      {/* Barre colorée en bas avec effet hover */}
-                      <div className="h-1 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                      
-                      {/* Overlay coloré au hover */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl"></div>
-                    </a>
-                  ))}
+              {/* Carte de localisation */}
+              <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-[#3b5335ff] mb-4">Notre localisation</h3>
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl h-48 flex items-center justify-center">
+                    <div className="text-center text-gray-500">
+                      <div className="text-4xl mb-2">🗺️</div>
+                      <p>Carte interactive</p>
+                      <p className="text-sm">Paris, France</p>
+                    </div>
+                  </div>
                 </div>
+                <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
               </div>
             </div>
 
@@ -217,7 +230,6 @@ export default function Contact() {
                   </p>
                 </div>
 
-                {/* Message d'erreur */}
                 {error && (
                   <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
                     <div className="flex items-center gap-2 text-red-700">
@@ -230,17 +242,17 @@ export default function Contact() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Type de contact */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    <label className="block text-sm font-medium text-[#3b5335ff] mb-3">
                       Vous êtes *
                     </label>
                     <div className="grid grid-cols-2 gap-4">
                       {[
-                        { value: 'candidat', label: 'Candidat' },
-                        { value: 'entreprise', label: 'Entreprise' }
+                        { value: 'candidat', label: '👤 Candidat', description: 'Je cherche un emploi' },
+                        { value: 'entreprise', label: '🏢 Entreprise', description: 'Je recrute' }
                       ].map((option) => (
                         <label
                           key={option.value}
-                          className={`group/option relative flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
+                          className={`group/option relative flex flex-col p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
                             formData.type === option.value
                               ? 'border-[#ffaf50ff] bg-[#ffaf50ff]/10 text-[#3b5335ff] shadow-inner'
                               : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:bg-gray-50'
@@ -254,9 +266,9 @@ export default function Contact() {
                             onChange={handleChange}
                             className="sr-only"
                           />
-                          <span className="font-semibold">{option.label}</span>
+                          <span className="font-semibold text-lg mb-1">{option.label}</span>
+                          <span className="text-sm text-gray-500">{option.description}</span>
                           
-                          {/* Effet hover pour les options */}
                           <div className="absolute inset-0 bg-gradient-to-r from-[#ffaf50ff]/5 to-transparent opacity-0 group-hover/option:opacity-100 rounded-xl transition-opacity duration-300"></div>
                         </label>
                       ))}
@@ -266,81 +278,87 @@ export default function Contact() {
                   {/* Informations personnelles */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="nom" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
                         Nom complet *
                       </label>
                       <input
                         type="text"
-                        id="nom"
                         name="nom"
                         value={formData.nom}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
                         required
                         disabled={loading}
+                        placeholder="Votre nom et prénom"
                       />
                     </div>
                     <div>
-                      <label htmlFor="telephone" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
                         Téléphone
                       </label>
                       <input
                         type="tel"
-                        id="telephone"
                         name="telephone"
                         value={formData.telephone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all duration-300"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
                         disabled={loading}
+                        placeholder="Votre numéro"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
                       Email *
                     </label>
                     <input
                       type="email"
-                      id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all duration-300"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
                       required
                       disabled={loading}
+                      placeholder="votre@email.com"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="sujet" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
                       Sujet *
                     </label>
                     <input
                       type="text"
-                      id="sujet"
                       name="sujet"
                       value={formData.sujet}
                       onChange={handleChange}
-                      placeholder="Ex: Candidature Développeur Full Stack"
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all duration-300"
+                      placeholder={
+                        formData.type === 'candidat' 
+                          ? "Ex: Candidature Développeur Full Stack"
+                          : "Ex: Besoin de recrutement"
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
                       required
                       disabled={loading}
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
                       Message *
                     </label>
                     <textarea
-                      id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
                       rows={6}
-                      placeholder="Décrivez votre projet, vos attentes ou posez-nous vos questions..."
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all duration-300 resize-none"
+                      placeholder={
+                        formData.type === 'candidat'
+                          ? "Décrivez votre profil, vos compétences et vos attentes..."
+                          : "Décrivez vos besoins en recrutement, le poste à pourvoir..."
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all resize-none"
                       required
                       disabled={loading}
                     />
@@ -349,15 +367,15 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:-translate-y-1 ${
+                    className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:-translate-y-1 ${
                       loading
-                        ? 'bg-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-400 cursor-not-allowed text-white'
                         : 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] hover:shadow-2xl'
                     }`}
                   >
                     {loading ? (
                       <span className="flex items-center justify-center gap-2">
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-5 h-5 border-2 border-[#3b5335ff] border-t-transparent rounded-full animate-spin"></div>
                         Envoi en cours...
                       </span>
                     ) : (
@@ -371,9 +389,72 @@ export default function Contact() {
                 </p>
               </div>
               
-              {/* Barre colorée en bas avec effet hover */}
               <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="py-20 bg-white/80 backdrop-blur-sm border-y border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] mb-4">
+              Comment ça marche ?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Un processus simple et efficace pour vous accompagner
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {[
+              {
+                step: '01',
+                title: 'Vous contactez',
+                description: 'Remplissez le formulaire ou appelez-nous',
+                color: 'from-[#3b5335ff] to-[#2a3d26ff]'
+              },
+              {
+                step: '02',
+                title: 'Analyse besoin',
+                description: 'Étude de votre profil ou de vos besoins',
+                color: 'from-[#ffaf50ff] to-[#ff9500ff]'
+              },
+              {
+                step: '03',
+                title: 'Proposition',
+                description: 'Solutions adaptées à votre situation',
+                color: 'from-[#3b5335ff] to-[#ffaf50ff]'
+              },
+              {
+                step: '04',
+                title: 'Accompagnement',
+                description: 'Suivi personnalisé jusqu\'au résultat',
+                color: 'from-[#2a3d26ff] to-[#ff9500ff]'
+              }
+            ].map((process, index) => (
+              <div 
+                key={index}
+                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden text-center"
+              >
+                <div className="p-8">
+                  <div className="text-3xl font-bold text-[#3b5335ff] mb-4 group-hover:text-[#2a3d26ff] transition-colors">
+                    {process.step}
+                  </div>
+                  <h3 className="text-xl font-bold text-[#3b5335ff] mb-3 group-hover:text-[#2a3d26ff] transition-colors">
+                    {process.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {process.description}
+                  </p>
+                </div>
+                
+                <div className={`h-2 bg-gradient-to-r ${process.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
+                
+                <div className={`absolute inset-0 bg-gradient-to-r ${process.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl`}></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -385,7 +466,7 @@ export default function Contact() {
             Prêt à commencer ?
           </h2>
           <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
-            Rejoignez les centaines de talents et d&#39;entreprises qui nous font confiance.
+            Rejoignez les centaines de talents et d'entreprises qui nous font confiance
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
@@ -395,7 +476,7 @@ export default function Contact() {
               Nous appeler
             </a>
             <a 
-              href="mailto:contact@hiringsimple.com" 
+              href="mailto:contact@recrutement.com" 
               className="border-2 border-white text-white px-12 py-4 rounded-lg text-lg font-bold hover:bg-white hover:text-[#3b5335ff] transform hover:-translate-y-1 transition-all duration-300"
             >
               Envoyer un email

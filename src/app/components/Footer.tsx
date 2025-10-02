@@ -6,13 +6,42 @@ import { useState } from 'react'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
-  const handleNewsletter = (e: React.FormEvent) => {
+  const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Intégration newsletter
-    console.log('Email inscrit:', email)
-    setEmail('')
-    alert('Merci pour votre inscription à notre newsletter !')
+    
+    if (!email.trim()) {
+      setMessage('Veuillez entrer votre email')
+      return
+    }
+
+    setLoading(true)
+    setMessage('')
+
+    try {
+      const response = await fetch('/api/newsletters', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMessage(data.message || '✅ Merci pour votre inscription !')
+        setEmail('')
+      } else {
+        setMessage(data.error || '❌ Erreur lors de l\'inscription')
+      }
+    } catch (error) {
+      setMessage('❌ Erreur de connexion')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const currentYear = new Date().getFullYear()
@@ -71,7 +100,7 @@ export default function Footer() {
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
               Votre partenaire de confiance pour le recrutement et la mise en relation 
               des talents avec les entreprises les plus innovantes. 
-              Ensemble, construisons l'avenir du travail.
+              Ensemble, construisons l&#39;avenir du travail.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => (
@@ -124,56 +153,80 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Votre email"
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent placeholder-gray-400 text-white"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent placeholder-gray-400 text-white transition-all duration-300"
                 required
+                disabled={loading}
               />
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 shadow-md"
+                disabled={loading}
+                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-md ${
+                  loading
+                    ? 'bg-gray-400 cursor-not-allowed text-white'
+                    : 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] hover:shadow-lg'
+                }`}
               >
-                S'abonner ✓
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-[#3b5335ff] border-t-transparent rounded-full animate-spin"></div>
+                    Inscription...
+                  </span>
+                ) : (
+                  'S\'abonner ✓'
+                )}
               </button>
             </form>
+
+            {/* Message de confirmation/erreur */}
+            {message && (
+              <div className={`mt-3 p-3 rounded-lg text-sm border ${
+                message.includes('✅') 
+                  ? 'bg-green-500/20 text-green-300 border-green-500/30' 
+                  : 'bg-red-500/20 text-red-300 border-red-500/30'
+              }`}>
+                {message}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Bottom Footer - Rendu plus petit */}
+      {/* Bottom Footer */}
       <div className="border-t border-white/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"> {/* py-8 → py-6 */}
-          <div className="flex flex-col items-center space-y-4"> {/* space-y-6 → space-y-4 */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col items-center space-y-4">
             
-            {/* Social Media Icons - Plus petits */}
-            <div className="flex justify-center space-x-4"> {/* space-x-6 → space-x-4 */}
+            {/* Social Media Icons */}
+            <div className="flex justify-center space-x-4">
               {socialLinks.map((social, index) => (
                 <a 
                   key={index}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#ffaf50ff] hover:text-[#3b5335ff] transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl" /* w-10 h-10 → w-8 h-8 */
+                  className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#ffaf50ff] hover:text-[#3b5335ff] transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                   aria-label={`Suivez-nous sur ${social.name}`}
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"> {/* w-5 h-5 → w-4 h-4 */}
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     {social.icon.props.children}
                   </svg>
                 </a>
               ))}
             </div>
 
-            {/* Copyright - Plus compact */}
+            {/* Copyright */}
             <div className="text-center">
-              <div className="text-gray-400 text-xs mb-2"> {/* text-sm → text-xs, mb-4 → mb-2 */}
+              <div className="text-gray-400 text-xs mb-2">
                 © {currentYear} <span className="text-[#ffaf50ff] font-semibold">Hiring</span>. 
                 Tous droits réservés.
               </div>
-              <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold text-xs"> {/* text-sm → text-xs */}
+              <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold text-xs">
                 2025 HIRING - Cabinet de Recrutement
               </div>
             </div>
 
-            {/* Legal Links - Plus compacts */}
-            <div className="flex flex-wrap justify-center gap-4 text-xs"> {/* gap-6 → gap-4, text-sm → text-xs */}
+            {/* Legal Links */}
+            <div className="flex flex-wrap justify-center gap-4 text-xs">
               {[
                 { href: '/confidentialite', label: 'Confidentialité' },
                 { href: '/cgu', label: 'CGU' },
@@ -190,10 +243,10 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* Trust Badges - Plus petits */}
-            <div className="flex items-center space-x-3 text-xs text-gray-400"> {/* space-x-4 → space-x-3, text-sm → text-xs */}
-              <div className="flex items-center space-x-1"> {/* space-x-2 → space-x-1 */}
-                <span className="text-green-400 text-sm">🔒</span> {/* text-lg → text-sm */}
+            {/* Trust Badges */}
+            <div className="flex items-center space-x-3 text-xs text-gray-400">
+              <div className="flex items-center space-x-1">
+                <span className="text-green-400 text-sm">🔒</span>
                 <span>Site sécurisé</span>
               </div>
             </div>
