@@ -37,7 +37,7 @@ export default function Footer() {
       } else {
         setMessage(data.error || '❌ Erreur lors de l\'inscription')
       }
-    } catch (error) {
+    } catch  {
       setMessage('❌ Erreur de connexion')
     } finally {
       setLoading(false)
@@ -127,7 +127,6 @@ export default function Footer() {
                 { href: '/vision', label: 'Notre Vision' },
                 { href: '/offres-emploi', label: 'Offres d\'emploi' },
                 { href: '/contact', label: 'Contact' },
-                { href: '/blog', label: 'Blog' },
               ].map((link) => (
                 <li key={link.href}>
                   <Link 

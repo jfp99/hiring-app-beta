@@ -5,6 +5,8 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useState, useEffect } from 'react'
 import { useApi } from '../hooks/useApi'
+import AdminGuard from '@/app/components/AdminGuard'
+import { signOut } from 'next-auth/react'
 
 interface ContactForm {
   id: string
@@ -202,7 +204,12 @@ export default function Admin() {
     }
   }
 
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/admin/login' })
+  }
+
   return (
+    <AdminGuard>
     <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
       <Header />
       
@@ -229,34 +236,36 @@ export default function Admin() {
       {/* Navigation des Tabs */}
       <section className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-4 justify-center items-center">
-            {[
-              { id: 'contacts' as const, label: 'Contacts', count: contacts.length, icon: '👤' },
-              { id: 'newsletters' as const, label: 'Newsletters', count: newsletters.length, icon: '📧' },
-              { id: 'offres' as const, label: 'Offres', count: offres.length, icon: '💼' },
-              { id: 'add-offre' as const, label: 'Ajouter une offre', icon: '➕' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
-                    : 'bg-white text-[#3b5335ff] border border-gray-200 hover:shadow-lg'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                {tab.label}
-                {tab.count !== undefined && (
-                  <span className="bg-[#3b5335ff] text-white px-2 py-1 rounded-full text-sm">
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-4 justify-between items-center">
+            <div className="flex flex-wrap gap-4">
+              {[
+                { id: 'contacts' as const, label: 'Contacts', count: contacts.length, icon: '👤' },
+                { id: 'newsletters' as const, label: 'Newsletters', count: newsletters.length, icon: '📧' },
+                { id: 'offres' as const, label: 'Offres', count: offres.length, icon: '💼' },
+                { id: 'add-offre' as const, label: 'Ajouter une offre', icon: '➕' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
+                      : 'bg-white text-[#3b5335ff] border border-gray-200 hover:shadow-lg'
+                  }`}
+                >
+                  <span>{tab.icon}</span>
+                  {tab.label}
+                  {tab.count !== undefined && (
+                    <span className="bg-[#3b5335ff] text-white px-2 py-1 rounded-full text-sm">
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
             
             {/* Boutons d'action */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <button
                 onClick={fetchData}
                 disabled={loading}
@@ -270,6 +279,14 @@ export default function Admin() {
                 className="bg-gray-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-gray-600 transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
               >
                 🔧 Debug
+              </button>
+
+              {/* Bouton de déconnexion */}
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-600 transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
+              >
+                🚪 Déconnexion
               </button>
             </div>
           </div>
@@ -645,5 +662,6 @@ export default function Admin() {
 
       <Footer />
     </div>
+    </AdminGuard>
   )
 }
