@@ -50,7 +50,7 @@ export default function Header() {
               <div className="relative">
                 <Image
                   src={Logohiring}
-                  alt="HiringSimple Logo"
+                  alt="Hi-ring Logo"
                   width={180}
                   height={80}
                   className="h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"

@@ -10,7 +10,7 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: 'HiringSimple - Cabinet de Recrutement',
+  title: 'Hi-ring - Cabinet de Recrutement',
   description: 'Votre partenaire en recrutement innovant',
 }
 

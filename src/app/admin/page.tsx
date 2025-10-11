@@ -205,7 +205,7 @@ export default function Admin() {
   }
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: '/admin/login' })
+    await signOut({ callbackUrl: '/auth/login' })
   }
 
   return (

@@ -1,19 +1,25 @@
 {
-  "name": "hiring-app",
+  "name": "hi-ring",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:init": "tsx scripts/init-database.ts",
+    "db:seed": "tsx scripts/init-database.ts"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.10.0",
     "bcryptjs": "^3.0.2",
+    "ics": "^3.8.1",
+    "mammoth": "^1.11.0",
     "mongodb": "^6.20.0",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
+    "nodemailer": "^6.10.1",
+    "pdf-parse": "^2.2.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "^4.1.11"
@@ -23,11 +29,15 @@
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.2",
+    "@types/pdf-parse": "^1.1.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

@@ -4,6 +4,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { UserRole } from '@/app/types/auth'
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
@@ -13,9 +14,14 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     if (status === 'loading') return
 
     // Rediriger vers la page de login si non authentifié ou non admin
-    if (!session || (session.user as any)?.role !== 'admin') {
+    const userRole = (session?.user as any)?.role
+    const isAdmin = userRole === UserRole.SUPER_ADMIN ||
+                    userRole === UserRole.ADMIN ||
+                    userRole === UserRole.RECRUITER
+
+    if (!session || !isAdmin) {
       console.log('❌ Access denied, redirecting to login...')
-      router.push('/admin/login')
+      router.push('/auth/login')
     }
   }, [session, status, router])
 
@@ -32,7 +38,12 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   }
 
   // Si pas de session ou pas admin, ne rien afficher (la redirection est en cours)
-  if (!session || (session.user as any)?.role !== 'admin') {
+  const userRole = (session?.user as any)?.role
+  const isAdmin = userRole === UserRole.SUPER_ADMIN ||
+                  userRole === UserRole.ADMIN ||
+                  userRole === UserRole.RECRUITER
+
+  if (!session || !isAdmin) {
     return null
   }
 
