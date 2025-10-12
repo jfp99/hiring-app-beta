@@ -11,6 +11,7 @@ import {
   AvailabilityStatus,
   ContractPreference
 } from '@/app/types/candidates'
+import { toMongoStatus } from '@/app/lib/status-mapper'
 import { z } from 'zod'
 
 // Validation schema
@@ -94,7 +95,11 @@ export async function GET(request: NextRequest) {
 
     // Filters
     if (filters.status && filters.status.length > 0) {
-      query.status = { $in: filters.status }
+      // Check both appStatus (new field) and status (legacy MongoDB field)
+      query.$or = [
+        { appStatus: { $in: filters.status } },
+        { status: { $in: filters.status }, appStatus: { $exists: false } }
+      ]
     }
 
     if (filters.experienceLevel && filters.experienceLevel.length > 0) {
@@ -164,7 +169,7 @@ export async function GET(request: NextRequest) {
       currentPosition: candidate.currentPosition,
       currentCompany: candidate.currentCompany,
       experienceLevel: candidate.experienceLevel,
-      status: candidate.status,
+      status: candidate.appStatus || candidate.status, // Use appStatus if available
       skills: candidate.skills || [],
       primarySkills: candidate.primarySkills || [],
       availability: candidate.availability,
@@ -176,7 +181,9 @@ export async function GET(request: NextRequest) {
       createdAt: candidate.createdAt,
       updatedAt: candidate.updatedAt,
       lastContactedAt: candidate.lastContactedAt,
-      tags: candidate.tags || []
+      tags: candidate.tags || [],
+      profilePictureUrl: candidate.profilePictureUrl,
+      quickScores: candidate.quickScores || []
     }))
 
     console.log(`✅ [CANDIDATES] Found ${total} candidates`)
@@ -236,6 +243,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare candidate data
+    const appStatus = validatedData.status || CandidateStatus.NEW
     const candidateData = {
       firstName: validatedData.firstName,
       lastName: validatedData.lastName,
@@ -246,7 +254,8 @@ export async function POST(request: NextRequest) {
       experienceLevel: validatedData.experienceLevel,
       totalExperience: undefined,
 
-      status: validatedData.status || CandidateStatus.NEW,
+      appStatus: appStatus, // Real application status
+      status: toMongoStatus(appStatus), // MongoDB-compatible status
       source: validatedData.source,
       referredBy: undefined,
 

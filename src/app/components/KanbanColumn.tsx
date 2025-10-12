@@ -1,6 +1,7 @@
 // src/app/components/KanbanColumn.tsx
 'use client'
 
+import React from 'react'
 import { Candidate, CandidateStatus, CANDIDATE_STATUS_LABELS } from '@/app/types/candidates'
 import CandidateCard from './CandidateCard'
 
@@ -57,40 +58,64 @@ export default function KanbanColumn({
   onDragStart,
   draggedCandidateId
 }: KanbanColumnProps) {
+  const [isDraggedOver, setIsDraggedOver] = React.useState(false)
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
+    setIsDraggedOver(true)
     onDragOver(e)
+  }
+
+  const handleDragLeave = () => {
+    setIsDraggedOver(false)
   }
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
+    setIsDraggedOver(false)
     onDrop(e, status)
   }
 
   return (
-    <div className="flex-shrink-0 w-80">
+    <div className="flex-shrink-0 w-80 transition-all duration-200">
       {/* Column Header */}
-      <div className={`rounded-t-lg p-4 border-2 ${getStatusColor(status)}`}>
+      <div className={`rounded-t-xl p-4 border-2 ${getStatusColor(status)} shadow-sm`}>
         <div className="flex items-center justify-between">
-          <h3 className={`font-bold text-lg ${getHeaderColor(status)}`}>
+          <h3 className={`font-bold text-base ${getHeaderColor(status)}`}>
             {CANDIDATE_STATUS_LABELS[status]}
           </h3>
-          <span className={`px-3 py-1 rounded-full text-sm font-bold ${getHeaderColor(status)} bg-white/50`}>
+          <span className={`px-3 py-1.5 rounded-full text-sm font-bold ${getHeaderColor(status)} bg-white/60 shadow-sm`}>
             {candidates.length}
           </span>
         </div>
       </div>
 
-      {/* Column Content */}
+      {/* Column Content - Drop Zone */}
       <div
         onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className="bg-gray-50 rounded-b-lg p-3 min-h-[600px] max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-t-0 border-gray-200"
+        className={`bg-gradient-to-b from-gray-50 to-gray-100 rounded-b-xl p-3 min-h-[600px] max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-t-0 border-gray-200 transition-all duration-200 ${
+          isDraggedOver
+            ? 'bg-[#ffaf50ff]/10 border-[#ffaf50ff] border-dashed shadow-inner ring-2 ring-[#ffaf50ff]/30'
+            : ''
+        }`}
       >
+        {/* Drop Zone Visual Indicator */}
+        {isDraggedOver && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-[#ffaf50ff]/20 border-2 border-dashed border-[#ffaf50ff] rounded-xl p-6 text-center animate-pulse">
+              <div className="text-4xl mb-2">📥</div>
+              <p className="text-[#ffaf50ff] font-bold">Déposer ici</p>
+            </div>
+          </div>
+        )}
+
         {candidates.length === 0 ? (
-          <div className="text-center text-gray-400 py-8">
-            <p className="text-sm">Aucun candidat</p>
-            <p className="text-xs mt-1">Glissez un candidat ici</p>
+          <div className="text-center text-gray-400 py-12 border-2 border-dashed border-gray-300 rounded-lg bg-white/50">
+            <div className="text-3xl mb-2">📋</div>
+            <p className="text-sm font-medium">Aucun candidat</p>
+            <p className="text-xs mt-1">Glissez-déposez un candidat ici</p>
           </div>
         ) : (
           candidates.map((candidate) => (
