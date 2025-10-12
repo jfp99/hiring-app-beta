@@ -17,9 +17,9 @@ interface FileUploadProps {
 
 export default function FileUpload({
   onUpload,
-  accept = '.pdf,.doc,.docx,.txt,.rtf',
+  accept = '.pdf,.doc,.docx,.txt,.rtf,.odt,.pages,.docm,.webp,.jpg,.jpeg,.png,.gif,.bmp,.svg',
   multiple = false,
-  maxSize = 5,
+  maxSize = 10,
   documentType = DocumentType.RESUME,
   entityType,
   entityId,
@@ -187,10 +187,13 @@ export default function FileUpload({
             ou <span className="text-[#ffaf50ff] font-medium">cliquez pour parcourir</span>
           </p>
           <p className="text-xs text-gray-500 mt-2">
-            Formats acceptés: {accept.replace(/\./g, '').replace(/,/g, ', ').toUpperCase()}
+            <strong>Documents:</strong> PDF, DOC, DOCX, TXT, RTF, ODT, PAGES
           </p>
           <p className="text-xs text-gray-500">
-            Taille maximale: {maxSize}MB {multiple && '• Plusieurs fichiers autorisés'}
+            <strong>Images:</strong> WEBP, JPG, PNG, GIF, BMP, SVG
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Taille max: {maxSize}MB {multiple && '• Plusieurs fichiers autorisés'}
           </p>
         </div>
       </div>
