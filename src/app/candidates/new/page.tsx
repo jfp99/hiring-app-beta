@@ -1,14 +1,16 @@
 // src/app/candidates/new/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Header from '@/app/components/Header'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
 import ResumeUploader from '@/app/components/ResumeUploader'
+import CustomFieldInput from '@/app/components/CustomFieldInput'
 import { CandidateStatus, ExperienceLevel } from '@/app/types/candidates'
+import { CustomFieldDefinition, validateFieldValue } from '@/app/types/customFields'
 
 interface FormData {
   firstName: string
@@ -44,6 +46,11 @@ export default function NewCandidatePage() {
   const [showResumeUploader, setShowResumeUploader] = useState(true)
   const [newSkill, setNewSkill] = useState('')
 
+  // Custom fields
+  const [customFields, setCustomFields] = useState<CustomFieldDefinition[]>([])
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, any>>({})
+  const [customFieldErrors, setCustomFieldErrors] = useState<Record<string, string>>({})
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -59,6 +66,22 @@ export default function NewCandidatePage() {
     education: [],
     summary: ''
   })
+
+  // Fetch custom field definitions
+  useEffect(() => {
+    const fetchCustomFields = async () => {
+      try {
+        const response = await fetch('/api/custom-fields?isActive=true')
+        const data = await response.json()
+        if (data.success) {
+          setCustomFields(data.fields)
+        }
+      } catch (err) {
+        console.error('Error fetching custom fields:', err)
+      }
+    }
+    fetchCustomFields()
+  }, [])
 
   const handleParsedData = (parsed: any) => {
     setFormData(prev => ({
@@ -109,11 +132,27 @@ export default function NewCandidatePage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setCustomFieldErrors({})
 
     try {
       // Validate required fields
       if (!formData.firstName || !formData.lastName || !formData.email) {
         throw new Error('Veuillez remplir les champs obligatoires (nom, prénom, email)')
+      }
+
+      // Validate custom fields
+      const fieldErrors: Record<string, string> = {}
+      for (const field of customFields) {
+        const value = customFieldValues[field.name]
+        const validation = validateFieldValue(field, value)
+        if (!validation.valid) {
+          fieldErrors[field.name] = validation.error!
+        }
+      }
+
+      if (Object.keys(fieldErrors).length > 0) {
+        setCustomFieldErrors(fieldErrors)
+        throw new Error('Veuillez corriger les erreurs dans les champs personnalisés')
       }
 
       // Prepare data for API
@@ -134,7 +173,8 @@ export default function NewCandidatePage() {
           current: exp.endDate.toLowerCase().includes('présent') || exp.endDate.toLowerCase().includes('present')
         })),
         education: formData.education,
-        summary: formData.summary
+        summary: formData.summary,
+        customFields: customFieldValues
       }
 
       const response = await fetch('/api/candidates', {
@@ -210,24 +250,92 @@ export default function NewCandidatePage() {
                 )}
 
                 {/* Quick Tips */}
-                <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
-                  <h4 className="font-bold text-blue-900 mb-3">💡 Conseils</h4>
+                <div className="mt-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">💡</span>
+                    <h4 className="font-bold text-blue-900">Conseils Rapides</h4>
+                  </div>
                   <ul className="space-y-2 text-sm text-blue-800">
-                    <li>• Importez un CV pour pré-remplir le formulaire</li>
-                    <li>• Les champs marqués * sont obligatoires</li>
-                    <li>• Vous pouvez modifier toutes les informations</li>
-                    <li>• Le statut initial est "Nouveau"</li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-600 font-bold">✓</span>
+                      <span>Importez un CV pour pré-remplir automatiquement</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-600 font-bold">*</span>
+                      <span>Les champs marqués * sont obligatoires</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-blue-600 font-bold">✎</span>
+                      <span>Toutes les informations sont modifiables</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-purple-600 font-bold">🖼️</span>
+                      <span>Accepte PDF, DOCX, TXT, RTF, ODT, et images (WEBP, JPG, PNG)</span>
+                    </li>
                   </ul>
+                </div>
+
+                {/* Stats Card */}
+                <div className="mt-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 shadow-sm">
+                  <h4 className="font-bold text-green-900 mb-3 flex items-center gap-2">
+                    <span className="text-2xl">📊</span>
+                    <span>Formats Supportés</span>
+                  </h4>
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <p className="font-semibold text-green-800 mb-1">Documents Texte:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {['PDF', 'DOC', 'DOCX', 'TXT', 'RTF', 'ODT'].map(format => (
+                          <span key={format} className="bg-white px-2 py-1 rounded text-xs font-medium text-green-700 border border-green-200">
+                            {format}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-green-800 mb-1">Images (scan de CV):</p>
+                      <div className="flex flex-wrap gap-1">
+                        {['WEBP', 'JPG', 'PNG', 'GIF', 'BMP'].map(format => (
+                          <span key={format} className="bg-white px-2 py-1 rounded text-xs font-medium text-purple-700 border border-purple-200">
+                            {format}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Form - Right Column */}
               <div className="lg:col-span-2">
-                <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-8">
+                <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                  {/* Progress Indicator */}
+                  <div className="mb-8 flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${formData.firstName && formData.lastName && formData.email ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                        1
+                      </span>
+                      <span className="text-gray-600">Infos personnelles</span>
+                    </div>
+                    <div className="flex-1 h-1 mx-4 bg-gray-200 rounded-full overflow-hidden">
+                      <div className={`h-full bg-[#ffaf50ff] transition-all ${formData.primarySkills.length > 0 ? 'w-full' : 'w-1/2'}`}></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${formData.primarySkills.length > 0 ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>
+                        2
+                      </span>
+                      <span className="text-gray-600">Compétences</span>
+                    </div>
+                  </div>
+
                   {/* Error Display */}
                   {error && (
-                    <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-                      <p className="text-sm text-red-700">{error}</p>
+                    <div className="mb-6 bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-start gap-3 animate-shake">
+                      <span className="text-2xl">⚠️</span>
+                      <div className="flex-1">
+                        <p className="font-semibold text-red-800 mb-1">Erreur</p>
+                        <p className="text-sm text-red-700">{error}</p>
+                      </div>
                     </div>
                   )}
 
@@ -462,6 +570,41 @@ export default function NewCandidatePage() {
                             <p className="font-medium text-[#3b5335ff]">{edu.degree}</p>
                             <p className="text-sm text-gray-600">{edu.institution}</p>
                             <p className="text-xs text-gray-500 mt-1">{edu.graduationYear}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Custom Fields */}
+                  {customFields.length > 0 && (
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 pb-3 border-b-2 border-[#ffaf50ff]">
+                        Informations Complémentaires
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {customFields.map((field) => (
+                          <div key={field.id} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
+                            <CustomFieldInput
+                              field={field}
+                              value={customFieldValues[field.name]}
+                              onChange={(value) => {
+                                setCustomFieldValues(prev => ({
+                                  ...prev,
+                                  [field.name]: value
+                                }))
+                                // Clear error when user changes value
+                                if (customFieldErrors[field.name]) {
+                                  setCustomFieldErrors(prev => {
+                                    const newErrors = { ...prev }
+                                    delete newErrors[field.name]
+                                    return newErrors
+                                  })
+                                }
+                              }}
+                              error={customFieldErrors[field.name]}
+                              disabled={loading}
+                            />
                           </div>
                         ))}
                       </div>

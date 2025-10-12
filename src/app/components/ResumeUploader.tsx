@@ -166,18 +166,23 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
             <label className="inline-block">
               <input
                 type="file"
-                accept=".pdf,.docx,.txt"
+                accept=".pdf,.doc,.docx,.txt,.rtf,.odt,.pages,.webp,.jpg,.jpeg,.png,.gif,.bmp"
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <span className="cursor-pointer inline-flex items-center px-4 py-2 bg-[#3b5335ff] text-white rounded-lg hover:bg-[#2a3d26ff] transition-colors">
-                {file ? 'Changer de fichier' : 'Sélectionner un fichier'}
+              <span className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-[#3b5335ff] text-white rounded-lg hover:bg-[#2a3d26ff] transition-all shadow-md hover:shadow-lg">
+                <span className="text-xl">{file ? '🔄' : '📤'}</span>
+                <span className="font-medium">{file ? 'Changer de fichier' : 'Sélectionner un fichier'}</span>
               </span>
             </label>
 
-            <p className="text-xs text-gray-500 mt-4">
-              Formats acceptés: PDF, DOCX, TXT (max 10 MB)
-            </p>
+            <div className="text-xs text-gray-600 mt-4 space-y-1">
+              <p className="font-semibold text-center">Formats acceptés (max 10 MB):</p>
+              <div className="flex justify-center gap-4 flex-wrap">
+                <span className="bg-blue-50 px-2 py-1 rounded">📄 PDF, DOC, DOCX, TXT, RTF, ODT</span>
+                <span className="bg-purple-50 px-2 py-1 rounded">🖼️ WEBP, JPG, PNG, GIF, BMP</span>
+              </div>
+            </div>
           </div>
 
           {/* Parse Button */}

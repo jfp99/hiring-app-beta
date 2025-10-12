@@ -67,9 +67,43 @@ export async function POST(request: NextRequest) {
     // Parse TXT
     else if (fileType === 'text/plain' || fileName.endsWith('.txt')) {
       text = await file.text()
+    }
+    // Parse RTF (basic extraction)
+    else if (fileType === 'application/rtf' || fileName.endsWith('.rtf')) {
+      const buffer = Buffer.from(await file.arrayBuffer())
+      text = buffer.toString('utf-8')
+        .replace(/\\[a-z]+\d*\s?/g, '') // Remove RTF control words
+        .replace(/[{}]/g, '') // Remove braces
+        .trim()
+    }
+    // Parse ODT (OpenDocument)
+    else if (fileType === 'application/vnd.oasis.opendocument.text' || fileName.endsWith('.odt')) {
+      const buffer = Buffer.from(await file.arrayBuffer())
+      const result = await mammoth.extractRawText({ buffer })
+      text = result.value
+    }
+    // Handle image formats (WEBP, JPG, PNG, etc.)
+    else if (
+      fileType.startsWith('image/') ||
+      fileName.match(/\.(webp|jpg|jpeg|png|gif|bmp)$/i)
+    ) {
+      // For image-based resumes, we would need OCR (Tesseract.js)
+      // For now, return a helpful message with basic file info
+      return NextResponse.json({
+        success: true,
+        data: {
+          primarySkills: [],
+          secondarySkills: [],
+          workExperience: [],
+          education: [],
+          summary: 'CV au format image détecté. L\'analyse automatique des images nécessite un traitement OCR. Veuillez remplir les informations manuellement.'
+        },
+        message: 'Image détectée - Remplissage manuel requis',
+        requiresOCR: true
+      })
     } else {
       return NextResponse.json(
-        { error: 'Format de fichier non supporté. Utilisez PDF, DOCX ou TXT.' },
+        { error: 'Format de fichier non supporté. Utilisez PDF, DOCX, TXT, RTF, ODT ou images (WEBP, JPG, PNG).' },
         { status: 400 }
       )
     }
