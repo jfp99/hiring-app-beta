@@ -77,14 +77,14 @@ export default function KanbanColumn({
   }
 
   return (
-    <div className="flex-shrink-0 w-80 transition-all duration-200">
+    <div className="flex-shrink-0 w-full min-w-[180px] transition-all duration-200">
       {/* Column Header */}
-      <div className={`rounded-t-xl p-4 border-2 ${getStatusColor(status)} shadow-sm`}>
+      <div className={`rounded-t-xl p-2.5 border-2 ${getStatusColor(status)} shadow-sm`}>
         <div className="flex items-center justify-between">
-          <h3 className={`font-bold text-base ${getHeaderColor(status)}`}>
+          <h3 className={`font-bold text-xs ${getHeaderColor(status)} leading-tight truncate pr-2`}>
             {CANDIDATE_STATUS_LABELS[status]}
           </h3>
-          <span className={`px-3 py-1.5 rounded-full text-sm font-bold ${getHeaderColor(status)} bg-white/60 shadow-sm`}>
+          <span className={`px-2 py-1 rounded-full text-xs font-bold ${getHeaderColor(status)} bg-white/60 shadow-sm flex-shrink-0`}>
             {candidates.length}
           </span>
         </div>
@@ -95,7 +95,7 @@ export default function KanbanColumn({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`bg-gradient-to-b from-gray-50 to-gray-100 rounded-b-xl p-3 min-h-[600px] max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-t-0 border-gray-200 transition-all duration-200 ${
+        className={`bg-gradient-to-b from-gray-50 to-gray-100 rounded-b-xl p-2 min-h-[500px] max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-t-0 border-gray-200 transition-all duration-200 ${
           isDraggedOver
             ? 'bg-[#ffaf50ff]/10 border-[#ffaf50ff] border-dashed shadow-inner ring-2 ring-[#ffaf50ff]/30'
             : ''

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Logohiring from '../../../public/logo-hiring.png'
+import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -34,9 +35,9 @@ export default function Header() {
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200/50' 
-        : 'bg-[#f8f7f3ff] shadow-sm'
+      isScrolled
+        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50'
+        : 'bg-[#f8f7f3ff] dark:bg-gray-900 shadow-sm'
     }`}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -74,25 +75,29 @@ export default function Header() {
                 }`}
               >
                 <span className="font-semibold">{item.label}</span>
-                
+
                 {/* Indicateur actif */}
                 {pathname === item.href && (
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-[#ffaf50ff] rounded-full" />
                 )}
-                
+
                 {/* Effet hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#ffaf50ff]/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
               </Link>
             ))}
+            <div className="ml-2">
+              <ThemeToggle />
+            </div>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* Mobile menu button and theme toggle */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-3 rounded-xl transition-all duration-300 ${
-                isMenuOpen 
-                  ? 'bg-[#3b5335ff] text-white' 
+                isMenuOpen
+                  ? 'bg-[#3b5335ff] text-white'
                   : 'bg-white text-[#3b5335ff] shadow-lg hover:shadow-xl'
               }`}
               aria-label="Toggle menu"
@@ -112,7 +117,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50">
             <div className="px-4 pt-2 pb-6 space-y-2">
               {navItems.map((item) => (
                 <Link

@@ -4,6 +4,7 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { useApi } from '../hooks/useApi'
 
 export default function Contact() {
@@ -41,7 +42,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData] || formData[field as keyof typeof formData].trim() === '');
 
     if (missingFields.length > 0) {
-      alert(`Veuillez remplir tous les champs obligatoires: ${missingFields.join(', ')}`);
+      toast.warning('Veuillez remplir tous les champs obligatoires', {
+        description: missingFields.join(', ')
+      })
       return;
     }
 
@@ -67,7 +70,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       })
       
       // Message de succès
-      alert(result.message || '✅ Votre message a été envoyé avec succès ! Nous vous recontacterons dans les plus brefs délais.')
+      toast.success('Message envoyé avec succès!', {
+        description: result.message || 'Nous vous recontacterons dans les plus brefs délais'
+      })
     } else {
       throw new Error(result.error || 'Erreur lors de l\'envoi du message')
     }

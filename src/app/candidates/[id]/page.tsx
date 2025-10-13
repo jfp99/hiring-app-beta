@@ -4,6 +4,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 import {
   Candidate,
   CandidateStatus,
@@ -11,24 +13,44 @@ import {
   CANDIDATE_STATUS_FLOW,
   EXPERIENCE_LEVEL_LABELS,
   SKILL_LEVEL_LABELS,
+  INTERVIEW_TYPE_LABELS,
   CandidateNote,
-  CandidateActivity
+  CandidateActivity,
+  InterviewSchedule
 } from '@/app/types/candidates'
-import Header from '@/app/components/Header'
+import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
 import EmailComposer from '@/app/components/EmailComposer'
 import InterviewScheduler from '@/app/components/InterviewScheduler'
+import InterviewFeedbackForm from '@/app/components/InterviewFeedbackForm'
+import InterviewFeedbackDisplay from '@/app/components/InterviewFeedbackDisplay'
+import TagInput from '@/app/components/TagInput'
+import QuickScoreForm from '@/app/components/QuickScoreForm'
+import QuickScoreDisplay from '@/app/components/QuickScoreDisplay'
+import CommentForm from '@/app/components/CommentForm'
+import CommentThread from '@/app/components/CommentThread'
+import CustomFieldDisplay from '@/app/components/CustomFieldDisplay'
+import { Comment } from '@/app/types/comments'
+import { CustomFieldDefinition } from '@/app/types/customFields'
 
 export default function CandidateProfilePage() {
   const params = useParams()
   const router = useRouter()
   const candidateId = params.id as string
+  const { data: session } = useSession()
 
   const [candidate, setCandidate] = useState<Candidate | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [activeTab, setActiveTab] = useState<'overview' | 'experience' | 'documents' | 'activity'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'experience' | 'documents' | 'interviews' | 'activity' | 'scores' | 'comments'>('overview')
+
+  // Comments
+  const [comments, setComments] = useState<Comment[]>([])
+  const [loadingComments, setLoadingComments] = useState(false)
+
+  // Custom fields
+  const [customFields, setCustomFields] = useState<CustomFieldDefinition[]>([])
 
   // Status change
   const [changingStatus, setChangingStatus] = useState(false)
@@ -49,9 +71,38 @@ export default function CandidateProfilePage() {
   // Interview scheduler
   const [showInterviewScheduler, setShowInterviewScheduler] = useState(false)
 
+  // Interview feedback
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false)
+  const [selectedInterview, setSelectedInterview] = useState<InterviewSchedule | null>(null)
+
+  // Quick Score
+  const [showQuickScoreForm, setShowQuickScoreForm] = useState(false)
+
   useEffect(() => {
     fetchCandidate()
   }, [candidateId])
+
+  useEffect(() => {
+    if (activeTab === 'comments') {
+      fetchComments()
+    }
+  }, [activeTab, candidateId])
+
+  useEffect(() => {
+    // Fetch custom field definitions
+    const fetchCustomFields = async () => {
+      try {
+        const response = await fetch('/api/custom-fields?isActive=true')
+        const data = await response.json()
+        if (data.success) {
+          setCustomFields(data.fields)
+        }
+      } catch (err) {
+        console.error('Error fetching custom fields:', err)
+      }
+    }
+    fetchCustomFields()
+  }, [])
 
   const fetchCandidate = async () => {
     try {
@@ -74,6 +125,25 @@ export default function CandidateProfilePage() {
     }
   }
 
+  const fetchComments = async () => {
+    try {
+      setLoadingComments(true)
+
+      const response = await fetch(`/api/comments?candidateId=${candidateId}`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch comments')
+      }
+
+      setComments(data.comments || [])
+    } catch (err: any) {
+      console.error('Error fetching comments:', err)
+    } finally {
+      setLoadingComments(false)
+    }
+  }
+
   const handleStatusChange = async (status: CandidateStatus) => {
     if (!candidate) return
 
@@ -91,8 +161,13 @@ export default function CandidateProfilePage() {
 
       await fetchCandidate()
       setNewStatus(null)
+      toast.success('Statut mis à jour avec succès', {
+        description: `Le statut du candidat a été changé`
+      })
     } catch (err: any) {
-      alert('Error updating status: ' + err.message)
+      toast.error('Erreur lors de la mise à jour du statut', {
+        description: err.message
+      })
     } finally {
       setChangingStatus(false)
     }
@@ -120,8 +195,13 @@ export default function CandidateProfilePage() {
       setNoteContent('')
       setIsPrivateNote(false)
       await fetchCandidate()
+      toast.success('Note ajoutée avec succès', {
+        description: isPrivateNote ? 'Note privée enregistrée' : 'Note enregistrée'
+      })
     } catch (err: any) {
-      alert('Error adding note: ' + err.message)
+      toast.error('Erreur lors de l\'ajout de la note', {
+        description: err.message
+      })
     } finally {
       setAddingNote(false)
     }
@@ -142,8 +222,88 @@ export default function CandidateProfilePage() {
       setIsEditing(false)
       setEditData({})
       await fetchCandidate()
+      toast.success('Profil mis à jour avec succès', {
+        description: 'Les modifications ont été enregistrées'
+      })
     } catch (err: any) {
-      alert('Error updating candidate: ' + err.message)
+      toast.error('Erreur lors de la mise à jour du profil', {
+        description: err.message
+      })
+    }
+  }
+
+  const handleFeedbackSubmit = async (feedbackData: any) => {
+    if (!selectedInterview) return
+
+    try {
+      const response = await fetch(
+        `/api/candidates/${candidateId}/interviews/${selectedInterview.id}/feedback`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(feedbackData)
+        }
+      )
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to submit feedback')
+      }
+
+      // Refresh candidate data to show new feedback
+      await fetchCandidate()
+      setShowFeedbackForm(false)
+      setSelectedInterview(null)
+    } catch (err: any) {
+      console.error('Error submitting feedback:', err)
+      throw err
+    }
+  }
+
+  const handleTagsUpdate = async (newTags: string[]) => {
+    if (!candidate) return
+
+    try {
+      const response = await fetch(`/api/candidates/${candidateId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tags: newTags })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update tags')
+      }
+
+      await fetchCandidate()
+      toast.success('Tags mis à jour avec succès', {
+        description: 'Les tags du candidat ont été modifiés'
+      })
+    } catch (err: any) {
+      toast.error('Erreur lors de la mise à jour des tags', {
+        description: err.message
+      })
+    }
+  }
+
+  const handleQuickScoreSubmit = async (scoreData: any) => {
+    try {
+      const response = await fetch(`/api/candidates/${candidateId}/quick-scores`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scoreData)
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to submit quick score')
+      }
+
+      // Refresh candidate data to show new score
+      await fetchCandidate()
+      setShowQuickScoreForm(false)
+    } catch (err: any) {
+      console.error('Error submitting quick score:', err)
+      throw err
     }
   }
 
@@ -201,7 +361,7 @@ export default function CandidateProfilePage() {
     return (
       <AdminGuard>
         <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
-          <Header />
+          <AdminHeader />
           <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
               <h2 className="text-red-800 font-bold mb-2">Erreur</h2>
@@ -221,7 +381,7 @@ export default function CandidateProfilePage() {
   return (
     <AdminGuard>
       <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
-        <Header />
+        <AdminHeader />
 
         {/* Header Section */}
         <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-12">
@@ -255,6 +415,12 @@ export default function CandidateProfilePage() {
               </div>
 
               <div className="flex gap-2">
+                <button
+                  onClick={() => setShowQuickScoreForm(true)}
+                  className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  ⚡ Évaluation Rapide
+                </button>
                 <button
                   onClick={() => setShowInterviewScheduler(true)}
                   className="bg-white text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
@@ -338,7 +504,10 @@ export default function CandidateProfilePage() {
               {[
                 { id: 'overview' as const, label: 'Vue d\'ensemble', icon: '👤' },
                 { id: 'experience' as const, label: 'Expérience', icon: '💼' },
+                { id: 'scores' as const, label: 'Évaluations', icon: '⭐' },
                 { id: 'documents' as const, label: 'Documents', icon: '📄' },
+                { id: 'interviews' as const, label: 'Entretiens', icon: '📅' },
+                { id: 'comments' as const, label: 'Commentaires', icon: '💬' },
                 { id: 'activity' as const, label: 'Activité', icon: '📊' }
               ].map((tab) => (
                 <button
@@ -526,6 +695,24 @@ export default function CandidateProfilePage() {
                         </div>
                       </div>
                     )}
+
+                    {/* Custom Fields */}
+                    {customFields.length > 0 && candidate.customFields && Object.keys(candidate.customFields).length > 0 && (
+                      <div className="bg-white rounded-2xl shadow-lg p-6">
+                        <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6">Informations Complémentaires</h2>
+                        <div>
+                          {customFields
+                            .filter(field => field.showInProfile && candidate.customFields?.[field.name] !== undefined)
+                            .map((field) => (
+                              <CustomFieldDisplay
+                                key={field.id}
+                                field={field}
+                                value={candidate.customFields?.[field.name]}
+                              />
+                            ))}
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -586,6 +773,22 @@ export default function CandidateProfilePage() {
                   </>
                 )}
 
+                {/* Scores Tab */}
+                {activeTab === 'scores' && (
+                  <div className="bg-white rounded-2xl shadow-lg p-6">
+                    <div className="flex justify-between items-center mb-6">
+                      <h2 className="text-2xl font-bold text-[#3b5335ff]">⚡ Évaluations Rapides</h2>
+                      <button
+                        onClick={() => setShowQuickScoreForm(true)}
+                        className="px-4 py-2 bg-[#ffaf50ff] text-[#3b5335ff] rounded-lg font-bold hover:shadow-lg transition-all"
+                      >
+                        + Nouvelle Évaluation
+                      </button>
+                    </div>
+                    <QuickScoreDisplay quickScores={candidate.quickScores || []} />
+                  </div>
+                )}
+
                 {/* Documents Tab */}
                 {activeTab === 'documents' && (
                   <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -629,6 +832,150 @@ export default function CandidateProfilePage() {
                   </div>
                 )}
 
+                {/* Interviews Tab */}
+                {activeTab === 'interviews' && (
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                      <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6">Entretiens</h2>
+                      {candidate.interviews && candidate.interviews.length > 0 ? (
+                        <div className="space-y-6">
+                          {candidate.interviews
+                            .sort((a, b) => new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime())
+                            .map((interview) => (
+                            <div key={interview.id} className="border border-gray-200 rounded-lg overflow-hidden">
+                              {/* Interview Header */}
+                              <div className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white p-4">
+                                <div className="flex justify-between items-start mb-2">
+                                  <div>
+                                    <h3 className="text-lg font-bold">
+                                      {INTERVIEW_TYPE_LABELS[interview.type]} - {interview.jobTitle || 'Position'}
+                                    </h3>
+                                    <p className="text-sm opacity-90">
+                                      📅 {formatDateTime(interview.scheduledDate)} • ⏱️ {interview.duration} min
+                                    </p>
+                                  </div>
+                                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                    interview.status === 'completed' ? 'bg-green-500' :
+                                    interview.status === 'scheduled' ? 'bg-blue-500' :
+                                    interview.status === 'cancelled' ? 'bg-red-500' :
+                                    'bg-yellow-500'
+                                  }`}>
+                                    {interview.status === 'completed' ? 'Terminé' :
+                                     interview.status === 'scheduled' ? 'Planifié' :
+                                     interview.status === 'cancelled' ? 'Annulé' :
+                                     'Reprogrammé'}
+                                  </span>
+                                </div>
+                                {interview.location && (
+                                  <p className="text-sm opacity-90">📍 {interview.location}</p>
+                                )}
+                                {interview.meetingLink && (
+                                  <a
+                                    href={interview.meetingLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm opacity-90 hover:underline"
+                                  >
+                                    🔗 Lien de visioconférence
+                                  </a>
+                                )}
+                              </div>
+
+                              {/* Interview Notes */}
+                              {interview.notes && (
+                                <div className="p-4 bg-gray-50 border-b border-gray-200">
+                                  <h4 className="text-sm font-semibold text-gray-700 mb-1">Notes</h4>
+                                  <p className="text-sm text-gray-600">{interview.notes}</p>
+                                </div>
+                              )}
+
+                              {/* Feedback Section */}
+                              <div className="p-4">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h4 className="font-semibold text-gray-900">
+                                    Feedback d'Entretien ({interview.feedback?.length || 0})
+                                  </h4>
+                                  {session && (
+                                    <button
+                                      onClick={() => {
+                                        setSelectedInterview(interview)
+                                        setShowFeedbackForm(true)
+                                      }}
+                                      className="px-4 py-2 bg-[#3b5335ff] text-white rounded-lg font-medium hover:bg-[#2a3d26ff] transition-all text-sm"
+                                    >
+                                      ✍️ Soumettre Feedback
+                                    </button>
+                                  )}
+                                </div>
+
+                                <InterviewFeedbackDisplay interview={interview} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-12">
+                          <div className="text-6xl mb-4">📅</div>
+                          <p className="text-gray-500 mb-4">Aucun entretien planifié pour ce candidat</p>
+                          <button
+                            onClick={() => setShowInterviewScheduler(true)}
+                            className="px-6 py-3 bg-[#3b5335ff] text-white rounded-lg font-bold hover:bg-[#2a3d26ff] transition-all"
+                          >
+                            📅 Planifier un Entretien
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Comments Tab */}
+                {activeTab === 'comments' && (
+                  <div className="space-y-6">
+                    <div className="bg-white rounded-2xl shadow-lg p-6">
+                      <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-2">
+                        💬 Commentaires & Notes
+                        {comments.length > 0 && (
+                          <span className="px-3 py-1 bg-[#ffaf50ff] text-[#3b5335ff] rounded-full text-sm font-bold">
+                            {comments.length}
+                          </span>
+                        )}
+                      </h2>
+
+                      {/* Add Comment Form */}
+                      <div className="mb-8">
+                        <CommentForm
+                          candidateId={candidateId}
+                          onCommentAdded={() => {
+                            fetchComments()
+                            fetchCandidate() // Refresh to update activity log
+                          }}
+                        />
+                      </div>
+
+                      {/* Comments Thread */}
+                      {loadingComments ? (
+                        <div className="text-center py-12">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
+                          <p className="text-gray-600">Chargement des commentaires...</p>
+                        </div>
+                      ) : (
+                        <CommentThread
+                          comments={comments}
+                          onCommentUpdated={() => {
+                            fetchComments()
+                            fetchCandidate() // Refresh to update activity log
+                          }}
+                          onCommentDeleted={() => {
+                            fetchComments()
+                            fetchCandidate() // Refresh to update activity log
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Activity Tab */}
                 {activeTab === 'activity' && (
                   <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -643,7 +990,10 @@ export default function CandidateProfilePage() {
                               {activity.type === 'profile_updated' && '✏️'}
                               {activity.type === 'document_uploaded' && '📄'}
                               {activity.type === 'email_sent' && '📧'}
-                              {!['status_change', 'note_added', 'profile_updated', 'document_uploaded', 'email_sent'].includes(activity.type) && '•'}
+                              {activity.type === 'comment_added' && '💬'}
+                              {activity.type === 'comment_updated' && '✏️'}
+                              {activity.type === 'comment_deleted' && '🗑️'}
+                              {!['status_change', 'note_added', 'profile_updated', 'document_uploaded', 'email_sent', 'comment_added', 'comment_updated', 'comment_deleted'].includes(activity.type) && '•'}
                             </div>
                             <div className="flex-1">
                               <p className="font-medium text-gray-900">{activity.description}</p>
@@ -749,6 +1099,22 @@ export default function CandidateProfilePage() {
                   </div>
                 </div>
 
+                {/* Tags Management */}
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <h3 className="text-xl font-bold text-[#3b5335ff] mb-4">🏷️ Tags</h3>
+                  <div className="text-sm text-gray-600 mb-3">
+                    Ajoutez des tags pour catégoriser et filtrer facilement ce candidat
+                  </div>
+                  <TagInput
+                    tags={candidate.tags || []}
+                    onChange={handleTagsUpdate}
+                    placeholder="Ajouter un tag..."
+                    maxTags={10}
+                    allowCustom={true}
+                    showSuggestions={true}
+                  />
+                </div>
+
                 {/* Upcoming Interviews */}
                 {candidate.interviews && candidate.interviews.length > 0 && (
                   <div className="bg-white rounded-2xl shadow-lg p-6">
@@ -824,6 +1190,34 @@ export default function CandidateProfilePage() {
             onScheduled={() => {
               fetchCandidate() // Refresh to show interview
             }}
+          />
+        )}
+
+        {/* Interview Feedback Form Modal */}
+        {showFeedbackForm && selectedInterview && session && (
+          <InterviewFeedbackForm
+            candidateId={candidateId}
+            candidateName={`${candidate.firstName} ${candidate.lastName}`}
+            interview={selectedInterview}
+            currentUserId={(session.user as any).id || session.user.email || ''}
+            currentUserName={session.user.name || session.user.email || ''}
+            onSubmit={handleFeedbackSubmit}
+            onClose={() => {
+              setShowFeedbackForm(false)
+              setSelectedInterview(null)
+            }}
+          />
+        )}
+
+        {/* Quick Score Form Modal */}
+        {showQuickScoreForm && session && (
+          <QuickScoreForm
+            candidateId={candidateId}
+            candidateName={`${candidate.firstName} ${candidate.lastName}`}
+            currentUserId={(session.user as any).id || session.user.email || ''}
+            currentUserName={session.user.name || session.user.email || ''}
+            onSubmit={handleQuickScoreSubmit}
+            onClose={() => setShowQuickScoreForm(false)}
           />
         )}
       </div>

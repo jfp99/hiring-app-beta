@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Search, UserPlus } from 'lucide-react'
+import { toast } from 'sonner'
 import {
   Candidate,
   CandidateStatus,
@@ -13,13 +15,15 @@ import {
   EXPERIENCE_LEVEL_LABELS
 } from '@/app/types/candidates'
 import { SavedFilter } from '@/app/types/savedFilters'
-import Header from '@/app/components/Header'
+import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
-import SavedFiltersDropdown from '@/app/components/SavedFiltersDropdown'
 import SaveFilterModal from '@/app/components/SaveFilterModal'
 import BulkActionsToolbar from '@/app/components/BulkActionsToolbar'
 import KanbanColumn from '@/app/components/KanbanColumn'
+import { SkeletonTable, EmptySearch } from '@/app/components/ui'
+import { Button } from '@/app/components/ui/Button'
+import { Input } from '@/app/components/ui/Input'
 
 type ViewMode = 'kanban' | 'list'
 
@@ -179,7 +183,9 @@ export default function CandidatesPage() {
       await fetchCandidates()
     } catch (err: any) {
       console.error('Error updating status:', err)
-      alert('Erreur lors de la mise à jour du statut: ' + err.message)
+      toast.error('Erreur lors de la mise à jour du statut', {
+        description: err.message
+      })
       await fetchCandidates()
     } finally {
       setUpdating(false)
@@ -267,7 +273,7 @@ export default function CandidatesPage() {
 
   const handleBulkAction = async (action: string, data?: any) => {
     if (selectedCandidates.length === 0) {
-      alert('Veuillez sélectionner au moins un candidat')
+      toast.warning('Veuillez sélectionner au moins un candidat')
       return
     }
 
@@ -290,12 +296,16 @@ export default function CandidatesPage() {
         throw new Error(result.error || 'Bulk action failed')
       }
 
-      alert(result.message)
+      toast.success('Action effectuée avec succès', {
+        description: result.message
+      })
       setSelectedCandidates([])
       await fetchCandidates()
     } catch (err: any) {
       console.error('Bulk action error:', err)
-      alert('Erreur: ' + err.message)
+      toast.error('Erreur lors de l\'action groupée', {
+        description: err.message
+      })
     } finally {
       setPerformingBulkAction(false)
     }
@@ -330,14 +340,14 @@ export default function CandidatesPage() {
   return (
     <AdminGuard>
       <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
-        <Header />
+        <AdminHeader />
 
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-16 overflow-hidden">
           <div className="absolute inset-0 bg-black/20"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="flex justify-between items-center">
-              <div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="flex-1">
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">
                   Gestion des Candidats
                 </h1>
@@ -345,7 +355,7 @@ export default function CandidatesPage() {
                   {total} candidat{total !== 1 ? 's' : ''} au total
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
                 {/* View Toggle Button */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1 flex gap-1">
                   <button
@@ -376,16 +386,14 @@ export default function CandidatesPage() {
                   </button>
                 </div>
 
-                <SavedFiltersDropdown
-                  view={viewMode}
-                  onLoadFilter={handleLoadFilter}
-                  onSaveClick={() => setShowSaveFilterModal(true)}
-                />
-                <Link
-                  href="/candidates/new"
-                  className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  + Nouveau Candidat
+                <Link href="/candidates/new">
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    leftIcon={<UserPlus className="w-5 h-5" />}
+                  >
+                    Nouveau Candidat
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -397,15 +405,15 @@ export default function CandidatesPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Search */}
             <div className="mb-6">
-              <input
+              <Input
                 type="text"
-                placeholder="Rechercher par nom, email, poste..."
+                placeholder="Rechercher par nom, email, poste, compétences..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value)
                   setCurrentPage(1)
                 }}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                leftIcon={<Search className="w-5 h-5" />}
               />
             </div>
 
@@ -469,15 +477,20 @@ export default function CandidatesPage() {
             )}
 
             {loading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto"></div>
-                <p className="mt-4 text-gray-600">Chargement des candidats...</p>
+              <div className="bg-white rounded-2xl shadow-lg p-8">
+                <SkeletonTable rows={8} />
               </div>
             ) : candidates.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
-                <div className="text-4xl mb-4">🔍</div>
-                <p className="text-gray-600">Aucun candidat trouvé.</p>
-                <p className="text-sm text-gray-500 mt-2">Essayez de modifier vos filtres</p>
+              <div className="bg-white rounded-2xl shadow-lg">
+                <EmptySearch
+                  searchTerm={searchTerm}
+                  onClearFilters={() => {
+                    setSearchTerm('')
+                    setStatusFilter([])
+                    setExperienceFilter([])
+                    setSkillsFilter('')
+                  }}
+                />
               </div>
             ) : viewMode === 'kanban' ? (
               /* Kanban View */
@@ -489,8 +502,8 @@ export default function CandidatesPage() {
                   </span>
                 </div>
 
-                <div className="overflow-x-auto pb-4">
-                  <div className="flex gap-4 min-w-max">
+                <div className="pb-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3">
                     {pipelineStatuses.map(status => (
                       <KanbanColumn
                         key={status}
@@ -627,24 +640,26 @@ export default function CandidatesPage() {
 
                 {/* Pagination - Only for List view */}
                 {viewMode === 'list' && totalPages > 1 && (
-                  <div className="mt-6 flex justify-center gap-2">
-                    <button
+                  <div className="mt-6 flex justify-center items-center gap-3">
+                    <Button
                       onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
-                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      variant="tertiary"
+                      size="md"
                     >
-                      Précédent
-                    </button>
-                    <span className="px-4 py-2 bg-white border border-gray-300 rounded-lg">
+                      ← Précédent
+                    </Button>
+                    <div className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg font-medium text-gray-700">
                       Page {currentPage} / {totalPages}
-                    </span>
-                    <button
+                    </div>
+                    <Button
                       onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
-                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      variant="tertiary"
+                      size="md"
                     >
-                      Suivant
-                    </button>
+                      Suivant →
+                    </Button>
                   </div>
                 )}
               </>

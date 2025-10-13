@@ -6,7 +6,10 @@ import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import Logohiring from '../../../../public/logo-hiring.png'
+import { Button } from '@/app/components/ui/Button'
+import { Input } from '@/app/components/ui/Input'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -90,52 +93,40 @@ export default function LoginPage() {
             )}
 
             {/* Email Field */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-[#3b5335ff] mb-2"
-              >
-                Adresse email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
-                placeholder="votre@email.com"
-              />
-            </div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              label="Adresse email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="votre@email.com"
+              leftIcon={<Mail className="w-5 h-5" />}
+              error={error && error.includes('Email') ? error : undefined}
+            />
 
             {/* Password Field */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-[#3b5335ff] mb-2"
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                label="Mot de passe"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="••••••••"
+                leftIcon={<Lock className="w-5 h-5" />}
+                error={error && !error.includes('Email') ? error : undefined}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-[42px] text-gray-400 hover:text-gray-600 transition-colors z-10"
               >
-                Mot de passe
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all pr-12"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
 
             {/* Remember & Forgot Password */}
@@ -158,22 +149,15 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
-            <button
+            <Button
               type="submit"
-              disabled={loading}
-              className={`w-full bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white py-3 rounded-lg font-bold hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 ${
-                loading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              variant="secondary"
+              size="lg"
+              isLoading={loading}
+              className="w-full"
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                  Connexion...
-                </span>
-              ) : (
-                'Se connecter'
-              )}
-            </button>
+              Se connecter
+            </Button>
           </form>
 
           {/* Divider */}

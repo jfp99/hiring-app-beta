@@ -1,12 +1,19 @@
 // app/admin/page.tsx
 'use client'
 
-import Header from '../components/Header'
+import AdminHeader from '../components/AdminHeader'
 import Footer from '../components/Footer'
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { Briefcase, Building2, MapPin, Mail, DollarSign, FileText, RefreshCw } from 'lucide-react'
 import { useApi } from '../hooks/useApi'
 import AdminGuard from '@/app/components/AdminGuard'
 import { signOut } from 'next-auth/react'
+import CustomFieldManager from '@/app/components/CustomFieldManager'
+import { toast } from 'sonner'
+import { EmptyData } from '@/app/components/ui'
+import { Button } from '@/app/components/ui/Button'
+import { Input } from '@/app/components/ui/Input'
 
 interface ContactForm {
   id: string
@@ -56,6 +63,7 @@ export default function Admin() {
   const [contacts, setContacts] = useState<ContactForm[]>([])
   const [newsletters, setNewsletters] = useState<Newsletter[]>([])
   const [offres, setOffres] = useState<Offre[]>([])
+  const [showCustomFieldManager, setShowCustomFieldManager] = useState(false)
   const [newOffre, setNewOffre] = useState<NewOffre>({
     titre: '',
     entreprise: '',
@@ -67,7 +75,7 @@ export default function Admin() {
     emailContact: '',
     categorie: 'Technologie'
   })
-  
+
   const { loading, error, callApi } = useApi()
 
   // Charger les données
@@ -111,13 +119,15 @@ export default function Admin() {
     
     if (missingFields.length > 0) {
       console.log('❌ [ADMIN] Missing fields detected:', missingFields);
-      alert(`Champs manquants: ${missingFields.join(', ')}`);
+      toast.error('Champs manquants', {
+        description: missingFields.join(', ')
+      });
       return;
     }
 
     // Vérifier que typeContrat n'est pas vide
     if (!newOffre.typeContrat) {
-      alert('Veuillez sélectionner un type de contrat');
+      toast.warning('Veuillez sélectionner un type de contrat');
       return;
     }
 
@@ -158,11 +168,15 @@ export default function Admin() {
     
     // Recharger les données
     await fetchData()
-    
-    alert('✅ Offre ajoutée avec succès!')
+
+    toast.success('Offre ajoutée avec succès!', {
+      description: 'L\'offre est maintenant visible sur le site'
+    })
   } catch (err) {
     console.error('❌ [ADMIN] Error adding offer:', err);
-    alert(`❌ Erreur lors de l'ajout de l'offre: ${err.message}`)
+    toast.error('Erreur lors de l\'ajout de l\'offre', {
+      description: err.message
+    })
   }
 }
 
@@ -198,9 +212,14 @@ export default function Admin() {
     try {
       const debugData = await callApi('/debug')
       console.log('🔧 Debug data:', debugData)
-      alert('Check console for debug data')
+      toast.info('Données de debug', {
+        description: 'Consultez la console pour les détails'
+      })
     } catch (err) {
       console.error('Debug error:', err)
+      toast.error('Erreur de debug', {
+        description: err.message
+      })
     }
   }
 
@@ -211,22 +230,23 @@ export default function Admin() {
   return (
     <AdminGuard>
     <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
-      <Header />
+      <AdminHeader />
       
       {/* Hero Section Admin */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute top-10 left-10 w-20 h-20 bg-[#ffaf50ff] rounded-full filter blur-xl opacity-20 animate-pulse"></div>
-        
+      <section className="relative bg-gradient-to-br from-[#f9fdf7] via-[#f4f9f2] to-[#eef7ea] py-16 overflow-hidden">
+        {/* Decorative soft blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-5"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#3b5335ff] rounded-full filter blur-3xl opacity-5"></div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-semibold mb-4 leading-tight text-[#3b5335ff]">
               Administration
-              <span className="text-[#ffaf50ff] block mt-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent">
+              <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold">
                 Tableau de Bord
               </span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed font-light">
+            <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed text-[#3b5335ff]/70 font-normal">
               Gérez vos contacts, newsletters et offres d'emploi
             </p>
           </div>
@@ -241,8 +261,7 @@ export default function Admin() {
               {[
                 { id: 'contacts' as const, label: 'Contacts', count: contacts.length, icon: '👤' },
                 { id: 'newsletters' as const, label: 'Newsletters', count: newsletters.length, icon: '📧' },
-                { id: 'offres' as const, label: 'Offres', count: offres.length, icon: '💼' },
-                { id: 'add-offre' as const, label: 'Ajouter une offre', icon: '➕' }
+                { id: 'offres' as const, label: 'Offres', count: offres.length, icon: '💼' }
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -262,32 +281,33 @@ export default function Admin() {
                   )}
                 </button>
               ))}
+
+              {/* Bouton Ajouter une offre - plus petit */}
+              <button
+                onClick={() => setActiveTab('add-offre')}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-1.5 ${
+                  activeTab === 'add-offre'
+                    ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
+                    : 'bg-white text-[#3b5335ff] border border-gray-200 hover:shadow-lg'
+                }`}
+              >
+                <span>➕</span>
+                Ajouter une offre
+              </button>
             </div>
-            
+
             {/* Boutons d'action */}
             <div className="flex gap-2 items-center">
-              <button
+              {/* Bouton Actualiser */}
+              <Button
                 onClick={fetchData}
                 disabled={loading}
-                className="bg-[#3b5335ff] text-white px-4 py-3 rounded-lg font-semibold hover:bg-[#2a3d26ff] transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                variant="tertiary"
+                size="md"
+                leftIcon={<RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />}
               >
-                {loading ? '🔄' : '🔄'} Actualiser
-              </button>
-              
-              <button
-                onClick={testConnection}
-                className="bg-gray-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-gray-600 transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
-              >
-                🔧 Debug
-              </button>
-
-              {/* Bouton de déconnexion */}
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-3 rounded-lg font-semibold hover:bg-red-600 transform hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
-              >
-                🚪 Déconnexion
-              </button>
+                Actualiser
+              </Button>
             </div>
           </div>
 
@@ -321,9 +341,10 @@ export default function Admin() {
               </div>
               
               {contacts.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
-                  <p>Aucun contact trouvé.</p>
-                </div>
+                <EmptyData
+                  title="Aucun contact"
+                  description="Les contacts soumis via le formulaire apparaîtront ici."
+                />
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -410,10 +431,10 @@ export default function Admin() {
               </div>
               
               {offres.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
-                  <p>Aucune offre trouvée.</p>
-                  <p className="text-sm mt-2">Utilisez le bouton "Debug" pour vérifier la connexion à la base de données.</p>
-                </div>
+                <EmptyData
+                  title="Aucune offre d'emploi"
+                  description="Ajoutez votre première offre pour commencer."
+                />
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -469,52 +490,40 @@ export default function Admin() {
                 <form onSubmit={handleAddOffre} className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Titre du poste */}
-                    <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
-                        Titre du poste *
-                    </label>
-                    <input
+                    <Input
                         type="text"
                         name="titre"
+                        label="Titre du poste"
                         required
                         value={newOffre.titre}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        leftIcon={<Briefcase className="w-5 h-5" />}
                         placeholder="Ex: Développeur Full Stack"
                     />
-                    </div>
 
                     {/* Entreprise */}
-                    <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
-                        Entreprise *
-                    </label>
-                    <input
+                    <Input
                         type="text"
                         name="entreprise"
+                        label="Entreprise"
                         required
                         value={newOffre.entreprise}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        leftIcon={<Building2 className="w-5 h-5" />}
                         placeholder="Ex: TechCorp"
                     />
-                    </div>
 
                     {/* Lieu */}
-                    <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
-                        Lieu *
-                    </label>
-                    <input
+                    <Input
                         type="text"
                         name="lieu"
+                        label="Lieu"
                         required
                         value={newOffre.lieu}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        leftIcon={<MapPin className="w-5 h-5" />}
                         placeholder="Ex: Paris, Lyon, Remote"
                     />
-                    </div>
 
                     {/* Type de contrat */}
                     <div>
@@ -554,34 +563,29 @@ export default function Admin() {
                     </div>
 
                     {/* Salaire */}
-                    <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
-                        Salaire
-                    </label>
-                    <input
+                    <Input
                         type="text"
                         name="salaire"
+                        label="Salaire"
                         value={newOffre.salaire}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        leftIcon={<DollarSign className="w-5 h-5" />}
                         placeholder="Ex: 45-55K€, Selon profil"
+                        helpText="Facultatif - Indiquez une fourchette ou 'Selon profil'"
                     />
-                    </div>
 
                     {/* Email de contact */}
                     <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
-                        Email de contact *
-                    </label>
-                    <input
-                        type="email"
-                        name="emailContact"
-                        required
-                        value={newOffre.emailContact}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
-                        placeholder="contact@entreprise.com"
-                    />
+                        <Input
+                            type="email"
+                            name="emailContact"
+                            label="Email de contact"
+                            required
+                            value={newOffre.emailContact}
+                            onChange={handleInputChange}
+                            leftIcon={<Mail className="w-5 h-5" />}
+                            placeholder="contact@entreprise.com"
+                        />
                     </div>
 
                     {/* Description du poste */}
@@ -628,30 +632,33 @@ export default function Admin() {
                 </div>
 
                 <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
-                    <button
-                    type="button"
-                    onClick={() => setNewOffre({
-                        titre: '',
-                        entreprise: '',
-                        lieu: '',
-                        typeContrat: '',
-                        salaire: '',
-                        description: '',
-                        competences: '',
-                        emailContact: '',
-                        categorie: 'Technologie'
-                    })}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-all"
+                    <Button
+                        type="button"
+                        onClick={() => setNewOffre({
+                            titre: '',
+                            entreprise: '',
+                            lieu: '',
+                            typeContrat: '',
+                            salaire: '',
+                            description: '',
+                            competences: '',
+                            emailContact: '',
+                            categorie: 'Technologie'
+                        })}
+                        variant="tertiary"
+                        size="lg"
                     >
-                    Réinitialiser
-                    </button>
-                    <button
-                    type="submit"
-                    disabled={loading}
-                    className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50"
+                        Réinitialiser
+                    </Button>
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        variant="secondary"
+                        size="lg"
+                        isLoading={loading}
                     >
-                    {loading ? 'Publication...' : 'Publier l\'offre'}
-                    </button>
+                        Publier l'offre
+                    </Button>
                 </div>
                 </form>
             </div>
@@ -661,6 +668,11 @@ export default function Admin() {
       </section>
 
       <Footer />
+
+      {/* Custom Field Manager Modal */}
+      {showCustomFieldManager && (
+        <CustomFieldManager onClose={() => setShowCustomFieldManager(false)} />
+      )}
     </div>
     </AdminGuard>
   )

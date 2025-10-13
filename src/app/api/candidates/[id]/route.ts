@@ -228,6 +228,43 @@ export async function PUT(
 
     console.log('✅ [CANDIDATES] Candidate updated:', candidateId)
 
+    // Trigger workflows if status changed
+    if (statusChanged && body.status) {
+      try {
+        const { WorkflowEngine } = await import('@/app/lib/workflowEngine')
+        await WorkflowEngine.triggerOnStatusChange(
+          candidateId,
+          oldAppStatus as CandidateStatus,
+          body.status
+        )
+        console.log('🔄 [WORKFLOW] Triggered workflows for status change')
+      } catch (error) {
+        console.error('❌ [WORKFLOW] Error triggering workflows:', error)
+        // Don't fail the update if workflows fail
+      }
+    }
+
+    // Trigger workflows if tags changed
+    if (body.tags && existingCandidate.tags) {
+      const oldTags = new Set(existingCandidate.tags)
+      const newTags = new Set(body.tags)
+
+      // Find added tags
+      const addedTags = body.tags.filter((tag: string) => !oldTags.has(tag))
+
+      if (addedTags.length > 0) {
+        try {
+          const { WorkflowEngine } = await import('@/app/lib/workflowEngine')
+          for (const tag of addedTags) {
+            await WorkflowEngine.triggerOnTagAdded(candidateId, tag)
+          }
+          console.log('🔄 [WORKFLOW] Triggered workflows for tag additions')
+        } catch (error) {
+          console.error('❌ [WORKFLOW] Error triggering tag workflows:', error)
+        }
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Candidate updated successfully'

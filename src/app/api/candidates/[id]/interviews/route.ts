@@ -1,8 +1,7 @@
 // src/app/api/candidates/[id]/interviews/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
-import { getDatabase } from '@/app/lib/mongodb'
+import { auth } from '@/app/lib/auth-helpers'
+import { connectToDatabase } from '@/app/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
 import { getCalendarService } from '@/app/lib/calendar'
@@ -25,7 +24,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -36,7 +35,7 @@ export async function GET(
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
     }
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
     const candidate = await db
       .collection('candidates')
       .findOne({ _id: new ObjectId(candidateId) })
@@ -62,7 +61,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -76,7 +75,7 @@ export async function POST(
     const body = await request.json()
     const validatedData = createInterviewSchema.parse(body)
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
 
     // Check if candidate exists
     const candidate = await db
@@ -92,6 +91,7 @@ export async function POST(
       id: new Date().getTime().toString(),
       ...validatedData,
       status: 'scheduled' as const,
+      feedback: [], // Initialize empty feedback array
       createdAt: new Date().toISOString(),
       createdBy: (session.user as any).id || session.user.email,
       createdByName: session.user.name || session.user.email

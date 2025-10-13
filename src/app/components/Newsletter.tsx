@@ -2,7 +2,11 @@
 'use client'
 
 import { useState } from 'react'
+import { Mail } from 'lucide-react'
+import { toast } from 'sonner'
 import { useApi } from '../hooks/useApi'
+import { Button } from './ui/Button'
+import { Input } from './ui/Input'
 
 export function Newsletter() {
   const [email, setEmail] = useState('')
@@ -16,10 +20,12 @@ export function Newsletter() {
         method: 'POST',
         body: JSON.stringify({ email })
       })
-      
+
       setEmail('')
-      alert(result.message || '✅ Inscription réussie !')
-      
+      toast.success('Inscription réussie!', {
+        description: result.message || 'Vous recevrez nos prochaines newsletters'
+      })
+
     } catch {
       // Erreur gérée par useApi
     }
@@ -38,26 +44,31 @@ export function Newsletter() {
         </div>
       )}
       
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value)
-            if (error) reset()
-          }}
-          placeholder="Votre email"
-          className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-          required
-          disabled={loading}
-        />
-        <button
+      <form onSubmit={handleSubmit} className="flex gap-2 items-end">
+        <div className="flex-1">
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              if (error) reset()
+            }}
+            placeholder="votre@email.com"
+            leftIcon={<Mail className="w-5 h-5" />}
+            required
+            disabled={loading}
+            className="bg-white/10 border-white/20 text-white placeholder-white/60"
+          />
+        </div>
+        <Button
           type="submit"
           disabled={loading}
-          className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-semibold hover:bg-white transition-colors disabled:bg-gray-400"
+          variant="secondary"
+          size="md"
+          isLoading={loading}
         >
-          {loading ? '...' : 'S\'inscrire'}
-        </button>
+          S'inscrire
+        </Button>
       </form>
     </div>
   )

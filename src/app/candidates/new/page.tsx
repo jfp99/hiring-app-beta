@@ -4,11 +4,14 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Header from '@/app/components/Header'
+import { User, Mail, Phone, Briefcase, Building2, Linkedin } from 'lucide-react'
+import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
 import ResumeUploader from '@/app/components/ResumeUploader'
 import CustomFieldInput from '@/app/components/CustomFieldInput'
+import { Button } from '@/app/components/ui/Button'
+import { Input } from '@/app/components/ui/Input'
 import { CandidateStatus, ExperienceLevel } from '@/app/types/candidates'
 import { CustomFieldDefinition, validateFieldValue } from '@/app/types/customFields'
 
@@ -21,6 +24,7 @@ interface FormData {
   currentCompany: string
   experienceLevel: ExperienceLevel
   status: CandidateStatus
+  source: string
   linkedIn: string
   primarySkills: string[]
   workExperience: Array<{
@@ -60,6 +64,7 @@ export default function NewCandidatePage() {
     currentCompany: '',
     experienceLevel: ExperienceLevel.MID,
     status: CandidateStatus.NEW,
+    source: 'Manual Entry',
     linkedIn: '',
     primarySkills: [],
     workExperience: [],
@@ -84,23 +89,23 @@ export default function NewCandidatePage() {
   }, [])
 
   const handleParsedData = (parsed: any) => {
-    setFormData(prev => ({
-      ...prev,
-      firstName: parsed.firstName || prev.firstName,
-      lastName: parsed.lastName || prev.lastName,
-      email: parsed.email || prev.email,
-      phone: parsed.phone || prev.phone,
-      linkedIn: parsed.linkedIn || prev.linkedIn,
-      primarySkills: parsed.primarySkills || prev.primarySkills,
-      workExperience: parsed.workExperience || prev.workExperience,
-      education: parsed.education || prev.education,
-      summary: parsed.summary || prev.summary,
-      // Auto-fill current position from most recent work experience
-      currentPosition:
-        parsed.workExperience?.[0]?.position || prev.currentPosition,
-      currentCompany:
-        parsed.workExperience?.[0]?.company || prev.currentCompany
-    }))
+    // Reset form to initial state, then populate with parsed data
+    setFormData({
+      firstName: parsed.firstName || '',
+      lastName: parsed.lastName || '',
+      email: parsed.email || '',
+      phone: parsed.phone || '',
+      currentPosition: parsed.workExperience?.[0]?.position || '',
+      currentCompany: parsed.workExperience?.[0]?.company || '',
+      experienceLevel: ExperienceLevel.MID,
+      status: CandidateStatus.NEW,
+      source: 'Resume Upload',
+      linkedIn: parsed.linkedIn || '',
+      primarySkills: parsed.primarySkills || [],
+      workExperience: parsed.workExperience || [],
+      education: parsed.education || [],
+      summary: parsed.summary || ''
+    })
     setShowResumeUploader(false)
   }
 
@@ -126,6 +131,30 @@ export default function NewCandidatePage() {
       ...prev,
       primarySkills: prev.primarySkills.filter(s => s !== skill)
     }))
+  }
+
+  const handleClearForm = () => {
+    if (confirm('Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les données seront perdues.')) {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        currentPosition: '',
+        currentCompany: '',
+        experienceLevel: ExperienceLevel.MID,
+        status: CandidateStatus.NEW,
+        source: 'Manual Entry',
+        linkedIn: '',
+        primarySkills: [],
+        workExperience: [],
+        education: [],
+        summary: ''
+      })
+      setCustomFieldValues({})
+      setShowResumeUploader(true)
+      setError('')
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -165,9 +194,12 @@ export default function NewCandidatePage() {
         currentCompany: formData.currentCompany,
         experienceLevel: formData.experienceLevel,
         status: formData.status,
+        source: formData.source,
         linkedIn: formData.linkedIn,
-        primarySkills: formData.primarySkills,
-        secondarySkills: [],
+        skills: formData.primarySkills.map(skill => ({
+          name: skill,
+          level: 'intermediate'
+        })),
         workExperience: formData.workExperience.map(exp => ({
           ...exp,
           current: exp.endDate.toLowerCase().includes('présent') || exp.endDate.toLowerCase().includes('present')
@@ -190,7 +222,7 @@ export default function NewCandidatePage() {
       }
 
       // Redirect to candidate detail page
-      router.push(`/candidates/${result.candidate.id}`)
+      router.push(`/candidates/${result.candidateId}`)
     } catch (err: any) {
       console.error('Error creating candidate:', err)
       setError(err.message)
@@ -202,7 +234,7 @@ export default function NewCandidatePage() {
   return (
     <AdminGuard>
       <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
-        <Header />
+        <AdminHeader />
 
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-12">
@@ -214,11 +246,10 @@ export default function NewCandidatePage() {
                   Ajoutez un nouveau candidat manuellement ou importez son CV
                 </p>
               </div>
-              <Link
-                href="/candidates"
-                className="bg-white text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
-              >
-                ← Retour à la liste
+              <Link href="/candidates">
+                <Button variant="tertiary" size="md">
+                  ← Retour à la liste
+                </Button>
               </Link>
             </div>
           </div>
@@ -240,12 +271,14 @@ export default function NewCandidatePage() {
                     <p className="text-sm text-gray-600 mb-4">
                       Les informations du CV ont été pré-remplies dans le formulaire.
                     </p>
-                    <button
+                    <Button
                       onClick={() => setShowResumeUploader(true)}
-                      className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition-all"
+                      variant="ghost"
+                      size="md"
+                      className="w-full"
                     >
                       Importer un autre CV
-                    </button>
+                    </Button>
                   </div>
                 )}
 
@@ -345,57 +378,45 @@ export default function NewCandidatePage() {
                       Informations Personnelles
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Prénom *
-                        </label>
-                        <input
-                          type="text"
-                          name="firstName"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Nom *
-                        </label>
-                        <input
-                          type="text"
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Email *
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Téléphone
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                      </div>
+                      <Input
+                        type="text"
+                        name="firstName"
+                        label="Prénom"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        required
+                        leftIcon={<User className="w-5 h-5" />}
+                        placeholder="Jean"
+                      />
+                      <Input
+                        type="text"
+                        name="lastName"
+                        label="Nom"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        required
+                        leftIcon={<User className="w-5 h-5" />}
+                        placeholder="Dupont"
+                      />
+                      <Input
+                        type="email"
+                        name="email"
+                        label="Email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        leftIcon={<Mail className="w-5 h-5" />}
+                        placeholder="jean.dupont@exemple.com"
+                      />
+                      <Input
+                        type="tel"
+                        name="phone"
+                        label="Téléphone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        leftIcon={<Phone className="w-5 h-5" />}
+                        placeholder="+33 6 12 34 56 78"
+                      />
                     </div>
                   </div>
 
@@ -405,30 +426,24 @@ export default function NewCandidatePage() {
                       Informations Professionnelles
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Poste Actuel
-                        </label>
-                        <input
-                          type="text"
-                          name="currentPosition"
-                          value={formData.currentPosition}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Entreprise Actuelle
-                        </label>
-                        <input
-                          type="text"
-                          name="currentCompany"
-                          value={formData.currentCompany}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                      </div>
+                      <Input
+                        type="text"
+                        name="currentPosition"
+                        label="Poste Actuel"
+                        value={formData.currentPosition}
+                        onChange={handleInputChange}
+                        leftIcon={<Briefcase className="w-5 h-5" />}
+                        placeholder="Développeur Full Stack"
+                      />
+                      <Input
+                        type="text"
+                        name="currentCompany"
+                        label="Entreprise Actuelle"
+                        value={formData.currentCompany}
+                        onChange={handleInputChange}
+                        leftIcon={<Building2 className="w-5 h-5" />}
+                        placeholder="Acme Corp"
+                      />
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Niveau d'Expérience *
@@ -463,16 +478,15 @@ export default function NewCandidatePage() {
                         </select>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          LinkedIn
-                        </label>
-                        <input
+                        <Input
                           type="url"
                           name="linkedIn"
+                          label="LinkedIn"
                           value={formData.linkedIn}
                           onChange={handleInputChange}
+                          leftIcon={<Linkedin className="w-5 h-5" />}
                           placeholder="https://linkedin.com/in/..."
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
+                          helpText="Profil LinkedIn du candidat"
                         />
                       </div>
                     </div>
@@ -484,22 +498,25 @@ export default function NewCandidatePage() {
                       Compétences
                     </h2>
                     <div className="mb-4">
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newSkill}
-                          onChange={(e) => setNewSkill(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
-                          placeholder="Ajouter une compétence"
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff]"
-                        />
-                        <button
+                      <div className="flex gap-2 items-end">
+                        <div className="flex-1">
+                          <Input
+                            type="text"
+                            value={newSkill}
+                            onChange={(e) => setNewSkill(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
+                            placeholder="Ex: React, Python, Marketing..."
+                            helpText="Appuyez sur Entrée ou cliquez sur Ajouter"
+                          />
+                        </div>
+                        <Button
                           type="button"
                           onClick={handleAddSkill}
-                          className="px-6 py-2 bg-[#3b5335ff] text-white rounded-lg hover:bg-[#2a3d26ff] transition-colors"
+                          variant="primary"
+                          size="md"
                         >
                           Ajouter
-                        </button>
+                        </Button>
                       </div>
                     </div>
                     {formData.primarySkills.length > 0 && (
@@ -613,16 +630,27 @@ export default function NewCandidatePage() {
 
                   {/* Submit Buttons */}
                   <div className="flex gap-4 pt-6 border-t-2 border-gray-200">
-                    <button
+                    <Button
                       type="submit"
-                      disabled={loading}
-                      className="flex-1 bg-[#ffaf50ff] text-[#3b5335ff] px-8 py-4 rounded-lg font-bold text-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      variant="secondary"
+                      size="lg"
+                      isLoading={loading}
+                      className="flex-1"
                     >
-                      {loading ? 'Création...' : 'Créer le Candidat'}
-                    </button>
+                      Créer le Candidat
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleClearForm}
+                      disabled={loading}
+                      variant="tertiary"
+                      size="lg"
+                    >
+                      Réinitialiser
+                    </Button>
                     <Link
                       href="/candidates"
-                      className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg font-bold text-lg hover:bg-gray-50 transition-all text-center"
+                      className="inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-95 bg-transparent text-primary-700 hover:bg-gray-100 focus:ring-primary-500 px-6 py-3 text-lg"
                     >
                       Annuler
                     </Link>

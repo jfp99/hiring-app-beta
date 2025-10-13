@@ -2,7 +2,11 @@
 'use client'
 
 import { useState } from 'react'
+import { User, Mail, Phone, MessageSquare, Briefcase } from 'lucide-react'
+import { toast } from 'sonner'
 import { useApi } from '../hooks/useApi'
+import { Button } from './ui/Button'
+import { Input } from './ui/Input'
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -29,14 +33,16 @@ export function ContactForm() {
       setFormData({
         nom: '',
         email: '',
-        telephone: '', 
+        telephone: '',
         sujet: '',
         message: '',
         type: 'candidat'
       })
-      
-      alert('✅ Message envoyé avec succès !')
-      
+
+      toast.success('Message envoyé avec succès!', {
+        description: 'Nous vous répondrons dans les plus brefs délais'
+      })
+
     } catch (err) {
       console.error('❌ Erreur envoi message:', err)
     }
@@ -67,43 +73,43 @@ export function ContactForm() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
+        <Input
           type="text"
           name="nom"
-          placeholder="Nom complet *"
+          placeholder="Votre nom complet"
           value={formData.nom}
           onChange={(e) => setFormData({...formData, nom: e.target.value})}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          leftIcon={<User className="w-5 h-5" />}
           required
         />
-        
-        <input
+
+        <Input
           type="tel"
           name="telephone"
-          placeholder="Téléphone"
+          placeholder="Votre téléphone"
           value={formData.telephone}
           onChange={(e) => setFormData({...formData, telephone: e.target.value})}
-          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          leftIcon={<Phone className="w-5 h-5" />}
         />
       </div>
-      
-      <input
+
+      <Input
         type="email"
         name="email"
-        placeholder="Email *"
+        placeholder="votre@email.com"
         value={formData.email}
         onChange={(e) => setFormData({...formData, email: e.target.value})}
-        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+        leftIcon={<Mail className="w-5 h-5" />}
         required
       />
-      
-      <input
+
+      <Input
         type="text"
         name="sujet"
-        placeholder="Sujet *"
+        placeholder="Objet de votre message"
         value={formData.sujet}
         onChange={(e) => setFormData({...formData, sujet: e.target.value})}
-        className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+        leftIcon={<MessageSquare className="w-5 h-5" />}
         required
       />
       
@@ -117,13 +123,16 @@ export function ContactForm() {
         required
       />
       
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400 transition-colors"
+        variant="primary"
+        size="lg"
+        isLoading={loading}
+        className="w-full"
       >
-        {loading ? '📨 Envoi en cours...' : '🚀 Envoyer le message'}
-      </button>
+        Envoyer le message
+      </Button>
     </form>
   )
 }

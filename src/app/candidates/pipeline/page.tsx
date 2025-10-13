@@ -3,18 +3,32 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 import { Candidate, CandidateStatus } from '@/app/types/candidates'
-import Header from '@/app/components/Header'
+import { SavedFilter } from '@/app/types/savedFilters'
+import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
 import KanbanColumn from '@/app/components/KanbanColumn'
+import { PREDEFINED_TAGS, getTagColorClass } from '@/app/types/tags'
+import SavedFiltersDropdown from '@/app/components/SavedFiltersDropdown'
+import SaveFilterModal from '@/app/components/SaveFilterModal'
 
 export default function PipelinePage() {
+  const [allCandidates, setAllCandidates] = useState<Candidate[]>([])
   const [candidates, setCandidates] = useState<Candidate[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [draggedCandidateId, setDraggedCandidateId] = useState<string | null>(null)
   const [updating, setUpdating] = useState(false)
+
+  // Filters
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [showFilters, setShowFilters] = useState(false)
+
+  // Saved Filters
+  const [showSaveFilterModal, setShowSaveFilterModal] = useState(false)
 
   // Statuses to show in Kanban board (main pipeline)
   const pipelineStatuses: CandidateStatus[] = [
@@ -32,6 +46,11 @@ export default function PipelinePage() {
     fetchCandidates()
   }, [])
 
+  // Apply filters when search or tags change
+  useEffect(() => {
+    applyFilters()
+  }, [searchTerm, selectedTags, allCandidates])
+
   const fetchCandidates = async () => {
     try {
       setLoading(true)
@@ -44,6 +63,7 @@ export default function PipelinePage() {
         throw new Error(data.error || 'Failed to fetch candidates')
       }
 
+      setAllCandidates(data.candidates)
       setCandidates(data.candidates)
     } catch (err: any) {
       console.error('Error fetching candidates:', err)
@@ -51,6 +71,49 @@ export default function PipelinePage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const applyFilters = () => {
+    let filtered = [...allCandidates]
+
+    // Search filter
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase()
+      filtered = filtered.filter(c =>
+        c.firstName.toLowerCase().includes(search) ||
+        c.lastName.toLowerCase().includes(search) ||
+        c.email.toLowerCase().includes(search) ||
+        c.currentPosition?.toLowerCase().includes(search) ||
+        c.primarySkills?.some(s => s.toLowerCase().includes(search))
+      )
+    }
+
+    // Tags filter
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(c =>
+        selectedTags.some(tag => c.tags?.includes(tag))
+      )
+    }
+
+    setCandidates(filtered)
+  }
+
+  const toggleTag = (tagName: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tagName)
+        ? prev.filter(t => t !== tagName)
+        : [...prev, tagName]
+    )
+  }
+
+  const clearFilters = () => {
+    setSearchTerm('')
+    setSelectedTags([])
+  }
+
+  // Get count of candidates with each tag
+  const getTagCount = (tagName: string) => {
+    return allCandidates.filter(c => c.tags?.includes(tagName)).length
   }
 
   const groupCandidatesByStatus = () => {
@@ -119,14 +182,30 @@ export default function PipelinePage() {
 
       // Refresh to get updated data with activities
       await fetchCandidates()
+      toast.success('Statut mis à jour', {
+        description: 'Le candidat a été déplacé avec succès'
+      })
     } catch (err: any) {
       console.error('Error updating status:', err)
-      alert('Erreur lors de la mise à jour du statut: ' + err.message)
+      toast.error('Erreur lors de la mise à jour du statut', {
+        description: err.message
+      })
       // Revert optimistic update
       await fetchCandidates()
     } finally {
       setUpdating(false)
     }
+  }
+
+  // Saved Filters Handlers
+  const handleLoadFilter = (filter: SavedFilter) => {
+    setSearchTerm(filter.searchTerm || '')
+    setSelectedTags(filter.selectedTags || [])
+  }
+
+  const handleSaveFilter = (filter: SavedFilter) => {
+    // Filter saved successfully, modal will close automatically
+    console.log('Filter saved:', filter)
   }
 
   const groupedCandidates = groupCandidatesByStatus()
@@ -147,7 +226,7 @@ export default function PipelinePage() {
   return (
     <AdminGuard>
       <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
-        <Header />
+        <AdminHeader />
 
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-12">
@@ -159,7 +238,29 @@ export default function PipelinePage() {
                   {candidates.length} candidat{candidates.length !== 1 ? 's' : ''} actif{candidates.length !== 1 ? 's' : ''}
                 </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
+                <SavedFiltersDropdown
+                  view="pipeline"
+                  onLoadFilter={handleLoadFilter}
+                  onSaveClick={() => setShowSaveFilterModal(true)}
+                />
+                <Link
+                  href="/admin/analytics-enhanced"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-5 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
+                  title="Analytics Avancés - Nouveau!"
+                >
+                  <span>📈</span>
+                  <span className="hidden sm:inline">Analytics</span>
+                  <span className="px-2 py-0.5 bg-white/20 text-xs rounded-full">NEW</span>
+                </Link>
+                <Link
+                  href="/admin/workflows"
+                  className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-5 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
+                  title="Workflows Automatiques"
+                >
+                  <span>🤖</span>
+                  <span className="hidden sm:inline">Workflows</span>
+                </Link>
                 <Link
                   href="/candidates"
                   className="bg-white text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
@@ -185,8 +286,14 @@ export default function PipelinePage() {
               <span className="text-gray-600">
                 Glissez et déposez les cartes des candidats pour changer leur statut dans le pipeline
               </span>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="ml-auto text-[#3b5335ff] hover:text-[#ffaf50ff] flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-gray-300 hover:border-[#ffaf50ff] transition-colors"
+              >
+                🔍 {showFilters ? 'Masquer' : 'Filtres'}
+              </button>
               {updating && (
-                <span className="ml-auto text-[#ffaf50ff] flex items-center gap-2">
+                <span className="text-[#ffaf50ff] flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#ffaf50ff]"></div>
                   Mise à jour...
                 </span>
@@ -194,6 +301,62 @@ export default function PipelinePage() {
             </div>
           </div>
         </section>
+
+        {/* Filters Section */}
+        {showFilters && (
+          <section className="bg-white border-b border-gray-200 py-6">
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+              {/* Search */}
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="🔍 Rechercher par nom, email, poste..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] text-sm"
+                />
+              </div>
+
+              {/* Tag Filters */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-[#3b5335ff]">Filtrer par Tags</h3>
+                  {(searchTerm || selectedTags.length > 0) && (
+                    <button
+                      onClick={clearFilters}
+                      className="text-xs text-red-600 hover:text-red-700 font-medium"
+                    >
+                      ✕ Effacer les filtres
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {PREDEFINED_TAGS.filter(tag => getTagCount(tag.name) > 0).map((tag) => (
+                    <button
+                      key={tag.name}
+                      onClick={() => toggleTag(tag.name)}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        selectedTags.includes(tag.name)
+                          ? getTagColorClass(tag.name) + ' ring-2 ring-offset-1 ring-current scale-105'
+                          : 'bg-gray-50 text-gray-600 border-gray-300 hover:bg-gray-100'
+                      }`}
+                    >
+                      {tag.name}
+                      <span className="px-1.5 py-0.5 bg-black/10 rounded-full text-xs">
+                        {getTagCount(tag.name)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                {selectedTags.length > 0 && (
+                  <div className="mt-3 text-sm text-gray-600">
+                    {candidates.length} candidat{candidates.length !== 1 ? 's' : ''} {selectedTags.length > 0 ? `avec tag${selectedTags.length > 1 ? 's' : ''}` : ''}: <span className="font-medium">{selectedTags.join(', ')}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Error Display */}
         {error && (
@@ -209,8 +372,8 @@ export default function PipelinePage() {
         {/* Kanban Board */}
         <section className="py-8">
           <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="overflow-x-auto pb-4">
-              <div className="flex gap-4 min-w-max">
+            <div className="pb-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3">
                 {pipelineStatuses.map(status => (
                   <KanbanColumn
                     key={status}
@@ -281,6 +444,19 @@ export default function PipelinePage() {
 
         <Footer />
       </div>
+
+      {/* Save Filter Modal */}
+      {showSaveFilterModal && (
+        <SaveFilterModal
+          filterData={{
+            view: 'pipeline',
+            searchTerm,
+            selectedTags
+          }}
+          onClose={() => setShowSaveFilterModal(false)}
+          onSave={handleSaveFilter}
+        />
+      )}
     </AdminGuard>
   )
 }

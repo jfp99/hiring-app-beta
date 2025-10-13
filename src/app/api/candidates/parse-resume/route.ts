@@ -1,9 +1,6 @@
 // src/app/api/candidates/parse-resume/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
-import pdfParse from 'pdf-parse'
-import mammoth from 'mammoth'
+import { auth } from '@/app/lib/auth-helpers'
 
 interface ParsedResumeData {
   firstName?: string
@@ -31,7 +28,7 @@ interface ParsedResumeData {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -51,6 +48,7 @@ export async function POST(request: NextRequest) {
 
     // Parse PDF
     if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
+      const pdfParse = (await import('pdf-parse')).default
       const buffer = Buffer.from(await file.arrayBuffer())
       const pdfData = await pdfParse(buffer)
       text = pdfData.text
@@ -60,12 +58,13 @@ export async function POST(request: NextRequest) {
       fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
       fileName.endsWith('.docx')
     ) {
+      const mammoth = await import('mammoth')
       const buffer = Buffer.from(await file.arrayBuffer())
       const result = await mammoth.extractRawText({ buffer })
       text = result.value
     }
-    // Parse TXT
-    else if (fileType === 'text/plain' || fileName.endsWith('.txt')) {
+    // Parse TXT and MD (Markdown)
+    else if (fileType === 'text/plain' || fileName.endsWith('.txt') || fileName.endsWith('.md')) {
       text = await file.text()
     }
     // Parse RTF (basic extraction)
@@ -78,6 +77,7 @@ export async function POST(request: NextRequest) {
     }
     // Parse ODT (OpenDocument)
     else if (fileType === 'application/vnd.oasis.opendocument.text' || fileName.endsWith('.odt')) {
+      const mammoth = await import('mammoth')
       const buffer = Buffer.from(await file.arrayBuffer())
       const result = await mammoth.extractRawText({ buffer })
       text = result.value
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       })
     } else {
       return NextResponse.json(
-        { error: 'Format de fichier non supporté. Utilisez PDF, DOCX, TXT, RTF, ODT ou images (WEBP, JPG, PNG).' },
+        { error: 'Format de fichier non supporté. Utilisez PDF, DOCX, TXT, MD, RTF, ODT ou images (WEBP, JPG, PNG).' },
         { status: 400 }
       )
     }
@@ -207,8 +207,10 @@ function parseResumeText(text: string): ParsedResumeData {
   const textLower = text.toLowerCase()
   for (const skill of commonSkills) {
     const skillLower = skill.toLowerCase()
+    // Escape special regex characters
+    const escapedSkill = skillLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     // Use word boundaries to avoid partial matches
-    const regex = new RegExp(`\\b${skillLower}\\b`, 'i')
+    const regex = new RegExp(`\\b${escapedSkill}\\b`, 'i')
     if (regex.test(textLower)) {
       result.primarySkills.push(skill)
     }
