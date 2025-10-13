@@ -122,12 +122,12 @@ export default function Home() {
       </section>
 
       {/* Logo Partners Section */}
-      <section className="py-12 bg-white/50 backdrop-blur-sm border-y border-gray-200/50">
+      <section className="py-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-y border-gray-200/50 dark:border-gray-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 font-semibold mb-8">Ils nous font confiance</p>
+          <p className="text-center text-gray-500 dark:text-gray-400 font-semibold mb-8">Ils nous font confiance</p>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
             {['🏢 Microsoft', '🏭 Amazon', '🏛 Google', '🏦 Meta', '🏪 Apple'].map((company, idx) => (
-              <div key={idx} className="text-2xl font-bold text-gray-700 hover:text-[#3b5335ff] transition-colors cursor-pointer">
+              <div key={idx} className="text-2xl font-bold text-gray-700 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-[#ffaf50ff] transition-colors cursor-pointer">
                 {company}
               </div>
             ))}
@@ -136,16 +136,16 @@ export default function Home() {
       </section>
 
       {/* Services Section avec Images */}
-      <section className="py-24 bg-gradient-to-b from-white to-[#f8f7f3ff]">
+      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-[#f8f7f3ff] dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-[#3b5335ff]/10 px-4 py-2 rounded-full mb-4">
-              <span className="text-[#3b5335ff] font-semibold">💼 Nos Services</span>
+            <div className="inline-block bg-[#3b5335ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
+              <span className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">💼 Nos Services</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] mb-4">
+            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
               Des Solutions Sur Mesure
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Que vous soyez une entreprise en quête de talents ou un candidat à la recherche d'opportunités, nous avons la solution adaptée à vos besoins
             </p>
           </div>
@@ -179,7 +179,7 @@ export default function Home() {
             ].map((service, index) => (
               <div
                 key={index}
-                className="group bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
@@ -197,15 +197,15 @@ export default function Home() {
 
                 {/* Content */}
                 <div className="p-8">
-                  <h3 className="text-2xl font-bold text-[#3b5335ff] mb-3 group-hover:text-[#2a3d26ff] transition-colors">
+                  <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-3 group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                     {service.description}
                   </p>
                   <ul className="space-y-3 mb-6">
                     {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-gray-700">
+                      <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
                         <svg className="w-5 h-5 text-[#ffaf50ff] mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -213,7 +213,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+                  <button className="w-full bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-[#ffaf50ff] dark:to-[#ff9500ff] text-white dark:text-[#3b5335ff] py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
                     En savoir plus →
                   </button>
                 </div>
@@ -224,16 +224,16 @@ export default function Home() {
       </section>
 
       {/* How It Works avec Timeline */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-[#ffaf50ff]/10 px-4 py-2 rounded-full mb-4">
-              <span className="text-[#3b5335ff] font-semibold">🔄 Notre Méthode</span>
+            <div className="inline-block bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
+              <span className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">🔄 Notre Méthode</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] mb-4">
+            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
               Un Processus Éprouvé
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               De l'analyse de vos besoins jusqu'à l'intégration réussie, nous vous accompagnons à chaque étape
             </p>
           </div>
@@ -284,15 +284,15 @@ export default function Home() {
                   }`}
                 >
                   {/* Content */}
-                  <div className="flex-1 bg-white rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300">
+                  <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="text-5xl">{process.icon}</div>
                       <div>
                         <div className="text-sm font-bold text-[#ffaf50ff] mb-1">ÉTAPE {process.step}</div>
-                        <h3 className="text-2xl font-bold text-[#3b5335ff]">{process.title}</h3>
+                        <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{process.title}</h3>
                       </div>
                     </div>
-                    <p className="text-gray-600 leading-relaxed">{process.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{process.description}</p>
                   </div>
 
                   {/* Center Badge */}
@@ -322,16 +322,16 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 bg-gradient-to-b from-[#f8f7f3ff] to-white">
+      <section className="py-24 bg-gradient-to-b from-[#f8f7f3ff] dark:from-gray-800 to-white dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-[#3b5335ff]/10 px-4 py-2 rounded-full mb-4">
-              <span className="text-[#3b5335ff] font-semibold">⭐ Témoignages</span>
+            <div className="inline-block bg-[#3b5335ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
+              <span className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">⭐ Témoignages</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] mb-4">
+            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
               Ce Qu'ils Disent de Nous
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               La satisfaction de nos clients et candidats est notre meilleure récompense
             </p>
           </div>
@@ -362,7 +362,7 @@ export default function Home() {
             ].map((testimonial, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 transform hover:-translate-y-2"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 transform hover:-translate-y-2"
               >
                 <div className="flex items-center gap-4 mb-6">
                   <Image
@@ -374,8 +374,8 @@ export default function Home() {
                     unoptimized
                   />
                   <div>
-                    <h4 className="font-bold text-[#3b5335ff]">{testimonial.name}</h4>
-                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                    <h4 className="font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
@@ -385,7 +385,7 @@ export default function Home() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-600 italic leading-relaxed">"{testimonial.content}"</p>
+                <p className="text-gray-600 dark:text-gray-300 italic leading-relaxed">"{testimonial.content}"</p>
               </div>
             ))}
           </div>

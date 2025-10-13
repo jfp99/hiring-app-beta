@@ -60,20 +60,28 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const resolved = resolveTheme(initialTheme)
     setResolvedTheme(resolved)
     applyTheme(resolved)
+  }, [])
 
-    // Listen for system theme changes
+  // Listen for system theme changes (separate effect with theme dependency)
+  useEffect(() => {
+    if (!mounted) return
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleChange = () => {
-      if (theme === 'system') {
-        const newResolved = getSystemTheme()
-        setResolvedTheme(newResolved)
-        applyTheme(newResolved)
-      }
+      // Use functional update to get current theme state
+      setThemeState(currentTheme => {
+        if (currentTheme === 'system') {
+          const newResolved = getSystemTheme()
+          setResolvedTheme(newResolved)
+          applyTheme(newResolved)
+        }
+        return currentTheme
+      })
     }
 
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [])
+  }, [mounted, theme])
 
   // Update theme
   const setTheme = (newTheme: Theme) => {
@@ -89,11 +97,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     const newTheme = resolvedTheme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
-  }
-
-  // Prevent flash of unstyled content
-  if (!mounted) {
-    return <>{children}</>
   }
 
   return (

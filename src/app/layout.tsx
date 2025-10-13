@@ -13,6 +13,9 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'Hi-ring - Cabinet de Recrutement',
   description: 'Votre partenaire en recrutement innovant',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
@@ -21,8 +24,26 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr">
-      <body className={montserrat.className}>
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme') || 'system';
+                  const resolvedTheme = theme === 'system'
+                    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : theme;
+                  document.documentElement.classList.add(resolvedTheme);
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+        <meta name="theme-color" content="#ffffff" />
+      </head>
+      <body className={montserrat.className} suppressHydrationWarning>
         <Providers>
           {children}
           <Toaster />

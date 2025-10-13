@@ -9,6 +9,11 @@ type Theme = 'light' | 'dark' | 'system'
 export default function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [isOpen, setIsOpen] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const themes: { value: Theme; icon: React.ReactNode; label: string }[] = [
     { value: 'light', icon: <Sun className="w-4 h-4" />, label: 'Clair' },
@@ -17,6 +22,13 @@ export default function ThemeToggle() {
   ]
 
   const currentIcon = themes.find(t => t.value === theme)?.icon || <Sun className="w-4 h-4" />
+
+  // Prevent SSR mismatch
+  if (!mounted) {
+    return (
+      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
+    )
+  }
 
   return (
     <div className="relative">
@@ -91,6 +103,18 @@ export default function ThemeToggle() {
 // Simple toggle button (light/dark only)
 export function SimpleThemeToggle() {
   const { resolvedTheme, toggleTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Prevent SSR mismatch
+  if (!mounted) {
+    return (
+      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
+    )
+  }
 
   return (
     <button

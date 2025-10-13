@@ -70,8 +70,8 @@ export default function Header() {
                 href={item.href}
                 className={`relative group px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
                   pathname === item.href
-                    ? 'text-[#3b5335ff] bg-[#ffaf50ff]/10 shadow-inner'
-                    : 'text-[#3b5335ff]/80 hover:text-[#3b5335ff] hover:bg-white/50'
+                    ? 'text-[#3b5335ff] dark:text-[#ffaf50ff] bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 shadow-inner'
+                    : 'text-[#3b5335ff]/80 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-[#ffaf50ff] hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
               >
                 <span className="font-semibold">{item.label}</span>
@@ -97,8 +97,8 @@ export default function Header() {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-3 rounded-xl transition-all duration-300 ${
                 isMenuOpen
-                  ? 'bg-[#3b5335ff] text-white'
-                  : 'bg-white text-[#3b5335ff] shadow-lg hover:shadow-xl'
+                  ? 'bg-[#3b5335ff] dark:bg-[#ffaf50ff] text-white'
+                  : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-gray-200 shadow-lg hover:shadow-xl'
               }`}
               aria-label="Toggle menu"
             >
@@ -126,8 +126,8 @@ export default function Header() {
                   onClick={handleLinkClick}
                   className={`block px-4 py-4 rounded-xl font-medium transition-all duration-300 group relative ${
                     pathname === item.href
-                      ? 'bg-gradient-to-r from-[#ffaf50ff]/10 to-[#3b5335ff]/5 text-[#3b5335ff] border border-[#ffaf50ff]/20'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-[#3b5335ff]'
+                      ? 'bg-gradient-to-r from-[#ffaf50ff]/10 to-[#3b5335ff]/5 dark:from-[#ffaf50ff]/20 dark:to-[#ffaf50ff]/5 text-[#3b5335ff] dark:text-[#ffaf50ff] border border-[#ffaf50ff]/20 dark:border-[#ffaf50ff]/30'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-[#3b5335ff] dark:hover:text-[#ffaf50ff]'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -140,8 +140,8 @@ export default function Header() {
               ))}
               
               {/* Section info mobile */}
-              <div className="pt-4 mt-4 border-t border-gray-200/50">
-                <div className="text-center text-sm text-gray-500 space-y-2">
+              <div className="pt-4 mt-4 border-t border-gray-200/50 dark:border-gray-700/50">
+                <div className="text-center text-sm text-gray-500 dark:text-gray-400 space-y-2">
                   <p>📞 +33 1 23 45 67 89</p>
                   <p>🕒 Lun - Ven: 9h-18h</p>
                 </div>
