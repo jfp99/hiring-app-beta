@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap');
 
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --primary-green: #3b5335ff;
   --primary-cream: #f8f7f3ff;
@@ -9,16 +12,10 @@
   --darker-green: #1e2c1aff;
 }
 
+/* Body backgrounds moved to page-level wrappers for better dark mode control */
 body {
-  background-color: var(--primary-cream);
-  color: var(--primary-green);
   font-feature-settings: 'kern' 1;
   text-rendering: optimizeLegibility;
-}
-
-.dark body {
-  background-color: #0f172a;
-  color: #e2e8f0;
 }
 
 /* Styles des boutons améliorés */

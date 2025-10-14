@@ -177,10 +177,10 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <AdminGuard>
-        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement des données...</p>
+            <p className="text-gray-600 dark:text-gray-300">Chargement des données...</p>
           </div>
         </div>
       </AdminGuard>
@@ -189,7 +189,7 @@ export default function AnalyticsPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Header */}
@@ -213,11 +213,11 @@ export default function AnalyticsPage() {
                 onChange={(e) => setDateRange(e.target.value)}
                 className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white backdrop-blur-sm focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
               >
-                <option value="7">7 derniers jours</option>
-                <option value="30">30 derniers jours</option>
-                <option value="90">90 derniers jours</option>
-                <option value="180">6 derniers mois</option>
-                <option value="365">1 an</option>
+                <option value="7" className="text-gray-900">7 derniers jours</option>
+                <option value="30" className="text-gray-900">30 derniers jours</option>
+                <option value="90" className="text-gray-900">90 derniers jours</option>
+                <option value="180" className="text-gray-900">6 derniers mois</option>
+                <option value="365" className="text-gray-900">1 an</option>
               </select>
             </div>
           </div>
@@ -228,43 +228,43 @@ export default function AnalyticsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Candidates */}
-              <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-gray-600">Total Candidats</h3>
+                  <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Candidats</h3>
                   <span className="text-2xl">👥</span>
                 </div>
-                <p className="text-3xl font-bold text-gray-900">{totalCandidates}</p>
-                <p className="text-xs text-gray-500 mt-1">Dans la période sélectionnée</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{totalCandidates}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Dans la période sélectionnée</p>
               </div>
 
               {/* Active Candidates */}
-              <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-gray-600">Candidats Actifs</h3>
+                  <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Candidats Actifs</h3>
                   <span className="text-2xl">🎯</span>
                 </div>
-                <p className="text-3xl font-bold text-gray-900">{activeCandidates}</p>
-                <p className="text-xs text-gray-500 mt-1">En cours de traitement</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{activeCandidates}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">En cours de traitement</p>
               </div>
 
               {/* Interviews Scheduled */}
-              <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-gray-600">Entretiens</h3>
+                  <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Entretiens</h3>
                   <span className="text-2xl">📅</span>
                 </div>
-                <p className="text-3xl font-bold text-gray-900">{interviewsScheduled}</p>
-                <p className="text-xs text-gray-500 mt-1">Candidats avec entretiens</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{interviewsScheduled}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Candidats avec entretiens</p>
               </div>
 
               {/* Hired */}
-              <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-gray-600">Embauchés</h3>
+                  <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Embauchés</h3>
                   <span className="text-2xl">🎉</span>
                 </div>
-                <p className="text-3xl font-bold text-gray-900">{hiredCount}</p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">{hiredCount}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   Taux: {conversionRate.toFixed(1)}%
                 </p>
               </div>
@@ -273,22 +273,22 @@ export default function AnalyticsPage() {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Stage Distribution */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-[#3b5335ff] mb-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
                   Distribution par Étape
                 </h2>
                 <div className="space-y-4">
                   {stageMetrics.map(metric => (
                     <div key={metric.stage}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           {getStageLabel(metric.stage)}
                         </span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
                           {metric.count} ({metric.percentage.toFixed(1)}%)
                         </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                         <div
                           className={`${getStageColor(metric.stage)} h-3 rounded-full transition-all duration-300`}
                           style={{ width: `${metric.percentage}%` }}
@@ -300,8 +300,8 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Conversion Funnel */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-xl font-bold text-[#3b5335ff] mb-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
                   Entonnoir de Conversion
                 </h2>
                 <div className="space-y-3">
@@ -327,8 +327,8 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Timeline Chart */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-              <h2 className="text-xl font-bold text-[#3b5335ff] mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
+              <h2 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
                 Évolution sur 6 Mois
               </h2>
               <div className="space-y-6">
@@ -378,7 +378,7 @@ export default function AnalyticsPage() {
                               </div>
                             </div>
                           </div>
-                          <p className="text-xs text-gray-600 font-medium">{data.month}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">{data.month}</p>
                         </div>
                       )
                     })}
@@ -386,18 +386,18 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center justify-center gap-6 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-center gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                    <span className="text-sm text-gray-700">Candidatures</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Candidatures</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                    <span className="text-sm text-gray-700">Entretiens</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Entretiens</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-green-500 rounded"></div>
-                    <span className="text-sm text-gray-700">Embauchés</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Embauchés</span>
                   </div>
                 </div>
               </div>
@@ -406,51 +406,51 @@ export default function AnalyticsPage() {
             {/* Additional Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Average Time to Hire */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl">
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-2xl">
                     ⏱️
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-600">Temps Moyen d'Embauche</h3>
-                    <p className="text-2xl font-bold text-gray-900">{avgTimeToHire} jours</p>
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Temps Moyen d'Embauche</h3>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{avgTimeToHire} jours</p>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Durée moyenne du processus de recrutement
                 </p>
               </div>
 
               {/* Success Rate */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center text-2xl">
                     📈
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-600">Taux de Réussite</h3>
-                    <p className="text-2xl font-bold text-gray-900">{conversionRate.toFixed(1)}%</p>
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Taux de Réussite</h3>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{conversionRate.toFixed(1)}%</p>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Candidats embauchés / Total des candidatures
                 </p>
               </div>
 
               {/* Interview-to-Hire Ratio */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-2xl">
                     🎯
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-600">Taux Entretien → Embauche</h3>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Taux Entretien → Embauche</h3>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
                       {interviewsScheduled > 0 ? ((hiredCount / interviewsScheduled) * 100).toFixed(1) : 0}%
                     </p>
                   </div>
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Efficacité du processus d'entretien
                 </p>
               </div>

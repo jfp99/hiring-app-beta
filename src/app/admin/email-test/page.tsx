@@ -96,7 +96,7 @@ export default function EmailTestPage() {
         <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement...</p>
+            <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">Chargement...</p>
           </div>
         </div>
       </AdminGuard>
@@ -105,7 +105,7 @@ export default function EmailTestPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Header */}
@@ -126,22 +126,22 @@ export default function EmailTestPage() {
         <section className="py-8">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             {/* Status Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-[#3b5335ff] mb-4">Statut de Configuration</h2>
 
               <div className="space-y-4">
                 {/* Provider Status */}
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
-                    <p className="font-semibold text-gray-700">Fournisseur d'Email</p>
-                    <p className="text-sm text-gray-600">{emailStatus.provider}</p>
+                    <p className="font-semibold text-gray-700 dark:text-gray-300">Fournisseur d'Email</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{emailStatus.provider}</p>
                   </div>
                   <span className={`px-4 py-2 rounded-full font-bold ${
                     emailStatus.status === 'configured'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'bg-green-100 text-green-800 dark:text-green-300'
                       : emailStatus.status === 'mock'
                       ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                      : 'bg-red-100 text-red-800 dark:text-red-300'
                   }`}>
                     {emailStatus.status === 'configured' ? '✓ Configuré' :
                      emailStatus.status === 'mock' ? '⚠️ Mode Test' : '✗ Non Configuré'}
@@ -149,43 +149,43 @@ export default function EmailTestPage() {
                 </div>
 
                 {/* SendGrid Status */}
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
-                    <p className="font-semibold text-gray-700">SendGrid</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-semibold text-gray-700 dark:text-gray-300">SendGrid</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       {emailStatus.details.sendgrid ? 'Clé API configurée' : 'Non configuré'}
                     </p>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-sm font-bold ${
                     emailStatus.details.sendgrid
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-600'
+                      ? 'bg-green-100 text-green-800 dark:text-green-300'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                   }`}>
                     {emailStatus.details.sendgrid ? '✓' : '—'}
                   </span>
                 </div>
 
                 {/* SMTP Status */}
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
-                    <p className="font-semibold text-gray-700">SMTP</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-semibold text-gray-700 dark:text-gray-300">SMTP</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       {emailStatus.details.smtp ? 'Serveur SMTP configuré' : 'Non configuré'}
                     </p>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-sm font-bold ${
                     emailStatus.details.smtp
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-600'
+                      ? 'bg-green-100 text-green-800 dark:text-green-300'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                   }`}>
                     {emailStatus.details.smtp ? '✓' : '—'}
                   </span>
                 </div>
 
                 {/* From Email */}
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="font-semibold text-gray-700 mb-2">Expéditeur</p>
-                  <p className="text-sm text-gray-600">
+                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Expéditeur</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     <span className="font-medium">{emailStatus.details.fromName}</span>
                     {' <'}
                     <span className="text-blue-600">{emailStatus.details.from}</span>
@@ -212,12 +212,12 @@ export default function EmailTestPage() {
             </div>
 
             {/* Test Email Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-[#3b5335ff] mb-4">Envoyer un Email de Test</h2>
 
               <form onSubmit={handleTestEmail} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Adresse Email de Test
                   </label>
                   <input
@@ -225,10 +225,10 @@ export default function EmailTestPage() {
                     value={testEmail}
                     onChange={(e) => setTestEmail(e.target.value)}
                     placeholder="votre.email@example.com"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     required
                   />
-                  <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Un email de test sera envoyé à cette adresse pour vérifier la configuration
                   </p>
                 </div>
@@ -256,13 +256,13 @@ export default function EmailTestPage() {
                 <div className={`mt-6 p-4 rounded-lg border ${
                   result.success
                     ? 'bg-green-50 border-green-200'
-                    : 'bg-red-50 border-red-200'
+                    : 'bg-red-50 border-red-200 dark:border-red-800'
                 }`}>
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">{result.success ? '✅' : '❌'}</span>
                     <div className="flex-1">
                       <p className={`font-semibold mb-1 ${
-                        result.success ? 'text-green-800' : 'text-red-800'
+                        result.success ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'
                       }`}>
                         {result.success ? 'Succès!' : 'Échec'}
                       </p>
@@ -272,7 +272,7 @@ export default function EmailTestPage() {
                         {result.message}
                       </p>
                       {result.provider && (
-                        <p className="text-xs text-gray-500 mt-2">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                           Fournisseur: {result.provider}
                         </p>
                       )}
@@ -283,13 +283,13 @@ export default function EmailTestPage() {
             </div>
 
             {/* Setup Instructions */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
               <h2 className="text-2xl font-bold text-[#3b5335ff] mb-4">Configuration SendGrid</h2>
 
               <div className="space-y-4 text-sm">
                 <div>
-                  <p className="font-semibold text-gray-700 mb-2">1. Créer un compte SendGrid</p>
-                  <p className="text-gray-600 mb-2">
+                  <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">1. Créer un compte SendGrid</p>
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">
                     Inscrivez-vous gratuitement sur{' '}
                     <a
                       href="https://signup.sendgrid.com/"
@@ -304,8 +304,8 @@ export default function EmailTestPage() {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-gray-700 mb-2">2. Créer une clé API</p>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1 ml-2">
+                  <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">2. Créer une clé API</p>
+                  <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1 ml-2">
                     <li>Allez dans Settings → API Keys</li>
                     <li>Cliquez sur "Create API Key"</li>
                     <li>Nom: "Hi-Ring Recruitment"</li>
@@ -315,7 +315,7 @@ export default function EmailTestPage() {
                 </div>
 
                 <div>
-                  <p className="font-semibold text-gray-700 mb-2">3. Configurer dans .env.local</p>
+                  <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">3. Configurer dans .env.local</p>
                   <div className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
                     <pre className="text-xs font-mono">
 {`# SendGrid Configuration
@@ -329,15 +329,15 @@ EMAIL_FROM_NAME=Hi-Ring Recrutement`}
                 </div>
 
                 <div>
-                  <p className="font-semibold text-gray-700 mb-2">4. Redémarrer le serveur</p>
+                  <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">4. Redémarrer le serveur</p>
                   <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
                     <pre className="text-xs font-mono">npm run dev</pre>
                   </div>
                 </div>
 
                 <div>
-                  <p className="font-semibold text-gray-700 mb-2">5. Tester la configuration</p>
-                  <p className="text-gray-600">
+                  <p className="font-semibold text-gray-700 dark:text-gray-300 mb-2">5. Tester la configuration</p>
+                  <p className="text-gray-600 dark:text-gray-300">
                     Utilisez le formulaire ci-dessus pour envoyer un email de test!
                   </p>
                 </div>

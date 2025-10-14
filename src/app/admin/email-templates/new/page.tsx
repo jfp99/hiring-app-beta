@@ -149,7 +149,7 @@ export default function NewEmailTemplatePage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Header */}
@@ -170,22 +170,22 @@ export default function NewEmailTemplatePage() {
         <section className="py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <p className="text-red-800">{error}</p>
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+                <p className="text-red-800 dark:text-red-300">{error}</p>
               </div>
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Main Form */}
               <div className="lg:col-span-2">
-                <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+                <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-6">
                   {/* Basic Info */}
                   <div>
                     <h2 className="text-2xl font-bold text-[#3b5335ff] mb-4">Informations de base</h2>
 
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Nom du template *
                         </label>
                         <input
@@ -193,19 +193,19 @@ export default function NewEmailTemplatePage() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder="Ex: Invitation entretien - Standard"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                           required
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Type de template *
                         </label>
                         <select
                           value={type}
                           onChange={(e) => setType(e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                           required
                         >
                           {templateTypes.map(t => (
@@ -222,7 +222,7 @@ export default function NewEmailTemplatePage() {
                           onChange={(e) => setIsActive(e.target.checked)}
                           className="rounded"
                         />
-                        <label htmlFor="isActive" className="text-sm text-gray-700">
+                        <label htmlFor="isActive" className="text-sm text-gray-700 dark:text-gray-300">
                           Template actif (peut être utilisé immédiatement)
                         </label>
                       </div>
@@ -232,7 +232,7 @@ export default function NewEmailTemplatePage() {
                   {/* Subject */}
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Sujet de l'email *
                       </label>
                       <button
@@ -248,20 +248,20 @@ export default function NewEmailTemplatePage() {
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
                       placeholder="Ex: Invitation à un entretien - {{position}}"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                       required
                     />
                     {showPreview && (
                       <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <p className="text-xs text-blue-600 mb-1">Aperçu:</p>
-                        <p className="text-sm font-medium text-gray-900">{replaceVariables(subject)}</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{replaceVariables(subject)}</p>
                       </div>
                     )}
                   </div>
 
                   {/* Body */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Corps du message *
                     </label>
                     <textarea
@@ -269,13 +269,13 @@ export default function NewEmailTemplatePage() {
                       onChange={(e) => setBody(e.target.value)}
                       placeholder="Rédigez votre message ici... Utilisez {{variable}} pour insérer des variables dynamiques"
                       rows={15}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent font-mono text-sm"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent font-mono text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                       required
                     />
                     {showPreview && (
                       <div className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                         <p className="text-xs text-blue-600 mb-2">Aperçu:</p>
-                        <div className="text-sm text-gray-900 whitespace-pre-wrap">
+                        <div className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
                           {replaceVariables(body)}
                         </div>
                       </div>
@@ -284,13 +284,13 @@ export default function NewEmailTemplatePage() {
 
                   {/* Variables Detected */}
                   {(extractVariables(subject).length > 0 || extractVariables(body).length > 0) && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                      <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                    <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Variables détectées ({extractVariables(subject + body).length})
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {extractVariables(subject + body).map((variable, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm rounded-full">
+                          <span key={idx} className="px-3 py-1 bg-white border border-gray-300 dark:border-gray-600 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                             {`{{${variable}}}`}
                           </span>
                         ))}
@@ -309,7 +309,7 @@ export default function NewEmailTemplatePage() {
                     </button>
                     <Link
                       href="/admin/email-templates"
-                      className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition-all"
+                      className="px-6 py-3 bg-gray-200 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-300 transition-all"
                     >
                       Annuler
                     </Link>
@@ -319,9 +319,9 @@ export default function NewEmailTemplatePage() {
 
               {/* Sidebar - Variables */}
               <div className="space-y-6">
-                <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                   <h3 className="text-xl font-bold text-[#3b5335ff] mb-4">Variables disponibles</h3>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                     Cliquez sur une variable pour l'insérer dans le corps du message
                   </p>
 
@@ -331,12 +331,12 @@ export default function NewEmailTemplatePage() {
                         key={variable.key}
                         type="button"
                         onClick={() => insertVariable(variable.key, 'body')}
-                        className="w-full text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
+                        className="w-full text-left p-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:bg-gray-700 rounded-lg transition-colors group"
                       >
                         <div className="flex justify-between items-start">
                           <div>
-                            <div className="font-medium text-gray-900 text-sm">{variable.label}</div>
-                            <div className="text-xs text-gray-500">{variable.description}</div>
+                            <div className="font-medium text-gray-900 dark:text-white text-sm">{variable.label}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{variable.description}</div>
                           </div>
                           <code className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded group-hover:bg-blue-100">
                             {`{{${variable.key}}}`}

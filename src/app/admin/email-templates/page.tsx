@@ -128,10 +128,10 @@ export default function EmailTemplatesPage() {
   if (loading) {
     return (
       <AdminGuard>
-        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement des templates...</p>
+            <p className="text-gray-600 dark:text-gray-300">Chargement des templates...</p>
           </div>
         </div>
       </AdminGuard>
@@ -140,7 +140,7 @@ export default function EmailTemplatesPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Header Section */}
@@ -169,7 +169,7 @@ export default function EmailTemplatesPage() {
         </section>
 
         {/* Filters */}
-        <section className="bg-white/80 border-b border-gray-200 py-6">
+        <section className="bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-wrap gap-4 items-center">
               {/* Search */}
@@ -179,7 +179,7 @@ export default function EmailTemplatesPage() {
                   placeholder="Rechercher par nom ou sujet..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
 
@@ -187,7 +187,7 @@ export default function EmailTemplatesPage() {
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               >
                 <option value="all">Tous les types</option>
                 {templateTypes.map(type => (
@@ -199,7 +199,7 @@ export default function EmailTemplatesPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               >
                 <option value="all">Tous les statuts</option>
                 <option value="active">Actifs</option>
@@ -207,7 +207,7 @@ export default function EmailTemplatesPage() {
               </select>
             </div>
 
-            <div className="mt-4 text-sm text-gray-600">
+            <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
               {filteredTemplates.length} template{filteredTemplates.length > 1 ? 's' : ''} trouvé{filteredTemplates.length > 1 ? 's' : ''}
             </div>
           </div>
@@ -217,16 +217,16 @@ export default function EmailTemplatesPage() {
         <section className="py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                <p className="text-red-800">{error}</p>
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+                <p className="text-red-800 dark:text-red-300">{error}</p>
               </div>
             )}
 
             {filteredTemplates.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center">
                 <div className="text-6xl mb-4">📧</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucun template trouvé</h3>
-                <p className="text-gray-600 mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Aucun template trouvé</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   {searchQuery || filterType !== 'all' || filterStatus !== 'all'
                     ? 'Aucun template ne correspond à vos critères de recherche'
                     : 'Commencez par créer votre premier template d\'email'}
@@ -243,7 +243,7 @@ export default function EmailTemplatesPage() {
                 {filteredTemplates.map(template => (
                   <div
                     key={template.id}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
                   >
                     {/* Header */}
                     <div className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white p-4">
@@ -275,26 +275,26 @@ export default function EmailTemplatesPage() {
                     {/* Content */}
                     <div className="p-4">
                       <div className="mb-4">
-                        <p className="text-xs text-gray-500 mb-1">Sujet</p>
-                        <p className="text-sm font-medium text-gray-900 line-clamp-2">{template.subject}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Sujet</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">{template.subject}</p>
                       </div>
 
                       <div className="mb-4">
-                        <p className="text-xs text-gray-500 mb-1">Corps du message</p>
-                        <p className="text-sm text-gray-700 line-clamp-3">{template.body.substring(0, 150)}...</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Corps du message</p>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">{template.body.substring(0, 150)}...</p>
                       </div>
 
                       {template.variables && template.variables.length > 0 && (
                         <div className="mb-4">
-                          <p className="text-xs text-gray-500 mb-2">Variables ({template.variables.length})</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Variables ({template.variables.length})</p>
                           <div className="flex flex-wrap gap-1">
                             {template.variables.slice(0, 5).map((variable, idx) => (
-                              <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                              <span key={idx} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
                                 {`{{${variable}}}`}
                               </span>
                             ))}
                             {template.variables.length > 5 && (
-                              <span className="px-2 py-1 text-gray-500 text-xs">
+                              <span className="px-2 py-1 text-gray-500 dark:text-gray-400 text-xs">
                                 +{template.variables.length - 5} plus
                               </span>
                             )}
@@ -302,7 +302,7 @@ export default function EmailTemplatesPage() {
                         </div>
                       )}
 
-                      <div className="text-xs text-gray-500 mb-4">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
                         Créé par {template.createdByName} •{' '}
                         {new Date(template.createdAt).toLocaleDateString('fr-FR')}
                       </div>

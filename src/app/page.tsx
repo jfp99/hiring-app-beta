@@ -81,7 +81,7 @@ export default function Home() {
             </div>
 
             {/* Hero Image */}
-            <div className={`relative transform transition-all duration-1000 delay-300 ${
+            <div className={`relative transform transition-all duration-700 ${
               isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
             }`}>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
@@ -91,7 +91,9 @@ export default function Home() {
                   width={800}
                   height={600}
                   className="w-full h-auto"
-                  unoptimized
+                  priority
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB//2Q=="
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
 
@@ -110,11 +112,6 @@ export default function Home() {
                     <div className="text-xs text-gray-600">Avg. Time</div>
                   </div>
                 </div>
-              </div>
-
-              {/* Decorative Badge */}
-              <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
-                ⭐ #1 en France
               </div>
             </div>
           </div>
@@ -189,10 +186,9 @@ export default function Home() {
                     width={600}
                     height={400}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    unoptimized
+                    loading="lazy"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-60`}></div>
-                  <div className="absolute top-4 right-4 text-4xl">{service.icon}</div>
                 </div>
 
                 {/* Content */}
@@ -295,11 +291,6 @@ export default function Home() {
                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{process.description}</p>
                   </div>
 
-                  {/* Center Badge */}
-                  <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-[#3b5335ff] to-[#ffaf50ff] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg z-10 border-4 border-white">
-                    {process.step}
-                  </div>
-
                   {/* Image */}
                   <div className="flex-1">
                     <div className="relative rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
@@ -309,7 +300,7 @@ export default function Home() {
                         width={600}
                         height={400}
                         className="w-full h-64 object-cover"
-                        unoptimized
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/60 to-transparent"></div>
                     </div>
@@ -371,7 +362,7 @@ export default function Home() {
                     width={64}
                     height={64}
                     className="w-16 h-16 rounded-full object-cover ring-4 ring-[#ffaf50ff]/20"
-                    unoptimized
+                    loading="lazy"
                   />
                   <div>
                     <h4 className="font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{testimonial.name}</h4>
@@ -400,7 +391,7 @@ export default function Home() {
             alt="Office background"
             fill
             className="object-cover"
-            unoptimized
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#3b5335ff]/95 to-[#2a3d26ff]/95"></div>
         </div>

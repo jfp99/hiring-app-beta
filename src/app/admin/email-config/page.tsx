@@ -89,17 +89,17 @@ export default function EmailConfigPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'configured':
-        return 'bg-green-100 text-green-800 border-green-300'
+        return 'bg-green-100 text-green-800 dark:text-green-300 border-green-300'
       case 'mock':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300'
       default:
-        return 'bg-red-100 text-red-800 border-red-300'
+        return 'bg-red-100 text-red-800 dark:text-red-300 border-red-300'
     }
   }
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Hero Section */}
@@ -121,12 +121,12 @@ export default function EmailConfigPage() {
             {loading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto"></div>
-                <p className="mt-4 text-gray-600">Chargement...</p>
+                <p className="mt-4 text-gray-600 dark:text-gray-300">Chargement...</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Current Status Card */}
-                <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-3">
                     <span>📊</span>
                     <span>Statut actuel</span>
@@ -136,7 +136,7 @@ export default function EmailConfigPage() {
                     <div className="space-y-4">
                       {/* Status Badge */}
                       <div className="flex items-center gap-3">
-                        <span className="text-gray-600 font-medium">Statut:</span>
+                        <span className="text-gray-600 dark:text-gray-300 font-medium">Statut:</span>
                         <span className={`px-4 py-2 rounded-lg border-2 font-bold ${getStatusBadge(emailStatus.status)}`}>
                           {emailStatus.status === 'configured' ? '✅ Configuré' :
                            emailStatus.status === 'mock' ? '⚠️ Mode Test (Mock)' :
@@ -146,7 +146,7 @@ export default function EmailConfigPage() {
 
                       {/* Provider */}
                       <div className="flex items-center gap-3">
-                        <span className="text-gray-600 font-medium">Fournisseur:</span>
+                        <span className="text-gray-600 dark:text-gray-300 font-medium">Fournisseur:</span>
                         <span className="text-[#3b5335ff] font-bold">
                           {emailStatus.provider || 'Aucun'}
                         </span>
@@ -154,46 +154,46 @@ export default function EmailConfigPage() {
 
                       {/* Details Grid */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t">
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
                             <span className={`text-2xl ${emailStatus.details.sendgrid ? '✅' : '❌'}`}>
                               {emailStatus.details.sendgrid ? '✅' : '❌'}
                             </span>
-                            <span className="font-semibold text-gray-700">SendGrid</span>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">SendGrid</span>
                           </div>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
                             {emailStatus.details.sendgrid ? 'API Key configurée' : 'Non configuré'}
                           </p>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
                             <span className={`text-2xl ${emailStatus.details.smtp ? '✅' : '❌'}`}>
                               {emailStatus.details.smtp ? '✅' : '❌'}
                             </span>
-                            <span className="font-semibold text-gray-700">SMTP</span>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">SMTP</span>
                           </div>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
                             {emailStatus.details.smtp ? 'Identifiants configurés' : 'Non configuré'}
                           </p>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-xl">📧</span>
-                            <span className="font-semibold text-gray-700">Email expéditeur</span>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">Email expéditeur</span>
                           </div>
-                          <p className="text-sm text-gray-600 break-all">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 break-all">
                             {emailStatus.details.from}
                           </p>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-xl">👤</span>
-                            <span className="font-semibold text-gray-700">Nom expéditeur</span>
+                            <span className="font-semibold text-gray-700 dark:text-gray-300">Nom expéditeur</span>
                           </div>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
                             {emailStatus.details.fromName}
                           </p>
                         </div>
@@ -203,7 +203,7 @@ export default function EmailConfigPage() {
                 </div>
 
                 {/* Test Email Card */}
-                <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-3">
                     <span>🧪</span>
                     <span>Tester l'envoi d'email</span>
@@ -211,7 +211,7 @@ export default function EmailConfigPage() {
 
                   <form onSubmit={handleTestEmail} className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Adresse email de test
                       </label>
                       <input
@@ -219,10 +219,10 @@ export default function EmailConfigPage() {
                         value={testEmail}
                         onChange={(e) => setTestEmail(e.target.value)}
                         placeholder="votre.email@example.com"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         disabled={testing}
                       />
-                      <p className="mt-2 text-sm text-gray-500">
+                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         Un email de test sera envoyé à cette adresse
                       </p>
                     </div>
@@ -259,7 +259,7 @@ export default function EmailConfigPage() {
                         </span>
                         <div className="flex-1">
                           <p className={`font-bold ${
-                            testResult.success ? 'text-green-800' : 'text-red-800'
+                            testResult.success ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'
                           }`}>
                             {testResult.success ? 'Succès!' : 'Erreur'}
                           </p>
@@ -269,7 +269,7 @@ export default function EmailConfigPage() {
                             {testResult.message || testResult.error}
                           </p>
                           {testResult.provider && (
-                            <p className="mt-2 text-xs text-gray-600">
+                            <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
                               Fournisseur: {testResult.provider}
                             </p>
                           )}
@@ -280,24 +280,24 @@ export default function EmailConfigPage() {
                 </div>
 
                 {/* Configuration Instructions */}
-                <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-3">
                     <span>📝</span>
                     <span>Configuration</span>
                   </h2>
 
                   <div className="prose prose-sm max-w-none">
-                    <p className="text-gray-600 mb-4">
-                      Pour configurer l'envoi d'emails, ajoutez les variables suivantes dans votre fichier <code className="bg-gray-100 px-2 py-1 rounded">.env.local</code>:
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">
+                      Pour configurer l'envoi d'emails, ajoutez les variables suivantes dans votre fichier <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">.env.local</code>:
                     </p>
 
                     <div className="space-y-6">
                       {/* SendGrid Option */}
-                      <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <h3 className="text-lg font-bold text-[#3b5335ff] mb-2">
                           Option 1: SendGrid (Recommandé)
                         </h3>
-                        <p className="text-sm text-gray-600 mb-3">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                           Service d'emailing professionnel avec 100 emails/jour gratuits
                         </p>
                         <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
@@ -316,11 +316,11 @@ export default function EmailConfigPage() {
                       </div>
 
                       {/* SMTP/Gmail Option */}
-                      <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <h3 className="text-lg font-bold text-[#3b5335ff] mb-2">
                           Option 2: SMTP (Gmail, Outlook, etc.)
                         </h3>
-                        <p className="text-sm text-gray-600 mb-3">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                           Utilisez votre compte email existant
                         </p>
                         <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">

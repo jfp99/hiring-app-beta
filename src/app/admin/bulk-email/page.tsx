@@ -249,7 +249,7 @@ export default function BulkEmailPage() {
         <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement...</p>
+            <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">Chargement...</p>
           </div>
         </div>
       </AdminGuard>
@@ -258,7 +258,7 @@ export default function BulkEmailPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Header */}
@@ -276,7 +276,7 @@ export default function BulkEmailPage() {
         </section>
 
         {/* Progress Steps */}
-        <section className="bg-white/80 border-b border-gray-200 py-6">
+        <section className="bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               {[
@@ -295,7 +295,7 @@ export default function BulkEmailPage() {
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${
                       step >= s.num
                         ? 'bg-[#ffaf50ff] text-[#3b5335ff]'
-                        : 'bg-gray-200 text-gray-500'
+                        : 'bg-gray-200 text-gray-500 dark:text-gray-400'
                     }`}>
                       {step > s.num ? '✓' : s.icon}
                     </div>
@@ -317,12 +317,12 @@ export default function BulkEmailPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Step 1: Select Candidates */}
             {step === 1 && (
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-2">
                     Sélectionner les Candidats ({selectedCandidates.size})
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     Choisissez les candidats qui recevront l'email
                   </p>
                 </div>
@@ -334,12 +334,12 @@ export default function BulkEmailPage() {
                     placeholder="Rechercher par nom ou email..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                    className="flex-1 min-w-[200px] px-4 py-2 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                   <select
                     value={filterStage}
                     onChange={(e) => setFilterStage(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="all">Toutes les étapes</option>
                     <option value="applied">Candidature reçue</option>
@@ -352,7 +352,7 @@ export default function BulkEmailPage() {
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="all">Tous les statuts</option>
                     <option value="active">Actif</option>
@@ -361,14 +361,14 @@ export default function BulkEmailPage() {
                 </div>
 
                 {/* Select All */}
-                <div className="mb-4 flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                <div className="mb-4 flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <input
                     type="checkbox"
                     checked={selectedCandidates.size === filteredCandidates.length && filteredCandidates.length > 0}
                     onChange={toggleAll}
                     className="w-5 h-5 rounded"
                   />
-                  <label className="font-medium text-gray-700">
+                  <label className="font-medium text-gray-700 dark:text-gray-300">
                     Sélectionner tous ({filteredCandidates.length} candidats)
                   </label>
                 </div>
@@ -381,7 +381,7 @@ export default function BulkEmailPage() {
                       className={`p-4 border-2 rounded-lg transition-all cursor-pointer ${
                         selectedCandidates.has(candidate._id)
                           ? 'border-[#ffaf50ff] bg-[#ffaf50ff]/5'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:border-gray-600'
                       }`}
                       onClick={() => toggleCandidate(candidate._id)}
                     >
@@ -395,16 +395,16 @@ export default function BulkEmailPage() {
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-bold text-gray-900">
+                            <h3 className="font-bold text-gray-900 dark:text-white">
                               {candidate.firstName} {candidate.lastName}
                             </h3>
                             <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                               {candidate.stage}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600">{candidate.email}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">{candidate.email}</p>
                           {candidate.appliedPosition && (
-                            <p className="text-sm text-gray-500">{candidate.appliedPosition}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{candidate.appliedPosition}</p>
                           )}
                         </div>
                       </div>
@@ -427,12 +427,12 @@ export default function BulkEmailPage() {
 
             {/* Step 2: Select Template */}
             {step === 2 && (
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-2">
                     Choisir un Template d'Email
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     Sélectionnez le template à envoyer aux {selectedCandidates.size} candidats
                   </p>
                 </div>
@@ -444,17 +444,17 @@ export default function BulkEmailPage() {
                       className={`p-6 border-2 rounded-xl transition-all cursor-pointer ${
                         selectedTemplateId === template.id
                           ? 'border-[#ffaf50ff] bg-[#ffaf50ff]/5'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:border-gray-600'
                       }`}
                       onClick={() => handleTemplateSelect(template.id)}
                     >
                       <h3 className="text-lg font-bold text-[#3b5335ff] mb-2">{template.name}</h3>
-                      <p className="text-sm text-gray-600 mb-3">Type: {template.type}</p>
-                      <div className="text-sm text-gray-700">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">Type: {template.type}</p>
+                      <div className="text-sm text-gray-700 dark:text-gray-300">
                         <p className="font-medium mb-1">Sujet:</p>
-                        <p className="text-gray-600 mb-3">{template.subject}</p>
+                        <p className="text-gray-600 dark:text-gray-300 mb-3">{template.subject}</p>
                         <p className="font-medium mb-1">Aperçu:</p>
-                        <p className="text-gray-600 line-clamp-3">{template.body.substring(0, 150)}...</p>
+                        <p className="text-gray-600 dark:text-gray-300 line-clamp-3">{template.body.substring(0, 150)}...</p>
                       </div>
                     </div>
                   ))}
@@ -464,7 +464,7 @@ export default function BulkEmailPage() {
                 <div className="mt-6 flex justify-between">
                   <button
                     onClick={() => setStep(1)}
-                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-all"
+                    className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-50 dark:bg-gray-700 transition-all"
                   >
                     ← Retour
                   </button>
@@ -481,12 +481,12 @@ export default function BulkEmailPage() {
 
             {/* Step 3: Customize Variables */}
             {step === 3 && selectedTemplate && (
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-2">
                     Personnaliser les Variables
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     Configurez les variables globales qui seront utilisées pour tous les candidats
                   </p>
                 </div>
@@ -496,7 +496,7 @@ export default function BulkEmailPage() {
                     .filter(v => !['firstName', 'lastName', 'fullName', 'email', 'position'].includes(v.key))
                     .map(variable => (
                       <div key={variable.key}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           {variable.label}
                         </label>
                         <input
@@ -507,26 +507,26 @@ export default function BulkEmailPage() {
                             [variable.key]: e.target.value
                           }))}
                           placeholder={variable.description}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent"
+                          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         />
                       </div>
                     ))}
                 </div>
 
                 {/* Preview */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                   <h3 className="text-lg font-bold text-[#3b5335ff] mb-4">Aperçu (exemple avec un candidat)</h3>
                   {filteredCandidates.length > 0 && selectedCandidates.size > 0 && (
                     <>
                       <div className="mb-4">
-                        <p className="text-sm text-gray-600 mb-2">Sujet:</p>
-                        <p className="font-medium text-gray-900">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">Sujet:</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {replaceVariables(selectedTemplate.subject, candidates.find(c => selectedCandidates.has(c._id))!)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600 mb-2">Corps du message:</p>
-                        <div className="text-sm text-gray-900 whitespace-pre-wrap">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">Corps du message:</p>
+                        <div className="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
                           {replaceVariables(selectedTemplate.body, candidates.find(c => selectedCandidates.has(c._id))!)}
                         </div>
                       </div>
@@ -538,7 +538,7 @@ export default function BulkEmailPage() {
                 <div className="mt-6 flex justify-between">
                   <button
                     onClick={() => setStep(2)}
-                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-all"
+                    className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-50 dark:bg-gray-700 transition-all"
                   >
                     ← Retour
                   </button>
@@ -554,12 +554,12 @@ export default function BulkEmailPage() {
 
             {/* Step 4: Review & Send */}
             {step === 4 && selectedTemplate && (
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="mb-6">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-2">
                     Revue et Envoi
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-300">
                     Vérifiez les détails avant d'envoyer les emails
                   </p>
                 </div>
@@ -571,7 +571,7 @@ export default function BulkEmailPage() {
                       <p className="text-sm text-blue-600 mb-1">Candidats sélectionnés</p>
                       <p className="text-3xl font-bold text-blue-900">{selectedCandidates.size}</p>
                     </div>
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-lg p-4">
                       <p className="text-sm text-green-600 mb-1">Template</p>
                       <p className="text-lg font-bold text-green-900">{selectedTemplate.name}</p>
                     </div>
@@ -583,10 +583,10 @@ export default function BulkEmailPage() {
 
                   {/* Progress */}
                   {sending && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                    <div className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-bold text-[#3b5335ff]">Envoi en cours...</h3>
-                        <span className="text-sm text-gray-600">
+                        <h3 className="text-lg font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">Envoi en cours...</h3>
+                        <span className="text-sm text-gray-600 dark:text-gray-300">
                           {sendResults.success + sendResults.failed} / {sendResults.total}
                         </span>
                       </div>
@@ -627,7 +627,7 @@ export default function BulkEmailPage() {
                   <button
                     onClick={() => setStep(3)}
                     disabled={sending}
-                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-50 transition-all disabled:opacity-50"
+                    className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-50 dark:bg-gray-700 transition-all disabled:opacity-50"
                   >
                     ← Retour
                   </button>

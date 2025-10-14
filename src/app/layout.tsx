@@ -8,6 +8,8 @@ import { Toaster } from './components/ui/Toaster'
 const montserrat = Montserrat({
   subsets: ['latin'],
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -26,16 +28,20 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  const theme = localStorage.getItem('theme') || 'system';
-                  const resolvedTheme = theme === 'system'
-                    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-                    : theme;
-                  document.documentElement.classList.add(resolvedTheme);
+                  let theme = localStorage.getItem('theme');
+                  // If theme is 'system' from old settings, default to 'light'
+                  if (!theme || theme === 'system') {
+                    theme = 'light';
+                  }
+                  document.documentElement.classList.add(theme);
+                  document.documentElement.setAttribute('data-theme', theme);
                 } catch (e) {}
               })();
             `,

@@ -229,24 +229,24 @@ export default function Admin() {
 
   return (
     <AdminGuard>
-    <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+    <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
       <AdminHeader />
-      
+
       {/* Hero Section Admin */}
-      <section className="relative bg-gradient-to-br from-[#f9fdf7] via-[#f4f9f2] to-[#eef7ea] py-16 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#f9fdf7] via-[#f4f9f2] to-[#eef7ea] dark:from-gray-800 dark:via-gray-850 dark:to-gray-800 py-16 overflow-hidden">
         {/* Decorative soft blobs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-5"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#3b5335ff] rounded-full filter blur-3xl opacity-5"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
-            <h1 className="text-3xl md:text-5xl font-semibold mb-4 leading-tight text-[#3b5335ff]">
+            <h1 className="text-3xl md:text-5xl font-semibold mb-4 leading-tight text-[#3b5335ff] dark:text-white">
               Administration
               <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold">
                 Tableau de Bord
               </span>
             </h1>
-            <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed text-[#3b5335ff]/70 font-normal">
+            <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed text-[#3b5335ff]/70 dark:text-gray-300 font-normal">
               Gérez vos contacts, newsletters et offres d'emploi
             </p>
           </div>
@@ -254,7 +254,7 @@ export default function Admin() {
       </section>
 
       {/* Navigation des Tabs */}
-      <section className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-16 z-40">
+      <section className="py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-4 justify-between items-center">
             <div className="flex flex-wrap gap-4">
@@ -269,13 +269,13 @@ export default function Admin() {
                   className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 ${
                     activeTab === tab.id
                       ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
-                      : 'bg-white text-[#3b5335ff] border border-gray-200 hover:shadow-lg'
+                      : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
                   }`}
                 >
                   <span>{tab.icon}</span>
                   {tab.label}
                   {tab.count !== undefined && (
-                    <span className="bg-[#3b5335ff] text-white px-2 py-1 rounded-full text-sm">
+                    <span className="bg-[#3b5335ff] dark:bg-[#ffaf50ff] text-white dark:text-[#3b5335ff] px-2 py-1 rounded-full text-sm">
                       {tab.count}
                     </span>
                   )}
@@ -288,7 +288,7 @@ export default function Admin() {
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-1.5 ${
                   activeTab === 'add-offre'
                     ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
-                    : 'bg-white text-[#3b5335ff] border border-gray-200 hover:shadow-lg'
+                    : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
                 }`}
               >
                 <span>➕</span>
@@ -313,8 +313,8 @@ export default function Admin() {
 
           {/* Affichage des erreurs */}
           {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <div className="flex items-center gap-2 text-red-700">
+            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
                 <span>❌</span>
                 <span className="font-semibold">Erreur:</span>
                 <span>{error}</span>
@@ -327,15 +327,15 @@ export default function Admin() {
       {/* Contenu des Tabs */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           {/* Tab: Contacts */}
           {activeTab === 'contacts' && (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-[#3b5335ff]">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
                   Contacts ({contacts.length})
                 </h2>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
                   Dernière mise à jour: {new Date().toLocaleTimeString('fr-FR')}
                 </span>
               </div>
@@ -348,37 +348,37 @@ export default function Admin() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
                       <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Type</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Nom</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Email</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Téléphone</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Message</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Date</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Type</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Nom</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Email</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Téléphone</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Message</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Date</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {contacts.map((contact) => (
-                        <tr key={contact.id} className="hover:bg-gray-50 transition-colors">
+                        <tr key={contact.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                           <td className="px-6 py-4">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              contact.type === 'candidat' 
-                                ? 'bg-blue-100 text-blue-800' 
-                                : 'bg-green-100 text-green-800'
+                              contact.type === 'candidat'
+                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                             }`}>
                               {contact.type}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{contact.nom}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{contact.email}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{contact.telephone}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 max-w-xs">
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">{contact.nom}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{contact.email}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{contact.telephone}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 max-w-xs">
                             <div className="truncate" title={contact.message}>
                               {contact.message}
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">{formatDate(contact.date)}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(contact.date)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -390,25 +390,25 @@ export default function Admin() {
 
           {/* Tab: Newsletters */}
           {activeTab === 'newsletters' && (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-[#3b5335ff]">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
                   Inscriptions Newsletter ({newsletters.length})
                 </h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Email</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Date d'inscription</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Email</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Date d'inscription</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                     {newsletters.map((sub) => (
-                      <tr key={sub.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 text-sm text-gray-700">{sub.email}</td>
-                        <td className="px-6 py-4 text-sm text-gray-500">{formatDate(sub.date)}</td>
+                      <tr key={sub.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{sub.email}</td>
+                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(sub.date)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -419,17 +419,17 @@ export default function Admin() {
 
           {/* Tab: Offres */}
           {activeTab === 'offres' && (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-[#3b5335ff]">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
                   Offres d'Emploi ({offres.length})
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  {offres.filter(o => o.statut === 'active').length} active(s), 
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {offres.filter(o => o.statut === 'active').length} active(s),
                   {offres.filter(o => o.statut === 'inactive').length} inactive(s)
                 </p>
               </div>
-              
+
               {offres.length === 0 ? (
                 <EmptyData
                   title="Aucune offre d'emploi"
@@ -438,31 +438,31 @@ export default function Admin() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
                       <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Titre</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Entreprise</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Lieu</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Type</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Salaire</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Date</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Statut</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Titre</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Entreprise</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Lieu</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Type</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Salaire</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Date</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Statut</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {offres.map((offre) => (
-                        <tr key={offre.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{offre.titre}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{offre.entreprise}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{offre.lieu}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{offre.typeContrat}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{offre.salaire}</td>
-                          <td className="px-6 py-4 text-sm text-gray-500">{formatDate(offre.datePublication)}</td>
+                        <tr key={offre.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">{offre.titre}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.entreprise}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.lieu}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.typeContrat}</td>
+                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.salaire}</td>
+                          <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(offre.datePublication)}</td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              offre.statut === 'active' 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-red-100 text-red-800'
+                              offre.statut === 'active'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                             }`}>
                               {offre.statut}
                             </span>
@@ -478,12 +478,12 @@ export default function Admin() {
 
           {/* Tab: Ajouter une offre */}
             {activeTab === 'add-offre' && (
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-200">
-                <h2 className="text-2xl font-bold text-[#3b5335ff]">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
                     Ajouter une Nouvelle Offre d'Emploi
                 </h2>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-600 dark:text-gray-300 mt-2">
                     Tous les champs marqués d'un * sont obligatoires
                 </p>
                 </div>
@@ -527,7 +527,7 @@ export default function Admin() {
 
                     {/* Type de contrat */}
                     <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
                         Type de contrat *
                     </label>
                     <select
@@ -535,7 +535,7 @@ export default function Admin() {
                         required
                         value={newOffre.typeContrat}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     >
                         <option value="">Sélectionnez un type de contrat *</option>
                         {typesContrat.map(type => (
@@ -546,7 +546,7 @@ export default function Admin() {
 
                     {/* Catégorie */}
                     <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
                         Catégorie *
                     </label>
                     <select
@@ -554,7 +554,7 @@ export default function Admin() {
                         required
                         value={newOffre.categorie}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     >
                         {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -590,7 +590,7 @@ export default function Admin() {
 
                     {/* Description du poste */}
                     <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
                         Description du poste *
                     </label>
                     <textarea
@@ -599,14 +599,14 @@ export default function Admin() {
                         value={newOffre.description}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="Décrivez les missions, responsabilités et enjeux du poste..."
                     />
                     </div>
 
                     {/* Compétences requises */}
                     <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-[#3b5335ff] mb-2">
+                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
                         Compétences requises
                     </label>
                     <textarea
@@ -614,24 +614,24 @@ export default function Admin() {
                         value={newOffre.competences}
                         onChange={handleInputChange}
                         rows={3}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="Listez les compétences techniques et soft skills requises (séparées par des virgules)"
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                         Ex: React, Node.js, MongoDB, Communication, Travail d'équipe
                     </p>
                     </div>
                 </div>
 
                 {/* Aperçu des données (pour debug) */}
-                <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="text-sm font-medium text-[#3b5335ff] mb-2">Aperçu des données:</h4>
-                    <pre className="text-xs text-gray-600 overflow-auto">
+                <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <h4 className="text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">Aperçu des données:</h4>
+                    <pre className="text-xs text-gray-600 dark:text-gray-300 overflow-auto">
                     {JSON.stringify(newOffre, null, 2)}
                     </pre>
                 </div>
 
-                <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <Button
                         type="button"
                         onClick={() => setNewOffre({

@@ -276,10 +276,10 @@ export default function EnhancedAnalyticsPage() {
   if (loading || !analyticsData) {
     return (
       <AdminGuard>
-        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement des analytics...</p>
+            <p className="text-gray-600 dark:text-gray-300">Chargement des analytics...</p>
           </div>
         </div>
       </AdminGuard>
@@ -288,7 +288,7 @@ export default function EnhancedAnalyticsPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Header */}
@@ -312,11 +312,11 @@ export default function EnhancedAnalyticsPage() {
                   onChange={(e) => setDateRange(e.target.value)}
                   className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white backdrop-blur-sm focus:ring-2 focus:ring-[#ffaf50ff]"
                 >
-                  <option value="7">7 derniers jours</option>
-                  <option value="30">30 derniers jours</option>
-                  <option value="90">90 derniers jours</option>
-                  <option value="180">6 derniers mois</option>
-                  <option value="365">1 an</option>
+                  <option value="7" className="text-gray-900">7 derniers jours</option>
+                  <option value="30" className="text-gray-900">30 derniers jours</option>
+                  <option value="90" className="text-gray-900">90 derniers jours</option>
+                  <option value="180" className="text-gray-900">6 derniers mois</option>
+                  <option value="365" className="text-gray-900">1 an</option>
                 </select>
 
                 <button
@@ -331,7 +331,7 @@ export default function EnhancedAnalyticsPage() {
         </section>
 
         {/* View Tabs */}
-        <section className="bg-white/80 border-b border-gray-200 py-4">
+        <section className="bg-white/80 dark:bg-gray-900/80 border-b border-gray-200 dark:border-gray-700 py-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-2">
               {[
@@ -346,7 +346,7 @@ export default function EnhancedAnalyticsPage() {
                   className={`px-6 py-2 rounded-lg font-medium transition-all ${
                     selectedView === view.id
                       ? 'bg-[#3b5335ff] text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   {view.icon} {view.label}
@@ -364,31 +364,31 @@ export default function EnhancedAnalyticsPage() {
               <div className="space-y-8">
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                  <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Total Candidats</h3>
-                    <p className="text-4xl font-bold text-gray-900">{analyticsData.totalCandidates}</p>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Total Candidats</h3>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white">{analyticsData.totalCandidates}</p>
                   </div>
-                  <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Actifs</h3>
-                    <p className="text-4xl font-bold text-gray-900">{analyticsData.activeCandidates}</p>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Actifs</h3>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white">{analyticsData.activeCandidates}</p>
                   </div>
-                  <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Embauchés</h3>
-                    <p className="text-4xl font-bold text-gray-900">{analyticsData.hiredCount}</p>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Embauchés</h3>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white">{analyticsData.hiredCount}</p>
                   </div>
-                  <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Taux de Conversion</h3>
-                    <p className="text-4xl font-bold text-gray-900">{analyticsData.conversionRate.toFixed(1)}%</p>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Taux de Conversion</h3>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white">{analyticsData.conversionRate.toFixed(1)}%</p>
                   </div>
-                  <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-red-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Temps Moyen</h3>
-                    <p className="text-4xl font-bold text-gray-900">{analyticsData.avgTimeToHire}j</p>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-red-500">
+                    <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Temps Moyen</h3>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white">{analyticsData.avgTimeToHire}j</p>
                   </div>
                 </div>
 
                 {/* Timeline Chart */}
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <h2 className="text-xl font-bold text-[#3b5335ff] mb-6">Évolution sur 6 Mois</h2>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                  <h2 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Évolution sur 6 Mois</h2>
                   <div className="h-64 flex items-end justify-between gap-4">
                     {analyticsData.timelineData.map((data, index) => {
                       const maxValue = Math.max(...analyticsData.timelineData.map(d => d.applied))
@@ -415,23 +415,23 @@ export default function EnhancedAnalyticsPage() {
                               title={`Embauchés: ${data.hired}`}
                             />
                           </div>
-                          <p className="text-xs text-gray-600 font-medium">{data.month}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">{data.month}</p>
                         </div>
                       )
                     })}
                   </div>
-                  <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                      <span className="text-sm text-gray-700">Candidatures</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Candidatures</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                      <span className="text-sm text-gray-700">Entretiens</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Entretiens</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 bg-green-500 rounded"></div>
-                      <span className="text-sm text-gray-700">Embauchés</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">Embauchés</span>
                     </div>
                   </div>
                 </div>
@@ -440,8 +440,8 @@ export default function EnhancedAnalyticsPage() {
 
             {/* Funnel Analysis */}
             {selectedView === 'funnel' && (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6">Analyse de l'Entonnoir de Conversion</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Analyse de l'Entonnoir de Conversion</h2>
                 <div className="space-y-4">
                   {analyticsData.funnel.map((stage, idx) => {
                     const width = Math.max(20, 100 - (idx * 10))
@@ -478,41 +478,41 @@ export default function EnhancedAnalyticsPage() {
 
             {/* Source Analysis */}
             {selectedView === 'sources' && (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6">Performance par Source</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Performance par Source</h2>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b-2 border-gray-200">
-                        <th className="text-left py-3 px-4 font-bold text-gray-700">Source</th>
-                        <th className="text-right py-3 px-4 font-bold text-gray-700">Candidats</th>
-                        <th className="text-right py-3 px-4 font-bold text-gray-700">Embauchés</th>
-                        <th className="text-right py-3 px-4 font-bold text-gray-700">Taux de Conversion</th>
-                        <th className="text-right py-3 px-4 font-bold text-gray-700">Temps Moyen</th>
-                        <th className="text-right py-3 px-4 font-bold text-gray-700">ROI</th>
+                      <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+                        <th className="text-left py-3 px-4 font-bold text-gray-700 dark:text-gray-200">Source</th>
+                        <th className="text-right py-3 px-4 font-bold text-gray-700 dark:text-gray-200">Candidats</th>
+                        <th className="text-right py-3 px-4 font-bold text-gray-700 dark:text-gray-200">Embauchés</th>
+                        <th className="text-right py-3 px-4 font-bold text-gray-700 dark:text-gray-200">Taux de Conversion</th>
+                        <th className="text-right py-3 px-4 font-bold text-gray-700 dark:text-gray-200">Temps Moyen</th>
+                        <th className="text-right py-3 px-4 font-bold text-gray-700 dark:text-gray-200">ROI</th>
                       </tr>
                     </thead>
                     <tbody>
                       {analyticsData.sourceData.map((source, idx) => (
-                        <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="py-3 px-4 font-medium">{source.source}</td>
-                          <td className="py-3 px-4 text-right">{source.candidates}</td>
-                          <td className="py-3 px-4 text-right text-green-600 font-bold">{source.hired}</td>
+                        <tr key={idx} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td className="py-3 px-4 font-medium text-gray-900 dark:text-gray-100">{source.source}</td>
+                          <td className="py-3 px-4 text-right text-gray-900 dark:text-gray-100">{source.candidates}</td>
+                          <td className="py-3 px-4 text-right text-green-600 dark:text-green-400 font-bold">{source.hired}</td>
                           <td className="py-3 px-4 text-right">
                             <span className={`px-2 py-1 rounded ${
-                              source.conversionRate > 10 ? 'bg-green-100 text-green-800' :
-                              source.conversionRate > 5 ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
+                              source.conversionRate > 10 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
+                              source.conversionRate > 5 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                              'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                             }`}>
                               {source.conversionRate.toFixed(1)}%
                             </span>
                           </td>
-                          <td className="py-3 px-4 text-right">{source.avgTimeToHire} jours</td>
+                          <td className="py-3 px-4 text-right text-gray-900 dark:text-gray-100">{source.avgTimeToHire} jours</td>
                           <td className="py-3 px-4 text-right">
                             <span className={`px-2 py-1 rounded font-bold ${
-                              source.conversionRate > 10 ? 'bg-green-100 text-green-800' :
-                              source.conversionRate > 5 ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
+                              source.conversionRate > 10 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
+                              source.conversionRate > 5 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                              'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                             }`}>
                               {source.conversionRate > 10 ? '🚀 Excellent' :
                                source.conversionRate > 5 ? '⚡ Bon' : '⚠️ À améliorer'}
@@ -528,37 +528,37 @@ export default function EnhancedAnalyticsPage() {
 
             {/* Recruiter Performance */}
             {selectedView === 'recruiters' && (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6">Performance des Recruteurs</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Performance des Recruteurs</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {analyticsData.recruiterPerformance.map((recruiter, idx) => (
-                    <div key={idx} className="border-2 border-gray-200 rounded-xl p-6 hover:border-[#ffaf50ff] transition-all">
+                    <div key={idx} className="border-2 border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-[#ffaf50ff] transition-all">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 bg-gradient-to-br from-[#3b5335ff] to-[#2a3d26ff] rounded-full flex items-center justify-center text-white text-xl font-bold">
                           {recruiter.recruiterName.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <h3 className="font-bold text-lg">{recruiter.recruiterName}</h3>
-                          <p className="text-sm text-gray-600">{recruiter.activeCandidates} candidats actifs</p>
+                          <h3 className="font-bold text-lg text-gray-900 dark:text-white">{recruiter.recruiterName}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{recruiter.activeCandidates} candidats actifs</p>
                         </div>
                       </div>
 
                       <div className="space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Embauches</span>
-                          <span className="text-lg font-bold text-green-600">{recruiter.hired}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Embauches</span>
+                          <span className="text-lg font-bold text-green-600 dark:text-green-400">{recruiter.hired}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Temps moyen</span>
-                          <span className="text-lg font-bold text-blue-600">{recruiter.avgTimeToHire}j</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Temps moyen</span>
+                          <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{recruiter.avgTimeToHire}j</span>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-500">Performance</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Performance</span>
                             <span className={`px-2 py-1 rounded text-xs font-bold ${
-                              recruiter.hired >= 5 ? 'bg-green-100 text-green-800' :
-                              recruiter.hired >= 2 ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-gray-100 text-gray-600'
+                              recruiter.hired >= 5 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
+                              recruiter.hired >= 2 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                              'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
                             }`}>
                               {recruiter.hired >= 5 ? '🌟 Excellent' :
                                recruiter.hired >= 2 ? '⭐ Bon' : '📊 Débutant'}
