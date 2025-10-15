@@ -21,7 +21,7 @@ const createInterviewSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -29,7 +29,7 @@ export async function GET(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const candidateId = params.id
+    const { id: candidateId } = await params
 
     if (!ObjectId.isValid(candidateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
@@ -47,7 +47,7 @@ export async function GET(
     return NextResponse.json({
       interviews: candidate.interviews || []
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching interviews:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des entretiens' },
@@ -58,7 +58,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -66,7 +66,7 @@ export async function POST(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const candidateId = params.id
+    const { id: candidateId } = await params
 
     if (!ObjectId.isValid(candidateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
@@ -93,8 +93,8 @@ export async function POST(
       status: 'scheduled' as const,
       feedback: [], // Initialize empty feedback array
       createdAt: new Date().toISOString(),
-      createdBy: (session.user as any).id || session.user.email,
-      createdByName: session.user.name || session.user.email
+      createdBy: (session.user as any)?.id || session.user?.email || 'unknown',
+      createdByName: session.user?.name || session.user?.email || 'unknown'
     }
 
     // Add activity
@@ -102,8 +102,8 @@ export async function POST(
       id: new Date().getTime().toString() + '_act',
       type: 'interview_scheduled',
       description: `Entretien ${getInterviewTypeLabel(validatedData.type)} planifié le ${new Date(validatedData.scheduledDate).toLocaleDateString('fr-FR')}`,
-      userId: (session.user as any).id || session.user.email,
-      userName: session.user.name || session.user.email,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
+      userName: session.user?.name || session.user?.email || 'unknown',
       timestamp: new Date().toISOString(),
       metadata: {
         interviewId: newInterview.id,
@@ -141,8 +141,8 @@ export async function POST(
             email: candidate.email
           },
           recruiter: {
-            name: session.user.name || session.user.email || 'Hi-Ring',
-            email: session.user.email || 'noreply@hi-ring.com'
+            name: session.user?.name || session.user?.email || 'Hi-Ring',
+            email: session.user?.email || 'noreply@hi-ring.com'
           }
         })
 
@@ -158,11 +158,11 @@ export async function POST(
         }
 
         console.log('Calendar invite status:', calendarInviteStatus)
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error sending calendar invite:', error)
         calendarInviteStatus = {
           success: false,
-          message: `Erreur lors de l'envoi de l'invitation: ${error.message}`
+          message: `Erreur lors de l'envoi de l'invitation: ${(error instanceof Error ? error.message : 'Erreur inconnue')}`
         }
       }
     }
@@ -172,11 +172,11 @@ export async function POST(
       interview: newInterview,
       calendarInvite: calendarInviteStatus
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating interview:', error)
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: 'Données de validation invalides' }, { status: 400 })
     }
 
     return NextResponse.json(

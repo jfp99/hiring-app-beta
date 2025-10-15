@@ -87,9 +87,9 @@ export const InteractiveButton = {
     <ButtonEnhanced variant="secondary" ripple {...props} />
   ),
   Danger: (props: EnhancedButtonProps) => (
-    <ButtonEnhanced variant="danger" ripple {...props} />
+    <ButtonEnhanced variant="destructive" ripple {...props} />
   ),
   Success: (props: EnhancedButtonProps) => (
-    <ButtonEnhanced variant="success" ripple {...props} />
+    <ButtonEnhanced variant="primary" ripple {...props} />
   ),
 }

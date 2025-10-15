@@ -1,13 +1,12 @@
 // src/app/api/workflows/templates/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 import { DEFAULT_WORKFLOW_TEMPLATES } from '@/app/types/workflows'
 
 // GET /api/workflows/templates - Get workflow templates
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -22,7 +21,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({ templates })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching workflow templates:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des templates' },

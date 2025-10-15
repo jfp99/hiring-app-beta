@@ -50,7 +50,7 @@ export async function GET() {
       offres: formattedOffres 
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [OFFRES] Error fetching job offers:', error);
     return NextResponse.json(
       { 
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
       id: result.insertedId.toString()
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [OFFRES] Error creating job offer:', error);
     return NextResponse.json(
       { 

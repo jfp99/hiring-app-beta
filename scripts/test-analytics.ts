@@ -65,11 +65,11 @@ async function testAnalytics() {
       const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
 
       // Filter by date ranges
-      const last30Days = candidates.filter((c: any) =>
-        new Date(c.createdAt) >= thirtyDaysAgo
+      const last30Days = candidates.filter((c) =>
+        new Date((c as { createdAt: string }).createdAt) >= thirtyDaysAgo
       )
-      const last90Days = candidates.filter((c: any) =>
-        new Date(c.createdAt) >= ninetyDaysAgo
+      const last90Days = candidates.filter((c) =>
+        new Date((c as { createdAt: string }).createdAt) >= ninetyDaysAgo
       )
 
       console.log('\n📊 Key Metrics (Last 30 Days):')
@@ -79,17 +79,17 @@ async function testAnalytics() {
       console.log(`   Total Candidates: ${last30Days.length}`)
 
       // Active candidates
-      const active = last30Days.filter((c: any) => c.status === 'active').length
+      const active = last30Days.filter((c) => (c as { status: string }).status === 'active').length
       console.log(`   Active Candidates: ${active}`)
 
       // Interviews scheduled
-      const withInterviews = last30Days.filter((c: any) =>
-        c.interviews && c.interviews.length > 0
+      const withInterviews = last30Days.filter((c) =>
+        (c as { interviews?: unknown[] }).interviews && (c as { interviews: unknown[] }).interviews.length > 0
       ).length
       console.log(`   Candidates with Interviews: ${withInterviews}`)
 
       // Hired
-      const hired = last30Days.filter((c: any) => c.stage === 'hired').length
+      const hired = last30Days.filter((c) => (c as { stage: string }).stage === 'hired').length
       console.log(`   Hired: ${hired}`)
 
       // Conversion rate
@@ -101,8 +101,9 @@ async function testAnalytics() {
       // Stage distribution
       console.log('\n📈 Stage Distribution (Last 30 Days):')
       const stageDistribution: Record<string, number> = {}
-      last30Days.forEach((c: any) => {
-        stageDistribution[c.stage] = (stageDistribution[c.stage] || 0) + 1
+      last30Days.forEach((c) => {
+        const stage = (c as { stage: string }).stage
+        stageDistribution[stage] = (stageDistribution[stage] || 0) + 1
       })
 
       Object.entries(stageDistribution)
@@ -120,10 +121,10 @@ async function testAnalytics() {
       console.log(`   Interview → Hire: ${interviewToHire}%`)
 
       // Average time to hire
-      const hiredCandidates = last30Days.filter((c: any) => c.stage === 'hired')
+      const hiredCandidates = last30Days.filter((c) => (c as { stage: string }).stage === 'hired')
       if (hiredCandidates.length > 0) {
-        const totalDays = hiredCandidates.reduce((sum: number, c: any) => {
-          const created = new Date(c.createdAt)
+        const totalDays = hiredCandidates.reduce((sum: number, c) => {
+          const created = new Date((c as { createdAt: string }).createdAt)
           const days = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24))
           return sum + days
         }, 0)
@@ -135,7 +136,7 @@ async function testAnalytics() {
       console.log('\n📊 Comparison (Last 90 Days vs Last 30 Days):')
       console.log('   ='.repeat(30))
 
-      const hired90 = last90Days.filter((c: any) => c.stage === 'hired').length
+      const hired90 = last90Days.filter((c) => (c as { stage: string }).stage === 'hired').length
       const conversion90 = last90Days.length > 0
         ? ((hired90 / last90Days.length) * 100).toFixed(2)
         : '0.00'
@@ -158,16 +159,16 @@ async function testAnalytics() {
         const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1)
         const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0)
 
-        const monthCandidates = candidates.filter((c: any) => {
-          const createdDate = new Date(c.createdAt)
+        const monthCandidates = candidates.filter((c) => {
+          const createdDate = new Date((c as { createdAt: string }).createdAt)
           return createdDate >= monthStart && createdDate <= monthEnd
         })
 
-        const monthInterviews = monthCandidates.filter((c: any) =>
-          c.interviews && c.interviews.length > 0
+        const monthInterviews = monthCandidates.filter((c) =>
+          (c as { interviews?: unknown[] }).interviews && (c as { interviews: unknown[] }).interviews.length > 0
         ).length
 
-        const monthHired = monthCandidates.filter((c: any) => c.stage === 'hired').length
+        const monthHired = monthCandidates.filter((c) => (c as { stage: string }).stage === 'hired').length
 
         console.log(`   ${monthStr.padEnd(12)} Applied: ${monthCandidates.length.toString().padStart(3)}, Interviewed: ${monthInterviews.toString().padStart(3)}, Hired: ${monthHired.toString().padStart(2)}`)
       }
@@ -186,10 +187,10 @@ async function testAnalytics() {
 
       ranges.forEach(({ days, label }) => {
         const cutoffDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
-        const filtered = candidates.filter((c: any) =>
-          new Date(c.createdAt) >= cutoffDate
+        const filtered = candidates.filter((c) =>
+          new Date((c as { createdAt: string }).createdAt) >= cutoffDate
         )
-        const filteredHired = filtered.filter((c: any) => c.stage === 'hired').length
+        const filteredHired = filtered.filter((c) => (c as { stage: string }).stage === 'hired').length
         const rate = filtered.length > 0 ? ((filteredHired / filtered.length) * 100).toFixed(1) : '0.0'
 
         console.log(`   ${label.padEnd(20)} Total: ${filtered.length.toString().padStart(4)}, Hired: ${filteredHired.toString().padStart(3)}, Rate: ${rate}%`)

@@ -29,8 +29,8 @@ export async function POST(request: NextRequest) {
 
     let result
     const timestamp = new Date().toISOString()
-    const userId = (session.user as any).id || session.user.email
-    const userName = session.user.name || session.user.email || 'Unknown'
+    const userId = (session.user as any)?.id || session.user?.email || 'unknown'
+    const userName = session.user?.name || session.user?.email || 'unknown' || 'Unknown'
 
     switch (action) {
       case 'change_status': {
@@ -223,10 +223,10 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error performing bulk action:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }

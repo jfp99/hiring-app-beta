@@ -1,13 +1,12 @@
 // src/app/api/email/test/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 import { EmailService } from '@/app/lib/emailService'
 
 // POST /api/email/test - Test email configuration
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -49,7 +48,7 @@ export async function POST(request: NextRequest) {
         provider: result.provider
       }, { status: 500 })
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ [EMAIL-TEST] Error:', error)
     return NextResponse.json(
       { error: 'Erreur lors du test d\'email' },
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
 // GET /api/email/test - Get email configuration status
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -93,7 +92,7 @@ export async function GET(request: NextRequest) {
         fromName: process.env.EMAIL_FROM_NAME || 'Not configured'
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ [EMAIL-TEST] Error getting status:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la vérification de la configuration' },

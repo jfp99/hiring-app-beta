@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       id: result.insertedId.toString()
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [ENTREPRISES] Error creating company:', error);
     return NextResponse.json(
       { 
@@ -92,7 +92,7 @@ export async function GET() {
       entreprises: formattedEntreprises 
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [ENTREPRISES] Error fetching companies:', error);
     return NextResponse.json(
       { 

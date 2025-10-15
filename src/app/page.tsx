@@ -86,12 +86,14 @@ export default function Home() {
             }`}>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
                 <Image
-                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop"
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=900&fit=crop&auto=format&q=80"
                   alt="Équipe professionnelle en réunion"
-                  width={800}
-                  height={600}
+                  width={1200}
+                  height={900}
                   className="w-full h-auto"
                   priority
+                  fetchPriority="high"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                   placeholder="blur"
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB//2Q=="
                 />
@@ -186,7 +188,9 @@ export default function Home() {
                     width={600}
                     height={400}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     loading="lazy"
+                    quality={80}
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-60`}></div>
                 </div>
@@ -209,7 +213,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 text-white dark:text-primary-700 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+                  <button className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 text-white dark:text-primary-700 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300" suppressHydrationWarning>
                     En savoir plus →
                   </button>
                 </div>
@@ -300,7 +304,9 @@ export default function Home() {
                         width={600}
                         height={400}
                         className="w-full h-64 object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         loading="lazy"
+                        quality={80}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-primary-500/60 to-transparent"></div>
                     </div>
@@ -362,7 +368,9 @@ export default function Home() {
                     width={64}
                     height={64}
                     className="w-16 h-16 rounded-full object-cover ring-4 ring-accent-500/20"
+                    sizes="64px"
                     loading="lazy"
+                    quality={85}
                   />
                   <div>
                     <h4 className="font-bold text-primary-700 dark:text-accent-500">{testimonial.name}</h4>
@@ -387,11 +395,13 @@ export default function Home() {
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1920&h=600&fit=crop"
+            src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1920&h=600&fit=crop&auto=format&q=75"
             alt="Office background"
             fill
             className="object-cover"
+            sizes="100vw"
             loading="lazy"
+            quality={75}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary-500/95 to-primary-600/95"></div>
         </div>
@@ -449,7 +459,7 @@ export default function Home() {
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl mb-12 text-gray-200 max-w-3xl mx-auto leading-relaxed">
-            Que vous cherchiez le talent idéal ou l'opportunité de vos rêves, notre équipe d'experts est là pour vous accompagner vers le succès.
+            Que vous cherchiez le talent idéal ou l'opportunité de vos rêves, notre équipe d&apos;experts est là pour vous accompagner vers le succès.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">

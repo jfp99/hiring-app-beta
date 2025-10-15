@@ -41,7 +41,7 @@ const createCandidateSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_VIEW)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_VIEW)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
 
     // Parse filters
+    const sortByParam = searchParams.get('sortBy') as 'createdAt' | 'updatedAt' | 'lastContactedAt' | 'rating' | 'name' | null
     const filters: CandidateSearchFilters = {
       search: searchParams.get('search') || undefined,
       status: searchParams.get('status')?.split(',') as CandidateStatus[] || undefined,
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
       minRating: searchParams.get('minRating') ? Number(searchParams.get('minRating')) : undefined,
       isActive: searchParams.get('isActive') === 'true',
       isArchived: searchParams.get('isArchived') === 'true',
-      sortBy: searchParams.get('sortBy') || 'createdAt',
+      sortBy: sortByParam || 'createdAt',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
       page: Number(searchParams.get('page')) || 1,
       limit: Number(searchParams.get('limit')) || 20
@@ -211,7 +212,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -219,7 +220,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_CREATE)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_CREATE)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -291,8 +292,8 @@ export async function POST(request: NextRequest) {
         id: new Date().getTime().toString(),
         type: 'profile_updated',
         description: 'Candidate profile created',
-        userId: session.user.id,
-        userName: session.user.name || session.user.email,
+        userId: (session.user as any)?.id || session.user?.email || 'unknown',
+        userName: session.user?.name || session.user?.email || 'unknown',
         timestamp: new Date().toISOString(),
         metadata: {}
       }],
@@ -304,8 +305,8 @@ export async function POST(request: NextRequest) {
       communicationRating: undefined,
 
       assignedTo: validatedData.assignedTo,
-      assignedToName: undefined,
-      createdBy: session.user.id,
+      assignedToName: undefined as string | undefined,
+      createdBy: (session.user as any)?.id || session.user?.email || 'unknown',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       lastContactedAt: undefined,
@@ -334,7 +335,7 @@ export async function POST(request: NextRequest) {
     // Log activity
     await db.collection('activities').insertOne({
       type: 'candidate_created',
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       candidateId: result.insertedId.toString(),
       timestamp: new Date().toISOString(),
       metadata: {
@@ -354,7 +355,7 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid input', details: error.errors },
+        { error: 'Données de validation invalides', details: (error as any).errors },
         { status: 400 }
       )
     }

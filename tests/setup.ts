@@ -18,7 +18,7 @@ process.env.MONGODB_URI = 'mongodb://localhost:27017'
 process.env.MONGODB_DB = 'hiring-app-test'
 process.env.NEXTAUTH_URL = 'http://localhost:3000'
 process.env.NEXTAUTH_SECRET = 'test-secret-key-minimum-32-characters-long'
-process.env.NODE_ENV = 'test'
+;(process.env as any).NODE_ENV = 'test'
 
 // Mock Next.js router
 vi.mock('next/navigation', () => ({

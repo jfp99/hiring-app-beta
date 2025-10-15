@@ -9,18 +9,18 @@ import { DocumentStatus } from '@/app/types/documents'
 // GET: Download or preview a document
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    const documentId = params.id
+    const { id: documentId } = await params
     const { searchParams } = new URL(request.url)
     const action = searchParams.get('action') || 'download' // 'download' or 'preview'
 
@@ -42,9 +42,9 @@ export async function GET(
     // Check permissions
     const canAccess =
       document.isPublic ||
-      document.uploadedBy === session.user.id ||
-      document.allowedUsers?.includes(session.user.id) ||
-      hasPermission(session.user, PERMISSIONS.CANDIDATE_VIEW)
+      document.uploadedBy === (session.user as any)?.id || session.user?.email || 'unknown' ||
+      document.allowedUsers?.includes((session.user as any)?.id || session.user?.email || 'unknown') ||
+      hasPermission(session.user as any, PERMISSIONS.CANDIDATE_VIEW)
 
     if (!canAccess) {
       return NextResponse.json(
@@ -66,7 +66,7 @@ export async function GET(
     // Log access
     await db.collection('activities').insertOne({
       type: `document_${action}`,
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       documentId: documentId,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -100,15 +100,18 @@ export async function GET(
     console.log(`✅ [DOCUMENTS] Document ${action}:`, {
       id: documentId,
       fileName: document.originalName,
-      user: session.user.email
+      user: session.user?.email || 'unknown'
     })
 
-    return new NextResponse(fileBuffer, {
+    // Convert Buffer to Uint8Array for NextResponse compatibility
+    const uint8Array = new Uint8Array(fileBuffer)
+
+    return new NextResponse(uint8Array, {
       status: 200,
       headers: headers
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [DOCUMENTS] Error accessing document:', error)
     return NextResponse.json(
       { error: 'Failed to access document' },
@@ -120,18 +123,18 @@ export async function GET(
 // PUT: Update document metadata or status
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    const documentId = params.id
+    const { id: documentId } = await params
     const body = await request.json()
 
     const { db } = await connectToDatabase()
@@ -151,8 +154,8 @@ export async function PUT(
 
     // Check permissions
     const canEdit =
-      document.uploadedBy === session.user.id ||
-      hasPermission(session.user, PERMISSIONS.CANDIDATE_EDIT)
+      document.uploadedBy === (session.user as any)?.id || session.user?.email || 'unknown' ||
+      hasPermission(session.user as any, PERMISSIONS.CANDIDATE_EDIT)
 
     if (!canEdit) {
       return NextResponse.json(
@@ -180,10 +183,10 @@ export async function PUT(
     }
 
     // Status changes require special permissions
-    if (body.status !== undefined && hasPermission(session.user, PERMISSIONS.CANDIDATE_EDIT)) {
+    if (body.status !== undefined && hasPermission(session.user as any, PERMISSIONS.CANDIDATE_EDIT)) {
       updateData.status = body.status as DocumentStatus
       updateData.reviewedAt = new Date().toISOString()
-      updateData.reviewedBy = session.user.id
+      updateData.reviewedBy = (session.user as any)?.id || session.user?.email || 'unknown'
     }
 
     // Update document
@@ -195,7 +198,7 @@ export async function PUT(
     // Log activity
     await db.collection('activities').insertOne({
       type: 'document_updated',
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       documentId: documentId,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -210,7 +213,7 @@ export async function PUT(
       message: 'Document updated successfully'
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [DOCUMENTS] Error updating document:', error)
     return NextResponse.json(
       { error: 'Failed to update document' },
@@ -222,18 +225,18 @@ export async function PUT(
 // DELETE: Delete a specific document
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
-    const documentId = params.id
+    const { id: documentId } = await params
 
     const { db } = await connectToDatabase()
     const { ObjectId } = await import('mongodb')
@@ -252,8 +255,8 @@ export async function DELETE(
 
     // Check permissions
     const canDelete =
-      document.uploadedBy === session.user.id ||
-      hasPermission(session.user, PERMISSIONS.CANDIDATE_DELETE)
+      document.uploadedBy === (session.user as any)?.id || session.user?.email || 'unknown' ||
+      hasPermission(session.user as any, PERMISSIONS.CANDIDATE_DELETE)
 
     if (!canDelete) {
       return NextResponse.json(
@@ -278,7 +281,7 @@ export async function DELETE(
     // Log activity
     await db.collection('activities').insertOne({
       type: 'document_deleted',
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       documentId: documentId,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -294,7 +297,7 @@ export async function DELETE(
       message: 'Document deleted successfully'
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [DOCUMENTS] Error deleting document:', error)
     return NextResponse.json(
       { error: 'Failed to delete document' },

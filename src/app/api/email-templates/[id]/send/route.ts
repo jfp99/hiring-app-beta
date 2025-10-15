@@ -1,29 +1,28 @@
 // src/app/api/email-templates/[id]/send/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
-import { getDatabase } from '@/app/lib/mongodb'
+import { auth } from '@/app/lib/auth'
+import { connectToDatabase } from '@/app/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
 import { getEmailService } from '@/app/lib/email'
 
 const sendEmailSchema = z.object({
   candidateId: z.string(),
-  variables: z.record(z.string()).optional(),
+  variables: z.record(z.string(), z.string()).optional(),
   ccEmails: z.array(z.string().email()).optional()
 })
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const templateId = params.id
+    const { id: templateId } = await params
 
     if (!ObjectId.isValid(templateId)) {
       return NextResponse.json({ error: 'ID de template invalide' }, { status: 400 })
@@ -36,7 +35,7 @@ export async function POST(
       return NextResponse.json({ error: 'ID de candidat invalide' }, { status: 400 })
     }
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
 
     // Get template
     const template = await db
@@ -64,7 +63,7 @@ export async function POST(
       email: candidate.email || '',
       position: candidate.currentPosition || 'Non spécifié',
       companyName: 'Hi-Ring',
-      recruiterName: session.user.name || session.user.email || '',
+      recruiterName: session.user?.name || session.user?.email || 'unknown' || '',
       recruiterEmail: session.user.email || '',
       recruiterPhone: '+33 1 23 45 67 89', // Default phone
       currentDate: new Date().toLocaleDateString('fr-FR', {
@@ -106,8 +105,8 @@ export async function POST(
       templateName: template.name,
       subject,
       body: bodyText,
-      sentBy: (session.user as any).id || session.user.email,
-      sentByName: session.user.name || session.user.email,
+      sentBy: (session.user as any)?.id || session.user?.email || 'unknown',
+      sentByName: session.user?.name || session.user?.email || 'unknown',
       sentAt: new Date().toISOString(),
       status: emailStatus,
       ccEmails: validatedData.ccEmails || [],
@@ -125,8 +124,8 @@ export async function POST(
     const activity = {
       type: 'email_sent',
       description: `Email envoyé: ${template.name}`,
-      userId: (session.user as any).id || session.user.email,
-      userName: session.user.name || session.user.email,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
+      userName: session.user?.name || session.user?.email || 'unknown',
       timestamp: new Date().toISOString(),
       metadata: {
         templateId,
@@ -159,15 +158,15 @@ export async function POST(
         }
       }, { status: 500 })
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error sending email:', error)
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: 'Données de validation invalides' }, { status: 400 })
     }
 
     return NextResponse.json(
-      { error: 'Erreur lors de l\'envoi de l\'email: ' + error.message },
+      { error: 'Erreur lors de l\'envoi de l\'email: ' + (error instanceof Error ? error.message : 'Erreur inconnue') },
       { status: 500 }
     )
   }

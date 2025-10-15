@@ -1,13 +1,12 @@
 // src/app/api/users/search/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 
 // GET /api/users/search?q=query - Search users for @mentions autocomplete
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -41,7 +40,7 @@ export async function GET(request: NextRequest) {
         email: u.email
       }))
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error searching users:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la recherche d\'utilisateurs' },

@@ -23,6 +23,41 @@ if (!MONGODB_DB) {
   process.exit(1)
 }
 
+interface TestActivity {
+  id: string
+  type: string
+  description: string
+  userId: string
+  userName: string
+  timestamp: string
+  metadata?: Record<string, unknown>
+}
+
+interface TestInterview {
+  id: string
+  scheduledDate: string
+  duration: number
+  type: string
+  location: string
+  meetingLink: string
+  status: string
+  interviewers: string[]
+  notes: string
+  feedback?: unknown[]
+  createdAt: string
+  updatedAt: string
+}
+
+interface TestDocument {
+  id: string
+  name: string
+  type: string
+  url: string
+  size: number
+  uploadedAt: string
+  uploadedBy: string
+}
+
 interface TestCandidate {
   firstName: string
   lastName: string
@@ -43,9 +78,9 @@ interface TestCandidate {
   source: string
   createdAt: Date
   updatedAt: Date
-  activities: any[]
-  interviews: any[]
-  documents: any[]
+  activities: TestActivity[]
+  interviews: TestInterview[]
+  documents: TestDocument[]
   notes: string
 }
 
@@ -113,7 +148,7 @@ function generateCandidate(index: number): TestCandidate {
   const createdAt = randomDate(180) // Last 6 months
 
   // Generate activities based on stage
-  const activities: any[] = []
+  const activities: TestActivity[] = []
 
   activities.push({
     id: new Date(createdAt).getTime().toString(),
@@ -165,7 +200,7 @@ function generateCandidate(index: number): TestCandidate {
   }
 
   // Generate interviews if appropriate
-  const interviews: any[] = []
+  const interviews: TestInterview[] = []
   if (['interview', 'offer', 'hired'].includes(stage)) {
     const interviewDate = new Date(createdAt)
     interviewDate.setDate(interviewDate.getDate() + Math.floor(Math.random() * 10) + 5)
@@ -206,7 +241,7 @@ function generateCandidate(index: number): TestCandidate {
   }
 
   // Generate documents
-  const documents: any[] = []
+  const documents: TestDocument[] = []
   documents.push({
     id: new Date().getTime().toString(),
     name: `CV_${firstName}_${lastName}.pdf`,

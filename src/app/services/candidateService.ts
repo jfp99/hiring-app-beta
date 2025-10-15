@@ -194,7 +194,7 @@ export class CandidateService {
       communicationRating: undefined,
 
       assignedTo: data.assignedTo,
-      assignedToName: undefined,
+      assignedToName: undefined as string | undefined,
       createdBy: userId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -287,7 +287,7 @@ export class CandidateService {
         { _id: new ObjectId(id) },
         {
           $set: updateData,
-          $push: { activities: activity }
+          $push: { activities: activity } as any
         }
       )
     } else {
@@ -333,7 +333,7 @@ export class CandidateService {
             userName,
             {}
           )
-        }
+        } as any
       }
     )
 

@@ -743,7 +743,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             Prêt à commencer ?
           </h2>
           <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
-            Rejoignez les centaines de talents et d'entreprises qui nous font confiance
+            Rejoignez les centaines de talents et d&apos;entreprises qui nous font confiance
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

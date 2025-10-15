@@ -122,8 +122,8 @@ export default function NewEmailTemplatePage() {
         body,
         isActive,
         variables: allVariables,
-        createdBy: (session.user as any).id || session.user.email,
-        createdByName: session.user.name || session.user.email
+        createdBy: (session.user as any)?.id || session.user?.email || 'unknown',
+        createdByName: session.user?.name || session.user?.email || 'unknown'
       }
 
       const response = await fetch('/api/email-templates', {
@@ -233,7 +233,7 @@ export default function NewEmailTemplatePage() {
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Sujet de l'email *
+                        Sujet de l&apos;email *
                       </label>
                       <button
                         type="button"
@@ -350,7 +350,7 @@ export default function NewEmailTemplatePage() {
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-900 mb-2">💡 Astuce</h4>
                   <p className="text-sm text-blue-800">
-                    Les variables sont automatiquement remplacées par les données réelles lors de l'envoi de l'email.
+                    Les variables sont automatiquement remplacées par les données réelles lors de l'envoi de l&apos;email.
                     Utilisez-les pour personnaliser vos messages!
                   </p>
                 </div>

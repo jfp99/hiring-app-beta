@@ -62,7 +62,7 @@ export async function PUT(
       ...interviews[interviewIndex],
       ...validatedData,
       updatedAt: new Date().toISOString(),
-      updatedBy: (session.user as any).id || session.user.email
+      updatedBy: (session.user as any)?.id || session.user?.email || 'unknown'
     }
 
     interviews[interviewIndex] = updatedInterview
@@ -74,8 +74,8 @@ export async function PUT(
         id: new Date().getTime().toString(),
         type: 'profile_updated',
         description: `Statut d'entretien mis à jour: ${getStatusLabel(validatedData.status)}`,
-        userId: (session.user as any).id || session.user.email,
-        userName: session.user.name || session.user.email,
+        userId: (session.user as any)?.id || session.user?.email || 'unknown',
+        userName: session.user?.name || session.user?.email || 'unknown',
         timestamp: new Date().toISOString(),
         metadata: {
           interviewId,
@@ -104,11 +104,11 @@ export async function PUT(
       message: 'Entretien mis à jour avec succès',
       interview: updatedInterview
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating interview:', error)
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: 'Données de validation invalides' }, { status: 400 })
     }
 
     return NextResponse.json(
@@ -155,8 +155,8 @@ export async function DELETE(
       id: new Date().getTime().toString(),
       type: 'profile_updated',
       description: 'Entretien supprimé',
-      userId: (session.user as any).id || session.user.email,
-      userName: session.user.name || session.user.email,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
+      userName: session.user?.name || session.user?.email || 'unknown',
       timestamp: new Date().toISOString(),
       metadata: { interviewId }
     }
@@ -173,7 +173,7 @@ export async function DELETE(
     )
 
     return NextResponse.json({ message: 'Entretien supprimé avec succès' })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting interview:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la suppression de l\'entretien' },

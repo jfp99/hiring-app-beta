@@ -64,8 +64,8 @@ async function initializeDatabase() {
         }
       })
       console.log('✅ Created users collection')
-    } catch (error: any) {
-      if (error.code === 48) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 48) {
         console.log('ℹ️  Users collection already exists')
       } else {
         throw error
@@ -94,8 +94,8 @@ async function initializeDatabase() {
         }
       })
       console.log('✅ Created companies collection')
-    } catch (error: any) {
-      if (error.code === 48) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 48) {
         console.log('ℹ️  Companies collection already exists')
       } else {
         throw error
@@ -130,8 +130,8 @@ async function initializeDatabase() {
         }
       })
       console.log('✅ Created candidates collection')
-    } catch (error: any) {
-      if (error.code === 48) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 48) {
         console.log('ℹ️  Candidates collection already exists')
       } else {
         throw error
@@ -142,8 +142,8 @@ async function initializeDatabase() {
     try {
       await db.createCollection('applications')
       console.log('✅ Created applications collection')
-    } catch (error: any) {
-      if (error.code === 48) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 48) {
         console.log('ℹ️  Applications collection already exists')
       } else {
         throw error
@@ -154,8 +154,8 @@ async function initializeDatabase() {
     try {
       await db.createCollection('documents')
       console.log('✅ Created documents collection')
-    } catch (error: any) {
-      if (error.code === 48) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 48) {
         console.log('ℹ️  Documents collection already exists')
       } else {
         throw error
@@ -166,8 +166,8 @@ async function initializeDatabase() {
     try {
       await db.createCollection('activities')
       console.log('✅ Created activities collection')
-    } catch (error: any) {
-      if (error.code === 48) {
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 48) {
         console.log('ℹ️  Activities collection already exists')
       } else {
         throw error

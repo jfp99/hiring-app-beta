@@ -30,9 +30,9 @@ export async function GET() {
             _id: doc._id.toString()
           }))
         };
-      } catch (error) {
+      } catch (error: unknown) {
         collectionsData[collectionName] = {
-          error: error.message,
+          error: (error instanceof Error ? error.message : 'Erreur inconnue'),
           count: 0,
           sample: []
         };
@@ -51,13 +51,13 @@ export async function GET() {
     
     return NextResponse.json(response);
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [DEBUG] Error:', error);
     return NextResponse.json(
       { 
         success: false,
         error: 'Debug failed', 
-        details: error.message 
+        details: (error instanceof Error ? error.message : 'Erreur inconnue') 
       }, 
       { status: 500 }
     );

@@ -19,7 +19,7 @@ export async function GET() {
         offres: offresCount
       }
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Test connection error:', error);
     return NextResponse.json(
       { error: 'Database connection failed', details: error }, 

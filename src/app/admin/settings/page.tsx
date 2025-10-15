@@ -86,7 +86,7 @@ export default function SettingsPage() {
                             Autres paramètres
                           </h3>
                           <p className="text-sm text-gray-400">
-                            D'autres options de configuration seront ajoutées ici
+                            D&apos;autres options de configuration seront ajoutées ici
                           </p>
                         </div>
                       </div>
@@ -134,7 +134,7 @@ export default function SettingsPage() {
                         </div>
                         <div>
                           <h4 className="font-bold text-[#3b5335ff] group-hover:text-blue-600">Configuration Email</h4>
-                          <p className="text-xs text-gray-600 dark:text-gray-300">Paramètres d'envoi</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-300">Paramètres d&apos;envoi</p>
                         </div>
                       </div>
                     </a>
@@ -149,7 +149,7 @@ export default function SettingsPage() {
                         </div>
                         <div>
                           <h4 className="font-bold text-[#3b5335ff] group-hover:text-green-600">Templates Email</h4>
-                          <p className="text-xs text-gray-600 dark:text-gray-300">Modèles d'emails</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-300">Modèles d&apos;emails</p>
                         </div>
                       </div>
                     </a>

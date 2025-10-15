@@ -18,8 +18,8 @@ const dataExportSchema = z.object({
 
 const dataErasureSchema = z.object({
   candidateEmail: z.string().email(),
-  confirm: z.literal(true, {
-    errorMap: () => ({ message: 'You must confirm data erasure' })
+  confirm: z.boolean().refine((val) => val === true, {
+    message: 'You must confirm data erasure'
   })
 })
 
@@ -35,7 +35,7 @@ const retentionSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Only admins can perform GDPR operations
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_DELETE)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_DELETE)) {
       return NextResponse.json(
         { error: 'Forbidden: Admin access required' },
         { status: 403 }
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         return await handleDataExport(piiHandler, body)
 
       case 'erasure':
-        return await handleDataErasure(piiHandler, body, session.user.email)
+        return await handleDataErasure(piiHandler, body, session.user?.email || 'unknown')
 
       case 'retention':
         return await handleRetentionEnforcement(piiHandler, body)
@@ -111,7 +111,7 @@ async function handleDataExport(piiHandler: any, body: any) {
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -151,7 +151,7 @@ async function handleDataErasure(piiHandler: any, body: any, adminEmail: string)
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -179,7 +179,7 @@ async function handleRetentionEnforcement(piiHandler: any, body: any) {
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -194,7 +194,7 @@ async function handleRetentionEnforcement(piiHandler: any, body: any) {
 export async function GET(request: NextRequest) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -202,7 +202,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Only admins can view GDPR status
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_VIEW)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_VIEW)) {
       return NextResponse.json(
         { error: 'Forbidden' },
         { status: 403 }

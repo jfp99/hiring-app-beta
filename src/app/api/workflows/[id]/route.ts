@@ -1,17 +1,18 @@
 // src/app/api/workflows/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 import { ObjectId } from 'mongodb'
 
 // GET /api/workflows/[id] - Get a single workflow
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
+
+    const { id } = await params
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -19,7 +20,7 @@ export async function GET(
     const { db } = await connectToDatabase()
     const collection = db.collection('workflows')
 
-    const workflow = await collection.findOne({ _id: new ObjectId(params.id) })
+    const workflow = await collection.findOne({ _id: new ObjectId(id) })
 
     if (!workflow) {
       return NextResponse.json({ error: 'Workflow introuvable' }, { status: 404 })
@@ -28,7 +29,7 @@ export async function GET(
     return NextResponse.json({
       workflow: { ...workflow, id: workflow._id.toString(), _id: undefined }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching workflow:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération du workflow' },
@@ -40,10 +41,12 @@ export async function GET(
 // PUT /api/workflows/[id] - Update a workflow
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
+
+    const { id } = await params
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -70,7 +73,7 @@ export async function PUT(
     if (testMode !== undefined) updateData.testMode = testMode
 
     const result = await collection.findOneAndUpdate(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updateData },
       { returnDocument: 'after' }
     )
@@ -79,13 +82,13 @@ export async function PUT(
       return NextResponse.json({ error: 'Workflow introuvable' }, { status: 404 })
     }
 
-    console.log('✅ Workflow updated:', params.id)
+    console.log('✅ Workflow updated:', id)
 
     return NextResponse.json({
       workflow: { ...result, id: result._id.toString(), _id: undefined },
       message: 'Workflow mis à jour avec succès'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error updating workflow:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la mise à jour du workflow' },
@@ -97,10 +100,12 @@ export async function PUT(
 // DELETE /api/workflows/[id] - Delete a workflow
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
+
+    const { id } = await params
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -108,18 +113,18 @@ export async function DELETE(
     const { db } = await connectToDatabase()
     const collection = db.collection('workflows')
 
-    const result = await collection.deleteOne({ _id: new ObjectId(params.id) })
+    const result = await collection.deleteOne({ _id: new ObjectId(id) })
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ error: 'Workflow introuvable' }, { status: 404 })
     }
 
-    console.log('✅ Workflow deleted:', params.id)
+    console.log('✅ Workflow deleted:', id)
 
     return NextResponse.json({
       message: 'Workflow supprimé avec succès'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error deleting workflow:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la suppression du workflow' },

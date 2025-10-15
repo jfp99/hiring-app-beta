@@ -184,10 +184,9 @@ function validateEnv(): Env {
     return parsed
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.error('❌ Environment validation failed:')
-      console.error('Missing or invalid environment variables:')
+      console.error('❌ Environment validation failed - Missing or invalid environment variables:');
 
-      error.errors.forEach((err) => {
+      (error as any).errors.forEach((err: any) => {
         console.error(`  - ${err.path.join('.')}: ${err.message}`)
       })
 

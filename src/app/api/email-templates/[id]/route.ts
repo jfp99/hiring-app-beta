@@ -1,8 +1,7 @@
 // src/app/api/email-templates/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
-import { getDatabase } from '@/app/lib/mongodb'
+import { auth } from '@/app/lib/auth'
+import { connectToDatabase } from '@/app/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
 import { EmailTemplateType } from '@/app/types/emails'
@@ -18,21 +17,21 @@ const updateTemplateSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const templateId = params.id
+    const { id: templateId } = await params
 
     if (!ObjectId.isValid(templateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
     }
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
     const template = await db
       .collection('email_templates')
       .findOne({ _id: new ObjectId(templateId) })
@@ -48,7 +47,7 @@ export async function GET(
         _id: undefined
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching email template:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération du template' },
@@ -59,15 +58,15 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const templateId = params.id
+    const { id: templateId } = await params
 
     if (!ObjectId.isValid(templateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
@@ -76,7 +75,7 @@ export async function PUT(
     const body = await request.json()
     const validatedData = updateTemplateSchema.parse(body)
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
 
     // Check if template exists
     const existingTemplate = await db
@@ -109,6 +108,10 @@ export async function PUT(
         { returnDocument: 'after' }
       )
 
+    if (!result) {
+      return NextResponse.json({ error: 'Template non trouvé après mise à jour' }, { status: 404 })
+    }
+
     return NextResponse.json({
       template: {
         ...result,
@@ -116,11 +119,11 @@ export async function PUT(
         _id: undefined
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating email template:', error)
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: 'Données de validation invalides' }, { status: 400 })
     }
 
     return NextResponse.json(
@@ -132,21 +135,21 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const templateId = params.id
+    const { id: templateId } = await params
 
     if (!ObjectId.isValid(templateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
     }
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
 
     // Check if template is default (cannot delete default templates)
     const template = await db
@@ -167,7 +170,7 @@ export async function DELETE(
     await db.collection('email_templates').deleteOne({ _id: new ObjectId(templateId) })
 
     return NextResponse.json({ message: 'Template supprimé avec succès' })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting email template:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la suppression du template' },

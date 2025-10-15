@@ -5,9 +5,6 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  css: {
-    postcss: false // Disable PostCSS in tests
-  },
   test: {
     environment: 'happy-dom',
     globals: true,
@@ -28,10 +25,12 @@ export default defineConfig({
         'src/**/test-utils/**'
       ],
       all: true,
-      lines: 80,
-      functions: 80,
-      branches: 80,
-      statements: 80
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80
+      }
     },
     mockReset: true,
     restoreMocks: true,

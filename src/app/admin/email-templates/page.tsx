@@ -154,7 +154,7 @@ export default function EmailTemplatesPage() {
               <div>
                 <h1 className="text-4xl font-bold mb-2">Templates d'Email</h1>
                 <p className="text-xl opacity-90">
-                  Gérez vos templates d'email pour la communication avec les candidats
+                  Gérez vos templates d&apos;email pour la communication avec les candidats
                 </p>
               </div>
 

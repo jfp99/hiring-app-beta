@@ -57,7 +57,7 @@ async function addCandidates() {
 
     // Get existing emails to avoid duplicates
     const existingCandidates = await db.collection('candidates').find({}, { projection: { email: 1 } }).toArray()
-    const existingEmails = new Set(existingCandidates.map((c: any) => c.email))
+    const existingEmails = new Set(existingCandidates.map((c) => (c as { email: string }).email))
 
     console.log(`📊 Existing candidates: ${existingEmails.size}`)
     console.log('\n👥 Creating 20 additional demo candidates...\n')
@@ -102,7 +102,7 @@ async function addCandidates() {
         primarySkills: candidateSkills.slice(0, 3).map(s => s.name),
         languages: [
           { language: 'Français', level: 'native' as const },
-          { language: 'Anglais', level: randomItem(['professional', 'fluent', 'intermediate']) as any }
+          { language: 'Anglais', level: randomItem(['professional' as const, 'fluent' as const, 'intermediate' as const]) }
         ],
         workExperience: [{
           id: '1',
@@ -125,7 +125,7 @@ async function addCandidates() {
         contractPreference: [randomItem([ContractPreference.CDI, ContractPreference.CDD, ContractPreference.FREELANCE])],
         availability: randomItem([AvailabilityStatus.IMMEDIATE, AvailabilityStatus.TWO_WEEKS, AvailabilityStatus.ONE_MONTH]),
         willingToRelocate: Math.random() > 0.5,
-        remoteWorkPreference: randomItem(['remote', 'hybrid', 'onsite', 'flexible']) as any,
+        remoteWorkPreference: randomItem(['remote' as const, 'hybrid' as const, 'onsite' as const, 'flexible' as const]),
         salaryExpectation: {
           min: 35000 + Math.floor(Math.random() * 20000),
           max: 50000 + Math.floor(Math.random() * 30000),

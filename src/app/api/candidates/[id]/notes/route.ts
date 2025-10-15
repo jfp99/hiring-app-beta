@@ -14,11 +14,11 @@ const addNoteSchema = z.object({
 // POST: Add a note to candidate
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -26,14 +26,14 @@ export async function POST(
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_EDIT)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_EDIT)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
       )
     }
 
-    const candidateId = params.id
+    const { id: candidateId } = await params
     const body = await request.json()
     const validatedData = addNoteSchema.parse(body)
 
@@ -53,8 +53,8 @@ export async function POST(
 
     const newNote = {
       id: new Date().getTime().toString(),
-      authorId: session.user.id,
-      authorName: session.user.name || session.user.email,
+      authorId: (session.user as any)?.id || session.user?.email || 'unknown',
+      authorName: session.user?.name || session.user?.email || 'unknown',
       content: validatedData.content,
       createdAt: new Date().toISOString(),
       isPrivate: validatedData.isPrivate || false,
@@ -65,8 +65,8 @@ export async function POST(
       id: new Date().getTime().toString() + '1',
       type: 'note_added',
       description: 'Note added to candidate profile',
-      userId: session.user.id,
-      userName: session.user.name || session.user.email,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
+      userName: session.user?.name || session.user?.email || 'unknown',
       timestamp: new Date().toISOString(),
       metadata: {
         notePreview: validatedData.content.substring(0, 50) + (validatedData.content.length > 50 ? '...' : '')
@@ -94,10 +94,10 @@ export async function POST(
       note: newNote
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid input', details: error.errors },
+        { error: 'Invalid input', details: (error as {issues?: unknown[]})?.issues || [] },
         { status: 400 }
       )
     }

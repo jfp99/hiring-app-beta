@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Search, UserPlus } from 'lucide-react'
+import { Search, UserPlus, Filter, X } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   Candidate,
@@ -60,6 +60,9 @@ export default function CandidatesPage() {
   // Bulk Actions
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
   const [performingBulkAction, setPerformingBulkAction] = useState(false)
+
+  // Sidebar state
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   useEffect(() => {
     fetchCandidates()
@@ -240,6 +243,36 @@ export default function CandidatesPage() {
     return colors[level] || 'bg-gray-50 text-gray-700'
   }
 
+  const getStatusHoverColor = (status: CandidateStatus): string => {
+    const hoverColors: Record<CandidateStatus, string> = {
+      [CandidateStatus.NEW]: 'hover:bg-blue-50 dark:hover:bg-blue-900/20',
+      [CandidateStatus.CONTACTED]: 'hover:bg-purple-50 dark:hover:bg-purple-900/20',
+      [CandidateStatus.SCREENING]: 'hover:bg-yellow-50 dark:hover:bg-yellow-900/20',
+      [CandidateStatus.INTERVIEW_SCHEDULED]: 'hover:bg-orange-50 dark:hover:bg-orange-900/20',
+      [CandidateStatus.INTERVIEW_COMPLETED]: 'hover:bg-cyan-50 dark:hover:bg-cyan-900/20',
+      [CandidateStatus.OFFER_SENT]: 'hover:bg-indigo-50 dark:hover:bg-indigo-900/20',
+      [CandidateStatus.OFFER_ACCEPTED]: 'hover:bg-green-50 dark:hover:bg-green-900/20',
+      [CandidateStatus.OFFER_REJECTED]: 'hover:bg-red-50 dark:hover:bg-red-900/20',
+      [CandidateStatus.HIRED]: 'hover:bg-green-100 dark:hover:bg-green-900/30',
+      [CandidateStatus.REJECTED]: 'hover:bg-red-50 dark:hover:bg-red-900/20',
+      [CandidateStatus.ON_HOLD]: 'hover:bg-gray-50 dark:hover:bg-gray-700',
+      [CandidateStatus.ARCHIVED]: 'hover:bg-gray-100 dark:hover:bg-gray-700'
+    }
+    return hoverColors[status] || 'hover:bg-gray-50 dark:hover:bg-gray-700'
+  }
+
+  const getExperienceHoverColor = (level: ExperienceLevel): string => {
+    const hoverColors: Record<ExperienceLevel, string> = {
+      [ExperienceLevel.ENTRY]: 'hover:bg-green-50 dark:hover:bg-green-900/20',
+      [ExperienceLevel.JUNIOR]: 'hover:bg-blue-50 dark:hover:bg-blue-900/20',
+      [ExperienceLevel.MID]: 'hover:bg-purple-50 dark:hover:bg-purple-900/20',
+      [ExperienceLevel.SENIOR]: 'hover:bg-orange-50 dark:hover:bg-orange-900/20',
+      [ExperienceLevel.LEAD]: 'hover:bg-red-50 dark:hover:bg-red-900/20',
+      [ExperienceLevel.EXECUTIVE]: 'hover:bg-gray-700 dark:hover:bg-gray-800'
+    }
+    return hoverColors[level] || 'hover:bg-gray-50 dark:hover:bg-gray-700'
+  }
+
   // Saved Filters Handlers
   const handleLoadFilter = (filter: SavedFilter) => {
     setSearchTerm(filter.searchTerm || '')
@@ -339,12 +372,21 @@ export default function CandidatesPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff]">
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
         <AdminHeader />
 
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-16 overflow-hidden">
-          <div className="absolute inset-0 bg-black/20"></div>
+        <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-16 overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}></div>
+          </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div className="flex-1">
@@ -360,7 +402,7 @@ export default function CandidatesPage() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-1 flex gap-1">
                   <button
                     onClick={() => setViewMode('kanban')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
                       viewMode === 'kanban'
                         ? 'bg-white text-[#3b5335ff] shadow-lg'
                         : 'text-white hover:bg-white/10'
@@ -373,7 +415,7 @@ export default function CandidatesPage() {
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
                       viewMode === 'list'
                         ? 'bg-white text-[#3b5335ff] shadow-lg'
                         : 'text-white hover:bg-white/10'
@@ -400,88 +442,157 @@ export default function CandidatesPage() {
           </div>
         </section>
 
-        {/* Filters Section */}
-        <section className="py-8 bg-white/80 backdrop-blur-sm border-b border-gray-200/50 sticky top-16 z-40">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Search */}
-            <div className="mb-6">
-              <Input
-                type="text"
-                placeholder="Rechercher par nom, email, poste, compétences..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value)
-                  setCurrentPage(1)
-                }}
-                leftIcon={<Search className="w-5 h-5" />}
-              />
-            </div>
-
-            {/* Status Filters */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Statut</h3>
-              <div className="flex flex-wrap gap-2">
-                {Object.values(CandidateStatus).filter(s => s !== CandidateStatus.ARCHIVED).map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => toggleStatusFilter(status)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                      statusFilter.includes(status)
-                        ? getStatusColor(status) + ' ring-2 ring-offset-1 ring-current'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {CANDIDATE_STATUS_LABELS[status]}
-                  </button>
-                ))}
+        {/* Main Content with Sidebar */}
+        <div className="flex">
+          {/* Sidebar - Filters */}
+          <aside className={`fixed lg:sticky top-16 left-0 h-[calc(100vh-4rem)] w-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-30 transition-transform duration-300 ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          }`}>
+            <div className="p-3 space-y-4">
+              {/* Sidebar Header */}
+              <div className="flex flex-col gap-2">
+                <h2 className="text-sm font-bold text-primary-700 dark:text-accent-500 flex items-center gap-1">
+                  <Filter className="w-4 h-4" />
+                  Filtres
+                </h2>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="lg:hidden self-end -mt-6 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
+                  aria-label="Fermer les filtres"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-            </div>
 
-            {/* Experience Filters */}
-            <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Niveau d&apos;expérience</h3>
-              <div className="flex flex-wrap gap-2">
-                {Object.values(ExperienceLevel).map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => toggleExperienceFilter(level)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                      experienceFilter.includes(level)
-                        ? getExperienceBadge(level) + ' ring-2 ring-offset-1 ring-current'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {EXPERIENCE_LEVEL_LABELS[level]}
-                  </button>
-                ))}
+              {/* Search */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                  Recherche
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Nom..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  leftIcon={<Search className="w-4 h-4" />}
+                />
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* View Content */}
-        <section className="py-12">
+              {/* Status Filters */}
+              <div>
+                <h3 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Statut</h3>
+                <div className="space-y-1.5">
+                  {Object.values(CandidateStatus).filter(s => s !== CandidateStatus.ARCHIVED).map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => toggleStatusFilter(status)}
+                      className={`w-full px-2.5 py-2 rounded-lg text-xs font-medium transition-all text-left flex items-center justify-between cursor-pointer ${
+                        statusFilter.includes(status)
+                          ? getStatusColor(status) + ' ring-2 ring-primary-500 dark:ring-accent-500 shadow-sm'
+                          : `bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 ${getStatusHoverColor(status)} border border-gray-200 dark:border-gray-600`
+                      }`}
+                    >
+                      <span className="truncate">{CANDIDATE_STATUS_LABELS[status]}</span>
+                      {statusFilter.includes(status) && (
+                        <span className="text-xs ml-1">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Experience Filters */}
+              <div>
+                <h3 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Expérience</h3>
+                <div className="space-y-1.5">
+                  {Object.values(ExperienceLevel).map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => toggleExperienceFilter(level)}
+                      className={`w-full px-2.5 py-2 rounded-lg text-xs font-medium transition-all text-left flex items-center justify-between cursor-pointer ${
+                        experienceFilter.includes(level)
+                          ? getExperienceBadge(level) + ' ring-2 ring-primary-500 dark:ring-accent-500 shadow-sm'
+                          : `bg-gray-50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 ${getExperienceHoverColor(level)} border border-gray-200 dark:border-gray-600`
+                      }`}
+                    >
+                      <span className="truncate">{EXPERIENCE_LEVEL_LABELS[level]}</span>
+                      {experienceFilter.includes(level) && (
+                        <span className="text-xs ml-1">✓</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Clear Filters */}
+              {(statusFilter.length > 0 || experienceFilter.length > 0 || searchTerm) && (
+                <button
+                  onClick={() => {
+                    setStatusFilter([])
+                    setExperienceFilter([])
+                    setSearchTerm('')
+                    setCurrentPage(1)
+                  }}
+                  className="w-full px-2.5 py-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg text-xs font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800 cursor-pointer"
+                >
+                  Réinitialiser
+                </button>
+              )}
+            </div>
+          </aside>
+
+          {/* Mobile Sidebar Overlay */}
+          {sidebarOpen && (
+            <div
+              className="fixed inset-0 bg-black/50 dark:bg-black/70 z-20 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+
+          {/* Main Content Area */}
+          <main className="flex-1 min-w-0">
+            {/* Mobile Filter Toggle */}
+            <div className="lg:hidden sticky top-16 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 dark:bg-accent-500 text-white dark:text-primary-900 rounded-lg font-medium hover:bg-primary-700 dark:hover:bg-accent-600 transition-colors cursor-pointer"
+              >
+                <Filter className="w-5 h-5" />
+                Filtres
+                {(statusFilter.length + experienceFilter.length) > 0 && (
+                  <span className="ml-2 px-2 py-0.5 bg-white dark:bg-primary-900 text-primary-700 dark:text-accent-500 rounded-full text-xs font-bold">
+                    {statusFilter.length + experienceFilter.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* View Content */}
+            <section className="py-8 lg:py-12 px-4 sm:px-6 lg:px-8">
           <div className={viewMode === 'kanban' ? 'max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300">
                 {error}
               </div>
             )}
 
             {/* Updating indicator for Kanban */}
             {viewMode === 'kanban' && updating && (
-              <div className="mb-4 flex items-center gap-2 text-[#ffaf50ff] bg-white px-4 py-3 rounded-lg shadow-md">
+              <div className="mb-4 flex items-center gap-2 text-[#ffaf50ff] bg-white dark:bg-gray-800 px-4 py-3 rounded-lg shadow-md">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#ffaf50ff]"></div>
                 <span className="font-medium">Mise à jour...</span>
               </div>
             )}
 
             {loading ? (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                 <SkeletonTable rows={8} />
               </div>
             ) : candidates.length === 0 ? (
-              <div className="bg-white rounded-2xl shadow-lg">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
                 <EmptySearch
                   searchTerm={searchTerm}
                   onClearFilters={() => {
@@ -495,13 +606,6 @@ export default function CandidatesPage() {
             ) : viewMode === 'kanban' ? (
               /* Kanban View */
               <>
-                <div className="mb-6 bg-white/80 backdrop-blur-sm rounded-lg p-4 flex items-center gap-4 text-sm">
-                  <span className="font-semibold text-[#3b5335ff]">💡 Astuce:</span>
-                  <span className="text-gray-600">
-                    Glissez et déposez les cartes des candidats pour changer leur statut dans le pipeline
-                  </span>
-                </div>
-
                 <div className="pb-4">
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2 md:gap-3">
                     {pipelineStatuses.map(status => (
@@ -519,15 +623,15 @@ export default function CandidatesPage() {
                 </div>
 
                 {/* Kanban Statistics */}
-                <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
-                  <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6">Statistiques du Pipeline</h2>
+                <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                  <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-6">Statistiques du Pipeline</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
                     {pipelineStatuses.map(status => (
-                      <div key={status} className="text-center p-4 bg-gray-50 rounded-lg">
-                        <div className="text-3xl font-bold text-[#3b5335ff] mb-2">
+                      <div key={status} className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600/50 transition-all duration-200 hover:shadow-md">
+                        <div className="text-3xl font-bold text-primary-700 dark:text-accent-500 mb-2">
                           {groupCandidatesByStatus()[status].length}
                         </div>
-                        <div className="text-xs text-gray-600">
+                        <div className="text-xs text-gray-600 dark:text-gray-300 font-medium">
                           {CANDIDATE_STATUS_LABELS[status]}
                         </div>
                       </div>
@@ -538,53 +642,53 @@ export default function CandidatesPage() {
             ) : (
               /* List View */
               <>
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead className="bg-gray-50 border-b border-gray-200">
+                      <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                         <tr>
                           <th className="px-6 py-4 w-12">
                             <input
                               type="checkbox"
                               checked={candidates.length > 0 && selectedCandidates.length === candidates.length}
                               onChange={toggleSelectAll}
-                              className="w-4 h-4 text-[#ffaf50ff] border-gray-300 rounded focus:ring-[#ffaf50ff] cursor-pointer"
+                              className="w-4 h-4 text-accent-500 border-gray-300 dark:border-gray-600 rounded focus:ring-accent-500 dark:focus:ring-accent-400 cursor-pointer"
                               title="Sélectionner/Désélectionner tout"
                             />
                           </th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Candidat</th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Poste Actuel</th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Expérience</th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Compétences</th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Statut</th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Note</th>
-                          <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff]">Actions</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Candidat</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Poste Actuel</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Expérience</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Compétences</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Statut</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Note</th>
+                          <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-accent-500">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-200">
+                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                         {candidates.map((candidate) => (
-                          <tr key={candidate.id} className={`transition-colors ${selectedCandidates.includes(candidate.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                          <tr key={candidate.id} className={`transition-colors ${selectedCandidates.includes(candidate.id) ? 'bg-blue-50 dark:bg-blue-900/30' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}>
                             <td className="px-6 py-4">
                               <input
                                 type="checkbox"
                                 checked={selectedCandidates.includes(candidate.id)}
                                 onChange={() => toggleSelectCandidate(candidate.id)}
-                                className="w-4 h-4 text-[#ffaf50ff] border-gray-300 rounded focus:ring-[#ffaf50ff] cursor-pointer"
+                                className="w-4 h-4 text-accent-500 border-gray-300 dark:border-gray-600 rounded focus:ring-accent-500 dark:focus:ring-accent-400 cursor-pointer"
                                 onClick={(e) => e.stopPropagation()}
                               />
                             </td>
                             <td className="px-6 py-4">
                               <div>
-                                <div className="font-medium text-gray-900">
+                                <div className="font-medium text-gray-900 dark:text-gray-100">
                                   {candidate.firstName} {candidate.lastName}
                                 </div>
-                                <div className="text-sm text-gray-500">{candidate.email}</div>
-                                <div className="text-xs text-gray-400">{candidate.phone}</div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">{candidate.email}</div>
+                                <div className="text-xs text-gray-400 dark:text-gray-500">{candidate.phone}</div>
                               </div>
                             </td>
                             <td className="px-6 py-4">
-                              <div className="text-sm text-gray-900">{candidate.currentPosition || '-'}</div>
-                              <div className="text-xs text-gray-500">{candidate.currentCompany || ''}</div>
+                              <div className="text-sm text-gray-900 dark:text-gray-100">{candidate.currentPosition || '-'}</div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">{candidate.currentCompany || ''}</div>
                             </td>
                             <td className="px-6 py-4">
                               <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium ${getExperienceBadge(candidate.experienceLevel)}`}>
@@ -596,13 +700,13 @@ export default function CandidatesPage() {
                                 {candidate.primarySkills?.slice(0, 3).map((skill, idx) => (
                                   <span
                                     key={idx}
-                                    className="inline-flex px-2 py-0.5 bg-[#3b5335ff] text-white text-xs rounded"
+                                    className="inline-flex px-2 py-0.5 bg-primary-600 dark:bg-accent-500 text-white dark:text-primary-900 text-xs rounded font-medium"
                                   >
                                     {skill}
                                   </span>
                                 ))}
                                 {(candidate.primarySkills?.length || 0) > 3 && (
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">
                                     +{(candidate.primarySkills?.length || 0) - 3}
                                   </span>
                                 )}
@@ -616,17 +720,17 @@ export default function CandidatesPage() {
                             <td className="px-6 py-4">
                               {candidate.overallRating ? (
                                 <div className="flex items-center gap-1">
-                                  <span className="text-yellow-500">★</span>
-                                  <span className="text-sm font-medium">{candidate.overallRating.toFixed(1)}</span>
+                                  <span className="text-yellow-500 dark:text-yellow-400">★</span>
+                                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{candidate.overallRating.toFixed(1)}</span>
                                 </div>
                               ) : (
-                                <span className="text-xs text-gray-400">Non noté</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">Non noté</span>
                               )}
                             </td>
                             <td className="px-6 py-4">
                               <Link
                                 href={`/candidates/${candidate.id}`}
-                                className="text-[#3b5335ff] hover:text-[#ffaf50ff] font-medium text-sm"
+                                className="text-primary-700 dark:text-accent-500 hover:text-accent-600 dark:hover:text-accent-400 font-medium text-sm transition-colors"
                               >
                                 Voir →
                               </Link>
@@ -649,7 +753,7 @@ export default function CandidatesPage() {
                     >
                       ← Précédent
                     </Button>
-                    <div className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg font-medium text-gray-700">
+                    <div className="px-4 py-2 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 shadow-sm">
                       Page {currentPage} / {totalPages}
                     </div>
                     <Button
@@ -666,6 +770,8 @@ export default function CandidatesPage() {
             )}
           </div>
         </section>
+          </main>
+        </div>
 
         <Footer />
       </div>
@@ -699,11 +805,11 @@ export default function CandidatesPage() {
 
       {/* Loading Overlay for Bulk Actions */}
       {performingBulkAction && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-lg font-semibold text-[#3b5335ff]">Action en cours...</p>
-            <p className="text-sm text-gray-600 mt-2">Veuillez patienter</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 text-center border border-gray-200 dark:border-gray-700">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-accent-500 mx-auto mb-4"></div>
+            <p className="text-lg font-semibold text-primary-700 dark:text-accent-500">Action en cours...</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">Veuillez patienter</p>
           </div>
         </div>
       )}

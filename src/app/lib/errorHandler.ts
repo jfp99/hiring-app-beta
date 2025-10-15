@@ -1,4 +1,6 @@
 // lib/errorHandler.ts
+import { z } from 'zod'
+
 export class AppError extends Error {
   constructor(
     public message: string,
@@ -42,7 +44,7 @@ export const handleError = (error: unknown) => {
     return {
       error: 'Erreur de validation',
       status: 400,
-      errors: error.errors.map(err => ({
+      errors: (error as any).errors.map((err: any) => ({
         field: err.path.join('.'),
         message: err.message
       }))

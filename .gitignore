@@ -42,3 +42,43 @@ next-env.d.ts
 
 # file uploads
 /uploads
+
+# test artifacts
+.playwright-mcp/
+*.png
+*.jpg
+*.jpeg
+
+# backup files
+*.backup
+*.bak
+*.tmp
+
+# OS files
+nul
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Development docs (optional - comment out if you want to commit)
+# docs-dev/
+
+# Temporary fix scripts
+scripts/fix-*.js
+
+# Build logs
+*.log
+SUCCESS-BUILD.log
+final-build.log
+build.log
+lint-full-output.txt

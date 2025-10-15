@@ -46,10 +46,10 @@ export async function GET(request: NextRequest) {
       comments: formattedComments,
       total: formattedComments.length
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching comments:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }
@@ -90,8 +90,8 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = new Date().toISOString()
-    const userId = (session.user as any).id || session.user.email
-    const userName = session.user.name || session.user.email || 'Unknown'
+    const userId = (session.user as any)?.id || session.user?.email || 'unknown'
+    const userName = session.user?.name || session.user?.email || 'unknown' || 'Unknown'
 
     // Extract mentions from content if not provided
     const extractedMentions = mentions || extractMentions(content)
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       content: content.trim(),
       authorId: userId,
       authorName: userName,
-      authorEmail: session.user.email!,
+      authorEmail: session.user?.email || 'unknown'!,
       createdAt: timestamp,
       isEdited: false,
       parentCommentId: parentCommentId || null,
@@ -151,10 +151,10 @@ export async function POST(request: NextRequest) {
           ]
         })
 
-        if (mentionedUser && mentionedUser.email !== session.user.email) {
+        if (mentionedUser && mentionedUser.email !== (session.user?.email || 'unknown')) {
           // Don't notify yourself
           const notification = {
-            userId: mentionedUser.email,
+            userId: mentionedUser.email!,
             type: 'mention',
             title: `${userName} vous a mentionné`,
             message: `Dans un commentaire sur ${candidate.firstName} ${candidate.lastName}`,
@@ -182,10 +182,10 @@ export async function POST(request: NextRequest) {
       success: true,
       comment: newComment
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating comment:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }

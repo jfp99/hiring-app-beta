@@ -1,8 +1,7 @@
 // src/app/api/email-templates/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
-import { getDatabase } from '@/app/lib/mongodb'
+import { auth } from '@/app/lib/auth'
+import { connectToDatabase } from '@/app/lib/mongodb'
 import { ObjectId } from 'mongodb'
 import { z } from 'zod'
 import { EmailTemplateType } from '@/app/types/emails'
@@ -18,7 +17,7 @@ const createTemplateSchema = z.object({
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -27,7 +26,7 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type')
     const isActive = searchParams.get('isActive')
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
     const query: any = {}
 
     if (type) {
@@ -51,7 +50,7 @@ export async function GET(request: NextRequest) {
         _id: undefined
       }))
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching email templates:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des templates' },
@@ -62,7 +61,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -75,7 +74,7 @@ export async function POST(request: NextRequest) {
     const bodyVars = extractVariables(validatedData.body)
     const variables = Array.from(new Set([...subjectVars, ...bodyVars]))
 
-    const db = await getDatabase()
+    const { db } = await connectToDatabase()
 
     const template = {
       name: validatedData.name,
@@ -85,8 +84,8 @@ export async function POST(request: NextRequest) {
       isActive: validatedData.isActive,
       isDefault: validatedData.isDefault,
       variables,
-      createdBy: (session.user as any).id || session.user.email,
-      createdByName: session.user.name || session.user.email,
+      createdBy: (session.user as any)?.id || session.user?.email || 'unknown',
+      createdByName: session.user?.name || session.user?.email || 'unknown',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }
@@ -99,11 +98,11 @@ export async function POST(request: NextRequest) {
         id: result.insertedId.toString()
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating email template:', error)
 
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors[0].message }, { status: 400 })
+      return NextResponse.json({ error: 'Données de validation invalides' }, { status: 400 })
     }
 
     return NextResponse.json(

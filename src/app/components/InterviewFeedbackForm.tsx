@@ -335,7 +335,7 @@ export default function InterviewFeedbackForm({
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Axes d'Amélioration</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Axes d&apos;Amélioration</h3>
                 <p className="text-sm text-gray-600 mb-3">Que devrait développer le candidat?</p>
                 {areasForImprovement.map((area, index) => (
                   <div key={index} className="flex gap-2 mb-2">
@@ -362,7 +362,7 @@ export default function InterviewFeedbackForm({
                   onClick={() => addItem(setAreasForImprovement)}
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  + Ajouter un axe d'amélioration
+                  + Ajouter un axe d&apos;amélioration
                 </button>
               </div>
             </div>
@@ -373,7 +373,7 @@ export default function InterviewFeedbackForm({
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Moments Marquants</h3>
-                <p className="text-sm text-gray-600 mb-3">Qu'est-ce qui vous a particulièrement impressionné?</p>
+                <p className="text-sm text-gray-600 mb-3">Qu&apos;est-ce qui vous a particulièrement impressionné?</p>
                 {standoutMoments.map((moment, index) => (
                   <div key={index} className="flex gap-2 mb-2">
                     <textarea
@@ -404,7 +404,7 @@ export default function InterviewFeedbackForm({
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Signaux d'Alerte</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Signaux d&apos;Alerte</h3>
                 <p className="text-sm text-gray-600 mb-3">Y a-t-il des préoccupations majeures?</p>
                 {redFlags.map((flag, index) => (
                   <div key={index} className="flex gap-2 mb-2">
@@ -431,7 +431,7 @@ export default function InterviewFeedbackForm({
                   onClick={() => addItem(setRedFlags)}
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  + Ajouter un signal d'alerte
+                  + Ajouter un signal d&apos;alerte
                 </button>
               </div>
 

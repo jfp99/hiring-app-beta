@@ -22,7 +22,7 @@ export default function Dashboard() {
     }
 
     // Redirect based on role
-    const userRole = session.user.role
+    const userRole = (session.user as any)?.role
 
     switch (userRole) {
       case UserRole.SUPER_ADMIN:
@@ -70,7 +70,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Bienvenue, {session.user.name}
+              Bienvenue, {session.user?.name}
             </h1>
             <p className="text-xl md:text-2xl mb-8 opacity-90">
               Votre tableau de bord Hi-ring
@@ -78,7 +78,7 @@ export default function Dashboard() {
             <div className="inline-flex items-center px-4 py-2 bg-white/20 rounded-full">
               <span className="text-sm font-medium">Rôle:</span>
               <span className="ml-2 px-3 py-1 bg-[#ffaf50ff] text-[#3b5335ff] rounded-full text-sm font-bold">
-                {session.user.role}
+                {(session.user as any)?.role}
               </span>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function Dashboard() {
                 </h4>
                 <p className="text-blue-800">
                   Votre tableau de bord personnalisé pour le rôle{' '}
-                  <span className="font-semibold">{session.user.role}</span> sera bientôt disponible.
+                  <span className="font-semibold">{(session.user as any)?.role}</span> sera bientôt disponible.
                   En attendant, vous pouvez utiliser les fonctionnalités ci-dessus.
                 </p>
               </div>

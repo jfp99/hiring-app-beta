@@ -151,12 +151,12 @@ export async function POST(
       aggregatedRating,
       aggregatedRecommendation
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error submitting feedback:', error)
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: error.errors[0].message, details: error.errors },
+        { error: 'Données de validation invalides', details: (error as {issues?: unknown[]})?.issues || [] },
         { status: 400 }
       )
     }
@@ -209,7 +209,7 @@ export async function GET(
       aggregatedRating: interview.aggregatedRating,
       aggregatedRecommendation: interview.aggregatedRecommendation
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching feedback:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération du feedback' },

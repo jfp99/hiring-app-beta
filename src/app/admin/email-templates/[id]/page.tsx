@@ -99,9 +99,9 @@ export default function EditEmailTemplatePage() {
       setBody(template.body)
       setIsActive(template.isActive)
       setIsDefault(template.isDefault || false)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching template:', err)
-      setError(err.message)
+      setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
       setLoading(false)
     }
@@ -171,9 +171,9 @@ export default function EditEmailTemplatePage() {
       }
 
       router.push('/admin/email-templates')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error updating template:', err)
-      setError(err.message)
+      setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
       setSaving(false)
     }
@@ -399,7 +399,7 @@ export default function EditEmailTemplatePage() {
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-900 mb-2">💡 Astuce</h4>
                   <p className="text-sm text-blue-800">
-                    Les variables sont automatiquement remplacées par les données réelles lors de l'envoi de l'email.
+                    Les variables sont automatiquement remplacées par les données réelles lors de l'envoi de l&apos;email.
                   </p>
                 </div>
               </div>

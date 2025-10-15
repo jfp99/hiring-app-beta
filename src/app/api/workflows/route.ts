@@ -1,13 +1,12 @@
 // src/app/api/workflows/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 
 // GET /api/workflows - List all workflows
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -37,7 +36,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       workflows: workflows.map(w => ({ ...w, id: w._id.toString(), _id: undefined }))
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching workflows:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des workflows' },
@@ -49,7 +48,7 @@ export async function GET(request: NextRequest) {
 // POST /api/workflows - Create a new workflow
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -96,7 +95,7 @@ export async function POST(request: NextRequest) {
       workflow: { ...workflow, id: result.insertedId.toString() },
       message: 'Workflow créé avec succès'
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error creating workflow:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la création du workflow' },

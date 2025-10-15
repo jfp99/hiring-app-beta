@@ -60,13 +60,14 @@ async function testBulkEmail() {
       console.log(`✅ Found ${candidates.length} candidates`)
 
       // Filter active candidates
-      const activeCandidates = candidates.filter((c: any) => c.status === 'active')
+      const activeCandidates = candidates.filter((c) => (c as { status: string }).status === 'active')
       console.log(`   📊 Active candidates: ${activeCandidates.length}`)
 
       // Group by stage
       const byStage: Record<string, number> = {}
-      candidates.forEach((c: any) => {
-        byStage[c.stage] = (byStage[c.stage] || 0) + 1
+      candidates.forEach((c) => {
+        const stage = (c as { stage: string }).stage
+        byStage[stage] = (byStage[stage] || 0) + 1
       })
 
       console.log('   📈 Candidates by stage:')
@@ -96,9 +97,10 @@ async function testBulkEmail() {
       const templates = data.templates || []
       console.log(`✅ Found ${templates.length} active templates`)
 
-      templates.forEach((t: any, index: number) => {
-        console.log(`   ${index + 1}. ${t.name} (${t.type})`)
-        console.log(`      Variables: ${t.variables.join(', ')}`)
+      templates.forEach((t, index: number) => {
+        const template = t as { name: string; type: string; variables: string[] }
+        console.log(`   ${index + 1}. ${template.name} (${template.type})`)
+        console.log(`      Variables: ${template.variables.join(', ')}`)
       })
 
       if (templates.length === 0) {
@@ -145,11 +147,12 @@ async function testBulkEmail() {
         // Show recent logs
         const recentLogs = data.logs.slice(0, 5)
         console.log('   📧 Recent emails:')
-        recentLogs.forEach((log: any, index: number) => {
-          console.log(`   ${index + 1}. To: ${log.candidateEmail}`)
-          console.log(`      Template: ${log.templateName}`)
-          console.log(`      Sent: ${new Date(log.sentAt).toLocaleString('fr-FR')}`)
-          console.log(`      Status: ${log.status}`)
+        recentLogs.forEach((log, index: number) => {
+          const logData = log as { candidateEmail: string; templateName: string; sentAt: string; status: string }
+          console.log(`   ${index + 1}. To: ${logData.candidateEmail}`)
+          console.log(`      Template: ${logData.templateName}`)
+          console.log(`      Sent: ${new Date(logData.sentAt).toLocaleString('fr-FR')}`)
+          console.log(`      Status: ${logData.status}`)
         })
       }
     } else {

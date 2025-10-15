@@ -100,9 +100,9 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.id = user.id
         token.email = user.email
-        token.role = user.role
-        token.companyId = user.companyId
-        token.permissions = user.permissions
+        token.role = (user as any).role
+        token.companyId = (user as any).companyId
+        token.permissions = (user as any).permissions
       }
 
       // Update session

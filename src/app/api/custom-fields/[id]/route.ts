@@ -7,7 +7,7 @@ import { UpdateCustomFieldInput } from '@/app/types/customFields'
 // PUT /api/custom-fields/[id] - Update a custom field definition
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession()
@@ -27,7 +27,7 @@ export async function PUT(
       )
     }
 
-    const fieldId = params.id
+    const { id: fieldId } = await params
     const body: UpdateCustomFieldInput = await request.json()
 
     const { db } = await connectToDatabase()
@@ -69,6 +69,13 @@ export async function PUT(
     // Fetch updated field
     const updatedField = await customFieldsCollection.findOne({ id: fieldId })
 
+    if (!updatedField) {
+      return NextResponse.json(
+        { error: 'Field not found after update' },
+        { status: 404 }
+      )
+    }
+
     return NextResponse.json({
       success: true,
       field: {
@@ -77,10 +84,10 @@ export async function PUT(
         _id: undefined
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating custom field:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }
@@ -89,7 +96,7 @@ export async function PUT(
 // DELETE /api/custom-fields/[id] - Delete a custom field definition
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession()
@@ -109,7 +116,7 @@ export async function DELETE(
       )
     }
 
-    const fieldId = params.id
+    const { id: fieldId } = await params
 
     const { db } = await connectToDatabase()
     const customFieldsCollection = db.collection('customFields')
@@ -156,10 +163,10 @@ export async function DELETE(
         deleted: true
       })
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting custom field:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }

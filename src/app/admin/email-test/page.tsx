@@ -310,7 +310,7 @@ export default function EmailTestPage() {
                     <li>Cliquez sur "Create API Key"</li>
                     <li>Nom: "Hi-Ring Recruitment"</li>
                     <li>Type: "Full Access" (ou "Restricted Access" avec Mail Send uniquement)</li>
-                    <li>Copiez la clé (elle ne sera affichée qu'une fois!)</li>
+                    <li>Copiez la clé (elle ne sera affichée qu&apos;une fois!)</li>
                   </ul>
                 </div>
 

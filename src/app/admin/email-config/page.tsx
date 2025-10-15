@@ -76,10 +76,11 @@ export default function EmailConfigPage() {
 
       // Refresh status after test
       await fetchEmailStatus()
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors du test'
       setTestResult({
         success: false,
-        error: error.message || 'Erreur lors du test'
+        error: errorMessage
       })
     } finally {
       setTesting(false)
@@ -110,7 +111,7 @@ export default function EmailConfigPage() {
               Configuration Email
             </h1>
             <p className="text-xl opacity-90">
-              Configurez et testez votre service d'envoi d'emails
+              Configurez et testez votre service d'envoi d&apos;emails
             </p>
           </div>
         </section>
@@ -288,7 +289,7 @@ export default function EmailConfigPage() {
 
                   <div className="prose prose-sm max-w-none">
                     <p className="text-gray-600 dark:text-gray-300 mb-4">
-                      Pour configurer l'envoi d'emails, ajoutez les variables suivantes dans votre fichier <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">.env.local</code>:
+                      Pour configurer l'envoi d&apos;emails, ajoutez les variables suivantes dans votre fichier <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">.env.local</code>:
                     </p>
 
                     <div className="space-y-6">
@@ -298,7 +299,7 @@ export default function EmailConfigPage() {
                           Option 1: SendGrid (Recommandé)
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                          Service d'emailing professionnel avec 100 emails/jour gratuits
+                          Service d&apos;emailing professionnel avec 100 emails/jour gratuits
                         </p>
                         <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
                           <div>SENDGRID_API_KEY=your_sendgrid_api_key</div>
@@ -339,14 +340,14 @@ export default function EmailConfigPage() {
                           rel="noopener noreferrer"
                           className="inline-block mt-3 text-[#ffaf50ff] hover:underline text-sm font-medium"
                         >
-                          → Générer un mot de passe d'application Gmail
+                          → Générer un mot de passe d&apos;application Gmail
                         </a>
                       </div>
                     </div>
 
                     <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <p className="text-sm text-blue-800">
-                        <strong>💡 Note:</strong> Après avoir ajouté les variables d'environnement, redémarrez le serveur de développement pour que les changements prennent effet.
+                        <strong>💡 Note:</strong> Après avoir ajouté les variables d&apos;environnement, redémarrez le serveur de développement pour que les changements prennent effet.
                       </p>
                     </div>
                   </div>

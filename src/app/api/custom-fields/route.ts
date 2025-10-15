@@ -49,10 +49,10 @@ export async function GET(request: NextRequest) {
       fields: formattedFields,
       total: formattedFields.length
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching custom fields:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }
@@ -124,8 +124,8 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = new Date().toISOString()
-    const userId = (session.user as any).id || session.user.email
-    const userName = session.user.name || session.user.email || 'Unknown'
+    const userId = (session.user as any)?.id || session.user?.email || 'unknown'
+    const userName = session.user?.name || session.user?.email || 'unknown' || 'Unknown'
 
     // Create new field definition
     const newField: CustomFieldDefinition = {
@@ -155,10 +155,10 @@ export async function POST(request: NextRequest) {
       success: true,
       field: newField
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating custom field:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }

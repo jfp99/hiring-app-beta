@@ -1,14 +1,13 @@
 // src/app/api/notifications/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 import { CreateNotificationDTO } from '@/app/types/notifications'
 
 // GET /api/notifications - Get user's notifications
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -48,7 +47,7 @@ export async function GET(request: NextRequest) {
       notifications: notifications.map(n => ({ ...n, id: n._id.toString(), _id: undefined })),
       unreadCount
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching notifications:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des notifications' },
@@ -60,7 +59,7 @@ export async function GET(request: NextRequest) {
 // POST /api/notifications - Create a notification
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -97,7 +96,7 @@ export async function POST(request: NextRequest) {
       notification: { ...notification, id: result.insertedId.toString() },
       message: 'Notification créée avec succès'
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error creating notification:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la création de la notification' },
@@ -109,7 +108,7 @@ export async function POST(request: NextRequest) {
 // PUT /api/notifications/mark-all-read - Mark all as read
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -136,7 +135,7 @@ export async function PUT(request: NextRequest) {
       message: 'Notifications marquées comme lues',
       count: result.modifiedCount
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error marking notifications as read:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la mise à jour des notifications' },

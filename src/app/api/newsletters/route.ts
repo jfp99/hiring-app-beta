@@ -52,13 +52,13 @@ export async function GET() {
       collectionUsed: collectionNameUsed
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [NEWSLETTERS] Error fetching newsletters:', error);
     return NextResponse.json(
       { 
         success: false,
         error: 'Failed to fetch newsletters', 
-        details: error.message 
+        details: (error instanceof Error ? error.message : 'Erreur inconnue') 
       }, 
       { status: 500 }
     );
@@ -136,7 +136,7 @@ export async function POST(request: Request) {
       id: result.insertedId.toString()
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [NEWSLETTERS] Error subscribing to newsletter:', error);
     return NextResponse.json(
       { 

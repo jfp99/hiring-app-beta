@@ -103,10 +103,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Initial sign in
       if (user) {
         token.id = user.id
-        token.role = user.role
-        token.firstName = user.firstName
-        token.lastName = user.lastName
-        token.avatar = user.avatar
+        token.role = (user as any).role
+        token.firstName = (user as any).firstName
+        token.lastName = (user as any).lastName
+        token.avatar = (user as any).avatar
       }
 
       // Update token when session is updated
@@ -119,11 +119,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       // Add user data to session
       if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as UserRole
-        session.user.firstName = token.firstName as string
-        session.user.lastName = token.lastName as string
-        session.user.avatar = token.avatar as string
+        (session.user as any).id = token.id as string;
+        (session.user as any).role = token.role as UserRole;
+        (session.user as any).firstName = token.firstName as string;
+        (session.user as any).lastName = token.lastName as string;
+        (session.user as any).avatar = token.avatar as string
       }
 
       return session

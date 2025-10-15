@@ -14,7 +14,7 @@ export async function GET(
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -22,7 +22,7 @@ export async function GET(
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_VIEW)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_VIEW)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -48,7 +48,7 @@ export async function GET(
     // Log activity
     await db.collection('activities').insertOne({
       type: 'candidate_viewed',
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       candidateId: candidateId,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -71,7 +71,7 @@ export async function GET(
       candidate: formattedCandidate
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [CANDIDATES] Error fetching candidate:', error)
     return NextResponse.json(
       { error: 'Failed to fetch candidate' },
@@ -87,7 +87,7 @@ export async function PUT(
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -95,7 +95,7 @@ export async function PUT(
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_EDIT)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_EDIT)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -149,7 +149,7 @@ export async function PUT(
     // Track status changes
     const oldAppStatus = existingCandidate.appStatus || existingCandidate.status
     const statusChanged = body.status && body.status !== oldAppStatus
-    if (statusChanged) {
+    if (statusChanged && body.status) {
       // Store both the real app status and MongoDB-compatible status
       updateData.appStatus = body.status // Real application status
       updateData.status = toMongoStatus(body.status) // MongoDB-compatible status
@@ -159,8 +159,8 @@ export async function PUT(
         id: new Date().getTime().toString(),
         type: 'status_change',
         description: `Status changed from ${oldAppStatus} to ${body.status}`,
-        userId: session.user.id,
-        userName: session.user.name || session.user.email,
+        userId: (session.user as any)?.id || session.user?.email || 'unknown',
+        userName: session.user?.name || session.user?.email || 'unknown',
         timestamp: new Date().toISOString(),
         metadata: {
           oldStatus: oldAppStatus,
@@ -190,8 +190,8 @@ export async function PUT(
         id: new Date().getTime().toString() + '1',
         type: 'profile_updated',
         description: `Candidate assigned to ${updateData.assignedToName}`,
-        userId: session.user.id,
-        userName: session.user.name || session.user.email,
+        userId: (session.user as any)?.id || session.user?.email || 'unknown',
+        userName: session.user?.name || session.user?.email || 'unknown',
         timestamp: new Date().toISOString(),
         metadata: {
           assignedTo: body.assignedTo,
@@ -217,7 +217,7 @@ export async function PUT(
     // Log activity
     await db.collection('activities').insertOne({
       type: 'candidate_updated',
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       candidateId: candidateId,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -238,7 +238,7 @@ export async function PUT(
           body.status
         )
         console.log('🔄 [WORKFLOW] Triggered workflows for status change')
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('❌ [WORKFLOW] Error triggering workflows:', error)
         // Don't fail the update if workflows fail
       }
@@ -259,7 +259,7 @@ export async function PUT(
             await WorkflowEngine.triggerOnTagAdded(candidateId, tag)
           }
           console.log('🔄 [WORKFLOW] Triggered workflows for tag additions')
-        } catch (error) {
+        } catch (error: unknown) {
           console.error('❌ [WORKFLOW] Error triggering tag workflows:', error)
         }
       }
@@ -270,11 +270,11 @@ export async function PUT(
       message: 'Candidate updated successfully'
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ [CANDIDATES] Error updating candidate:', error)
     // Log MongoDB validation error details
-    if (error.code === 121 && error.errInfo) {
-      console.error('📋 [CANDIDATES] MongoDB Validation Error Details:', JSON.stringify(error.errInfo, null, 2))
+    if ((error as any).code === 121 && (error as any).errInfo) {
+      console.error('📋 [CANDIDATES] MongoDB Validation Error Details:', JSON.stringify((error as any).errInfo, null, 2))
     }
     return NextResponse.json(
       { error: 'Failed to update candidate' },
@@ -290,7 +290,7 @@ export async function DELETE(
 ) {
   try {
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -298,7 +298,7 @@ export async function DELETE(
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.CANDIDATE_DELETE)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_DELETE)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -338,7 +338,7 @@ export async function DELETE(
     // Log activity
     await db.collection('activities').insertOne({
       type: 'candidate_deleted',
-      userId: session.user.id,
+      userId: (session.user as any)?.id || session.user?.email || 'unknown',
       candidateId: candidateId,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -353,7 +353,7 @@ export async function DELETE(
       message: 'Candidate archived successfully'
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [CANDIDATES] Error deleting candidate:', error)
     return NextResponse.json(
       { error: 'Failed to delete candidate' },

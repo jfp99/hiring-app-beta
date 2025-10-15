@@ -99,10 +99,10 @@ export default function WorkflowsPage() {
   if (loading) {
     return (
       <AdminGuard>
-        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-300 dark:text-gray-300">Chargement des workflows...</p>
+            <p className="text-gray-600 dark:text-gray-300">Chargement des workflows...</p>
           </div>
         </div>
       </AdminGuard>
@@ -115,7 +115,17 @@ export default function WorkflowsPage() {
         <AdminHeader />
 
         {/* Header */}
-        <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-12">
+        <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-12 overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}></div>
+          </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link href="/admin" className="text-white/80 hover:text-white mb-4 inline-block">
               ← Retour au tableau de bord
@@ -131,7 +141,7 @@ export default function WorkflowsPage() {
 
               <button
                 onClick={() => setShowTemplateModal(true)}
-                className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+                className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all cursor-pointer"
               >
                 + Nouveau Workflow
               </button>
@@ -140,28 +150,79 @@ export default function WorkflowsPage() {
         </section>
 
         {/* Stats */}
-        <section className="py-6 bg-white/80 border-b border-gray-200 dark:border-gray-700">
+        <section className="py-8 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{workflows.length}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Total Workflows</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">
-                  {workflows.filter(w => w.isActive).length}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {/* Total Workflows */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 rounded-2xl opacity-5 group-hover:opacity-10 transition-opacity"></div>
+                <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all hover:shadow-lg cursor-default">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl">
+                      <span className="text-2xl">🤖</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-primary-700 dark:text-accent-500 mb-1">{workflows.length}</div>
+                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</div>
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Workflows</div>
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Actifs</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">
-                  {workflows.reduce((sum, w) => sum + w.executionCount, 0)}
+
+              {/* Active Workflows */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl opacity-5 group-hover:opacity-10 transition-opacity"></div>
+                <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all hover:shadow-lg cursor-default">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 rounded-xl">
+                      <span className="text-2xl">✓</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
+                        {workflows.filter(w => w.isActive).length}
+                      </div>
+                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Actifs</div>
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Workflows Actifs</div>
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Exécutions Totales</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">{templates.length}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">Templates Disponibles</div>
+
+              {/* Total Executions */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl opacity-5 group-hover:opacity-10 transition-opacity"></div>
+                <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:shadow-lg cursor-default">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl">
+                      <span className="text-2xl">⚡</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+                        {workflows.reduce((sum, w) => sum + w.executionCount, 0)}
+                      </div>
+                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</div>
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Exécutions</div>
+                </div>
+              </div>
+
+              {/* Available Templates */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl opacity-5 group-hover:opacity-10 transition-opacity"></div>
+                <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:shadow-lg cursor-default">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-3 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30 rounded-xl">
+                      <span className="text-2xl">📋</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">{templates.length}</div>
+                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Disponibles</div>
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Templates</div>
+                </div>
               </div>
             </div>
           </div>
@@ -173,7 +234,7 @@ export default function WorkflowsPage() {
             {workflows.length === 0 ? (
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center">
                 <div className="text-6xl mb-4">🤖</div>
-                <h2 className="text-2xl font-bold text-[#3b5335ff] mb-2">
+                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-accent-500 mb-2">
                   Aucun workflow configuré
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
@@ -181,7 +242,7 @@ export default function WorkflowsPage() {
                 </p>
                 <button
                   onClick={() => setShowTemplateModal(true)}
-                  className="bg-[#ffaf50ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+                  className="bg-[#ffaf50ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-lg transition-all cursor-pointer"
                 >
                   Créer un workflow
                 </button>
@@ -269,9 +330,9 @@ export default function WorkflowsPage() {
                       <div className="flex gap-2 ml-4">
                         <button
                           onClick={() => toggleWorkflow(workflow.id, workflow.isActive)}
-                          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                          className={`px-4 py-2 rounded-lg font-medium transition-all cursor-pointer ${
                             workflow.isActive
-                              ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
+                              ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                               : 'bg-green-100 text-green-700 hover:bg-green-200'
                           }`}
                           title={workflow.isActive ? 'Désactiver' : 'Activer'}
@@ -280,7 +341,7 @@ export default function WorkflowsPage() {
                         </button>
                         <button
                           onClick={() => deleteWorkflow(workflow.id)}
-                          className="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200 transition-all"
+                          className="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200 transition-all cursor-pointer"
                           title="Supprimer"
                         >
                           🗑️
@@ -301,11 +362,11 @@ export default function WorkflowsPage() {
       {showTemplateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
+            <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
               <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">Choisir un Template</h2>
               <button
                 onClick={() => setShowTemplateModal(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 text-2xl"
+                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-2xl cursor-pointer"
               >
                 ✕
               </button>
@@ -322,7 +383,7 @@ export default function WorkflowsPage() {
                     <div className="flex items-start gap-3 mb-3">
                       <div className="text-3xl">{template.icon}</div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-lg text-[#3b5335ff] mb-1">
+                        <h3 className="font-bold text-lg text-[#3b5335ff] dark:text-accent-500 mb-1">
                           {template.name}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{template.description}</p>

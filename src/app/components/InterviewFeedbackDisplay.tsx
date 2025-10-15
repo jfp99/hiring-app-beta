@@ -191,7 +191,7 @@ function FeedbackCard({ feedback, index }: { feedback: InterviewFeedback; index:
         {/* Red Flags */}
         {feedback.redFlags && feedback.redFlags.length > 0 && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-            <h5 className="text-sm font-semibold text-red-900 mb-2">🚩 Signaux d'Alerte</h5>
+            <h5 className="text-sm font-semibold text-red-900 mb-2">🚩 Signaux d&apos;Alerte</h5>
             <ul className="space-y-2">
               {feedback.redFlags.map((flag, i) => (
                 <li key={i} className="text-sm text-red-800">{flag}</li>

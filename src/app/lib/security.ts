@@ -32,7 +32,6 @@ export function rateLimit(config: RateLimitConfig) {
     const identifier =
       request.headers.get('x-forwarded-for')?.split(',')[0] ||
       request.headers.get('x-real-ip') ||
-      request.ip ||
       'unknown'
 
     const key = `rate-limit:${identifier}:${request.nextUrl.pathname}`

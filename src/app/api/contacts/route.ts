@@ -44,10 +44,10 @@ export async function GET() {
     
     return NextResponse.json({ contacts });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching contacts:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch contacts', details: error.message }, 
+      { error: 'Failed to fetch contacts', details: (error instanceof Error ? error.message : 'Erreur inconnue') },
       { status: 500 }
     );
   }

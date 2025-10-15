@@ -1,7 +1,7 @@
 // src/app/auth/login/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -11,7 +11,7 @@ import Logohiring from '../../../../public/logo-hiring.png'
 import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
@@ -208,7 +208,7 @@ export default function LoginPage() {
         {/* Footer Links */}
         <div className="mt-8 flex justify-center space-x-4 text-sm text-gray-600">
           <Link href="/" className="hover:text-[#3b5335ff]">
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
           <span>•</span>
           <Link href="/contact" className="hover:text-[#3b5335ff]">
@@ -221,5 +221,20 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
+          <p className="text-[#3b5335ff] font-medium">Chargement...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }

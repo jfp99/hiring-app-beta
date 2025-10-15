@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
 
     // Parse PDF
     if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
-      const pdfParse = (await import('pdf-parse')).default
+      const pdfParseModule = await import('pdf-parse') as any
+      const pdfParse = pdfParseModule.default || pdfParseModule
       const buffer = Buffer.from(await file.arrayBuffer())
       const pdfData = await pdfParse(buffer)
       text = pdfData.text
@@ -116,10 +117,10 @@ export async function POST(request: NextRequest) {
       data: parsedData,
       rawText: text.substring(0, 1000) // Return first 1000 chars for debugging
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error parsing resume:', error)
     return NextResponse.json(
-      { error: 'Erreur lors de l\'analyse du CV: ' + error.message },
+      { error: 'Erreur lors de l\'analyse du CV: ' + (error instanceof Error ? error.message : 'Erreur inconnue') },
       { status: 500 }
     )
   }
@@ -318,7 +319,7 @@ function parseResumeText(text: string): ParsedResumeData {
 
   // Extract summary (usually first paragraph after name)
   const summaryKeywords = ['profil', 'summary', 'résumé', 'about', 'à propos']
-  let summaryLines: string[] = []
+  const summaryLines: string[] = []
   let inSummary = false
 
   for (const line of lines) {

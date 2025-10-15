@@ -7,7 +7,7 @@ import { UpdateCommentInput, extractMentions } from '@/app/types/comments'
 // PUT /api/comments/[id] - Update a comment
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession()
@@ -18,7 +18,7 @@ export async function PUT(
       )
     }
 
-    const commentId = params.id
+    const { id: commentId } = await params
     const body: UpdateCommentInput = await request.json()
     const { content, mentions } = body
 
@@ -43,8 +43,8 @@ export async function PUT(
     }
 
     // Check if user is the author
-    const userId = (session.user as any).id || session.user.email
-    if (comment.authorId !== userId && comment.authorEmail !== session.user.email) {
+    const userId = (session.user as any)?.id || session.user?.email || 'unknown'
+    if (comment.authorId !== userId && comment.authorEmail !== session.user?.email || 'unknown') {
       return NextResponse.json(
         { error: 'You can only edit your own comments' },
         { status: 403 }
@@ -52,7 +52,7 @@ export async function PUT(
     }
 
     const timestamp = new Date().toISOString()
-    const userName = session.user.name || session.user.email || 'Unknown'
+    const userName = session.user?.name || session.user?.email || 'unknown' || 'Unknown'
 
     // Extract mentions from content if not provided
     const extractedMentions = mentions || extractMentions(content)
@@ -105,6 +105,13 @@ export async function PUT(
     // Fetch updated comment
     const updatedComment = await commentsCollection.findOne({ id: commentId })
 
+    if (!updatedComment) {
+      return NextResponse.json(
+        { error: 'Comment not found after update' },
+        { status: 404 }
+      )
+    }
+
     return NextResponse.json({
       success: true,
       comment: {
@@ -113,10 +120,10 @@ export async function PUT(
         _id: undefined
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating comment:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }
@@ -125,7 +132,7 @@ export async function PUT(
 // DELETE /api/comments/[id] - Delete a comment
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession()
@@ -136,7 +143,7 @@ export async function DELETE(
       )
     }
 
-    const commentId = params.id
+    const { id: commentId } = await params
 
     const { db } = await connectToDatabase()
     const commentsCollection = db.collection('comments')
@@ -152,8 +159,8 @@ export async function DELETE(
     }
 
     // Check if user is the author or admin
-    const userId = (session.user as any).id || session.user.email
-    const isAuthor = comment.authorId === userId || comment.authorEmail === session.user.email
+    const userId = (session.user as any)?.id || session.user?.email || 'unknown'
+    const isAuthor = comment.authorId === userId || comment.authorEmail === session.user?.email || 'unknown'
     const isAdmin = (session.user as any).role === 'admin'
 
     if (!isAuthor && !isAdmin) {
@@ -168,7 +175,7 @@ export async function DELETE(
 
     // Add activity to candidate
     const timestamp = new Date().toISOString()
-    const userName = session.user.name || session.user.email || 'Unknown'
+    const userName = session.user?.name || session.user?.email || 'unknown' || 'Unknown'
 
     await candidatesCollection.updateOne(
       { id: comment.candidateId },
@@ -197,10 +204,10 @@ export async function DELETE(
       success: true,
       message: 'Comment deleted successfully'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting comment:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }

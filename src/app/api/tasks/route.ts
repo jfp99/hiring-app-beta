@@ -1,14 +1,13 @@
 // src/app/api/tasks/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 import { Task } from '@/app/types/workflows'
 
 // GET /api/tasks - List all tasks
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -37,7 +36,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       tasks: tasks.map(t => ({ ...t, id: t._id.toString(), _id: undefined }))
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error fetching tasks:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la récupération des tâches' },
@@ -49,7 +48,7 @@ export async function GET(request: NextRequest) {
 // POST /api/tasks - Create a new task
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -103,7 +102,7 @@ export async function POST(request: NextRequest) {
       task: { ...task, id: result.insertedId.toString() },
       message: 'Tâche créée avec succès'
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error creating task:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la création de la tâche' },

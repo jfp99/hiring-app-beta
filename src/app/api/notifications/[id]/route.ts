@@ -1,27 +1,28 @@
 // src/app/api/notifications/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/lib/auth'
+import { auth } from '@/app/lib/auth'
 import { ObjectId } from 'mongodb'
 
 // PUT /api/notifications/[id] - Mark notification as read
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
+
+    const { id } = await params
 
     const { db } = await connectToDatabase()
     const collection = db.collection('notifications')
 
     const result = await collection.findOneAndUpdate(
       {
-        _id: new ObjectId(params.id),
+        _id: new ObjectId(id),
         userId: session.user?.email || session.user?.id
       },
       {
@@ -41,7 +42,7 @@ export async function PUT(
       notification: { ...result, id: result._id.toString(), _id: undefined },
       message: 'Notification marquée comme lue'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error updating notification:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la mise à jour de la notification' },
@@ -53,19 +54,21 @@ export async function PUT(
 // DELETE /api/notifications/[id] - Delete notification
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
+
+    const { id } = await params
 
     const { db } = await connectToDatabase()
     const collection = db.collection('notifications')
 
     const result = await collection.deleteOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       userId: session.user?.email || session.user?.id
     })
 
@@ -76,7 +79,7 @@ export async function DELETE(
     return NextResponse.json({
       message: 'Notification supprimée avec succès'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Error deleting notification:', error)
     return NextResponse.json(
       { error: 'Erreur lors de la suppression de la notification' },

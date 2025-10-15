@@ -6,7 +6,7 @@ import { QuickScore } from '@/app/types/candidates'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession()
@@ -17,7 +17,7 @@ export async function POST(
       )
     }
 
-    const candidateId = params.id
+    const { id: candidateId } = await params
     const body = await request.json()
 
     // Validate required fields
@@ -32,7 +32,7 @@ export async function POST(
     const quickScore: QuickScore = {
       id: new Date().getTime().toString() + Math.random().toString(36).substring(2, 9),
       scoredBy: body.scoredBy || session.user.email,
-      scoredByName: body.scoredByName || session.user.name || session.user.email,
+      scoredByName: body.scoredByName || session.user?.name || session.user?.email || 'unknown',
       scoredAt: new Date().toISOString(),
       overallRating: body.overallRating,
       technicalRating: body.technicalRating,
@@ -45,11 +45,12 @@ export async function POST(
 
     // Connect to database
     const { db } = await connectToDatabase()
+    const { ObjectId } = await import('mongodb')
     const candidatesCollection = db.collection('candidates')
 
     // Add quick score to candidate
     const result = await candidatesCollection.updateOne(
-      { id: candidateId },
+      { _id: new ObjectId(candidateId) },
       {
         $push: { quickScores: quickScore as any },
         $set: { updatedAt: new Date().toISOString() }
@@ -65,7 +66,7 @@ export async function POST(
 
     // Add activity
     await candidatesCollection.updateOne(
-      { id: candidateId },
+      { _id: new ObjectId(candidateId) },
       {
         $push: {
           activities: {
@@ -80,12 +81,12 @@ export async function POST(
               thumbs: quickScore.thumbs
             }
           }
-        }
+        } as any
       }
     )
 
     // Recalculate average ratings
-    const candidate = await candidatesCollection.findOne({ id: candidateId })
+    const candidate = await candidatesCollection.findOne({ _id: new ObjectId(candidateId) })
     if (candidate && candidate.quickScores) {
       const quickScores = candidate.quickScores as QuickScore[]
       const avgOverall = quickScores.reduce((sum, s) => sum + s.overallRating, 0) / quickScores.length
@@ -107,7 +108,7 @@ export async function POST(
 
       // Update candidate ratings
       await candidatesCollection.updateOne(
-        { id: candidateId },
+        { _id: new ObjectId(candidateId) },
         {
           $set: {
             overallRating: avgOverall,
@@ -123,10 +124,10 @@ export async function POST(
       success: true,
       quickScore
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error adding quick score:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }
@@ -134,16 +135,17 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const candidateId = params.id
+    const { id: candidateId } = await params
 
     const { db } = await connectToDatabase()
+    const { ObjectId } = await import('mongodb')
     const candidatesCollection = db.collection('candidates')
 
     const candidate = await candidatesCollection.findOne(
-      { id: candidateId },
+      { _id: new ObjectId(candidateId) },
       { projection: { quickScores: 1 } }
     )
 
@@ -157,10 +159,10 @@ export async function GET(
     return NextResponse.json({
       quickScores: candidate.quickScores || []
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching quick scores:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: (error instanceof Error ? error.message : 'Erreur inconnue') || 'Internal server error' },
       { status: 500 }
     )
   }

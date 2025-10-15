@@ -10,11 +10,11 @@ import { Input } from './ui/Input'
 
 export function Newsletter() {
   const [email, setEmail] = useState('')
-  const { loading, error, callApi, reset } = useApi()
+  const { loading, error, callApi, clearError } = useApi()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       const result = await callApi('/newsletter', {
         method: 'POST',
@@ -37,13 +37,13 @@ export function Newsletter() {
       <p className="mb-4 opacity-90">
         Recevez les dernières offres et actualités du recrutement.
       </p>
-      
+
       {error && (
         <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
           <p className="text-sm">{error}</p>
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="flex gap-2 items-end">
         <div className="flex-1">
           <Input
@@ -51,7 +51,7 @@ export function Newsletter() {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value)
-              if (error) reset()
+              if (error) clearError()
             }}
             placeholder="votre@email.com"
             leftIcon={<Mail className="w-5 h-5" />}
@@ -67,7 +67,7 @@ export function Newsletter() {
           size="md"
           isLoading={loading}
         >
-          S'inscrire
+          S&apos;inscrire
         </Button>
       </form>
     </div>

@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       id: result.insertedId.toString()
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [CANDIDATS] Error creating candidate:', error);
     return NextResponse.json(
       { 
@@ -92,7 +92,7 @@ export async function GET() {
       candidats: formattedCandidats 
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [CANDIDATS] Error fetching candidates:', error);
     return NextResponse.json(
       { 

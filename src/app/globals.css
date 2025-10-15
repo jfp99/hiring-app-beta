@@ -1,6 +1,37 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap');
-@import "./lib/animations.css";
+
+/* Tailwind v4 Theme Configuration */
+@theme {
+  /* Custom color palette */
+  --color-primary-50: #f4f7f3;
+  --color-primary-100: #e8efe6;
+  --color-primary-200: #d1dfc9;
+  --color-primary-300: #a9c49a;
+  --color-primary-400: #7aa568;
+  --color-primary-500: #3b5335;
+  --color-primary-600: #2a3d26;
+  --color-primary-700: #1e2c1a;
+  --color-primary-800: #141d12;
+  --color-primary-900: #0f160d;
+
+  --color-accent-50: #fff7ed;
+  --color-accent-100: #ffedd5;
+  --color-accent-200: #fed7aa;
+  --color-accent-300: #fdba74;
+  --color-accent-400: #fb923c;
+  --color-accent-500: #ffaf50;
+  --color-accent-600: #ff9500;
+  --color-accent-700: #c2410c;
+  --color-accent-800: #9a3412;
+  --color-accent-900: #7c2d12;
+
+  --color-cream-50: #fcfcfb;
+  --color-cream-100: #f8f7f3;
+  --color-cream-200: #f4f2ed;
+  --color-cream-300: #ebe8e0;
+  --color-cream-400: #dbd7cc;
+  --color-cream-500: #c8c3b5;
+}
 
 /* Enable class-based dark mode for Tailwind v4 */
 @variant dark (&:where(.dark, .dark *));

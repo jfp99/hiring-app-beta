@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
   try {
     // Check authentication
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.USER_VIEW)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.USER_VIEW)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -78,8 +78,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Apply company filter for non-admin users
-    if (session.user.role === UserRole.CLIENT || session.user.role === UserRole.HIRING_MANAGER) {
-      query.companyId = session.user.companyId
+    if ((session.user as any).role === UserRole.CLIENT || (session.user as any).role === UserRole.HIRING_MANAGER) {
+      query.companyId = (session.user as any).companyId
     }
 
     const users = await db
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
       total: formattedUsers.length
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [USERS] Error fetching users:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.USER_CREATE)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.USER_CREATE)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
       permissions: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      invitedBy: session.user.id
+      invitedBy: (session.user as any)?.id || session.user?.email || 'unknown'
     }
 
     // If sending invite, generate token
@@ -208,10 +208,10 @@ export async function POST(request: NextRequest) {
       userId: result.insertedId.toString()
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid input', details: error.errors },
+        { error: 'Invalid input', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -229,7 +229,7 @@ export async function PUT(request: NextRequest) {
   try {
     // Check authentication
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -247,8 +247,8 @@ export async function PUT(request: NextRequest) {
     }
 
     // Check permission
-    const isOwnProfile = userId === session.user.id
-    if (!isOwnProfile && !hasPermission(session.user, PERMISSIONS.USER_EDIT)) {
+    const isOwnProfile = userId === (session.user as any)?.id || session.user?.email || 'unknown'
+    if (!isOwnProfile && !hasPermission(session.user as any, PERMISSIONS.USER_EDIT)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -259,7 +259,7 @@ export async function PUT(request: NextRequest) {
     const validatedData = updateUserSchema.parse(body)
 
     // Restrict what users can update on their own profile
-    if (isOwnProfile && !hasPermission(session.user, PERMISSIONS.USER_EDIT)) {
+    if (isOwnProfile && !hasPermission(session.user as any, PERMISSIONS.USER_EDIT)) {
       // Users can only update their own name
       const allowedFields = ['firstName', 'lastName']
       Object.keys(validatedData).forEach(key => {
@@ -296,10 +296,10 @@ export async function PUT(request: NextRequest) {
       message: 'User updated successfully'
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid input', details: error.errors },
+        { error: 'Invalid input', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -317,7 +317,7 @@ export async function DELETE(request: NextRequest) {
   try {
     // Check authentication
     const session = await auth()
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -325,7 +325,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Check permission
-    if (!hasPermission(session.user, PERMISSIONS.USER_DELETE)) {
+    if (!hasPermission(session.user as any, PERMISSIONS.USER_DELETE)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -343,7 +343,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Prevent self-deletion
-    if (userId === session.user.id) {
+    if (userId === (session.user as any)?.id || session.user?.email || 'unknown') {
       return NextResponse.json(
         { error: 'Cannot delete your own account' },
         { status: 400 }
@@ -361,7 +361,7 @@ export async function DELETE(request: NextRequest) {
           isActive: false,
           updatedAt: new Date().toISOString(),
           deactivatedAt: new Date().toISOString(),
-          deactivatedBy: session.user.id
+          deactivatedBy: (session.user as any)?.id || session.user?.email || 'unknown'
         }
       }
     )
@@ -380,7 +380,7 @@ export async function DELETE(request: NextRequest) {
       message: 'User deactivated successfully'
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [USERS] Error deleting user:', error)
     return NextResponse.json(
       { error: 'Internal server error' },

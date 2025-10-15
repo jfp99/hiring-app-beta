@@ -79,7 +79,7 @@ export async function GET(request: Request) {
       offres: formattedOffres 
     });
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [JOBS] Error fetching jobs:', error);
     return NextResponse.json(
       { 
