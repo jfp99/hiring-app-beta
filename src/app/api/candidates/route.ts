@@ -12,6 +12,7 @@ import {
   ContractPreference
 } from '@/app/types/candidates'
 import { toMongoStatus } from '@/app/lib/status-mapper'
+import { MongoQuery, getErrorMessage } from '@/app/types/api'
 import { z } from 'zod'
 
 // Validation schema
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
       minRating: searchParams.get('minRating') ? Number(searchParams.get('minRating')) : undefined,
       isActive: searchParams.get('isActive') === 'true',
       isArchived: searchParams.get('isArchived') === 'true',
-      sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
+      sortBy: searchParams.get('sortBy') || 'createdAt',
       sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
       page: Number(searchParams.get('page')) || 1,
       limit: Number(searchParams.get('limit')) || 20
@@ -80,7 +81,7 @@ export async function GET(request: NextRequest) {
     const { db } = await connectToDatabase()
 
     // Build query
-    const query: any = {}
+    const query: MongoQuery = {}
 
     // Text search
     if (filters.search) {
@@ -147,7 +148,7 @@ export async function GET(request: NextRequest) {
     // Sorting
     const sortField = filters.sortBy || 'createdAt'
     const sortOrder = filters.sortOrder === 'asc' ? 1 : -1
-    const sort: any = { [sortField]: sortOrder }
+    const sort: Record<string, 1 | -1> = { [sortField]: sortOrder }
 
     // Execute query
     const [candidates, total] = await Promise.all([
@@ -197,10 +198,10 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / (filters.limit || 20))
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ [CANDIDATES] Error fetching candidates:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch candidates' },
+      { error: 'Failed to fetch candidates', details: getErrorMessage(error) },
       { status: 500 }
     )
   }
@@ -350,7 +351,7 @@ export async function POST(request: NextRequest) {
       candidateId: result.insertedId.toString()
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid input', details: error.errors },
@@ -360,7 +361,7 @@ export async function POST(request: NextRequest) {
 
     console.error('❌ [CANDIDATES] Error creating candidate:', error)
     return NextResponse.json(
-      { error: 'Failed to create candidate' },
+      { error: 'Failed to create candidate', details: getErrorMessage(error) },
       { status: 500 }
     )
   }

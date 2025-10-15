@@ -55,7 +55,7 @@ export default function CandidateCard({
       }`}
     >
       {/* Drag Indicator - More Compact */}
-      <div className="flex items-center gap-0.5 mb-2 text-gray-300 group-hover:text-accent-500 transition-colors" aria-hidden="true">
+      <div className="flex items-center gap-1 mb-2 text-gray-300 group-hover:text-accent-500 transition-colors" aria-hidden="true">
         <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
         <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
         <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
@@ -103,8 +103,8 @@ export default function CandidateCard({
 
         {/* Rating Badge */}
         {candidate.overallRating && (
-          <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-            <div className="flex items-center gap-0.5 bg-yellow-50 px-1.5 py-0.5 rounded shadow-sm">
+          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+            <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded shadow-sm">
               <span className="text-yellow-500 text-xs">★</span>
               <span className="text-xs font-bold">{candidate.overallRating.toFixed(1)}</span>
             </div>
@@ -114,7 +114,7 @@ export default function CandidateCard({
 
       {/* Experience Level - More Compact */}
       <div className="mb-2">
-        <span className="inline-block px-1.5 py-0.5 bg-purple-50 text-purple-700 text-xs rounded border border-purple-200">
+        <span className="inline-block px-2 py-1.5 min-h-[28px] bg-purple-50 text-purple-700 text-xs rounded border border-purple-200">
           {EXPERIENCE_LEVEL_LABELS[candidate.experienceLevel]}
         </span>
       </div>
@@ -126,14 +126,14 @@ export default function CandidateCard({
             {candidate.primarySkills.slice(0, 2).map((skill, idx) => (
               <span
                 key={idx}
-                className="inline-block px-1.5 py-0.5 bg-primary-500 text-white text-xs rounded truncate max-w-[80px] shadow-sm"
+                className="inline-block px-2 py-1.5 min-h-[28px] bg-primary-500 text-white text-xs rounded truncate max-w-[80px] shadow-sm"
                 title={skill}
               >
                 {skill}
               </span>
             ))}
             {candidate.primarySkills.length > 2 && (
-              <span className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-600 text-xs rounded shadow-sm">
+              <span className="inline-block px-2 py-1.5 min-h-[28px] bg-gray-100 text-gray-600 text-xs rounded shadow-sm">
                 +{candidate.primarySkills.length - 2}
               </span>
             )}
@@ -149,7 +149,7 @@ export default function CandidateCard({
       )}
 
       {/* Footer - More Compact */}
-      <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 space-y-0.5">
+      <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 space-y-1">
         <div className="truncate" title={candidate.email}>
           📧 {candidate.email.split('@')[0]}
         </div>

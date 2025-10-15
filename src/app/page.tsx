@@ -15,11 +15,11 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200 dark:from-gray-900 dark:to-gray-800">
       <Header />
 
       {/* Hero Section avec Image de fond */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-32 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -28,8 +28,8 @@ export default function Home() {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -37,25 +37,25 @@ export default function Home() {
             <div className={`transform transition-all duration-1000 ${
               isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
             }`}>
-              <div className="inline-block bg-[#ffaf50ff]/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                <span className="text-[#ffaf50ff] font-semibold">🚀 Votre succès commence ici</span>
+              <div className="inline-block bg-accent-500/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                <span className="text-accent-500 font-semibold">🚀 Votre succès commence ici</span>
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 Connectons les
-                <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-pulse">
+                <span className="block mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent animate-pulse">
                   Talents & Entreprises
                 </span>
               </h1>
 
-              <p className="text-xl md:text-2xl mb-10 leading-relaxed text-gray-200">
+              <p className="text-lg sm:text-xl md:text-xl lg:text-2xl mb-10 leading-relaxed text-gray-200">
                 Expertise en recrutement depuis plus de 10 ans. Nous transformons vos ambitions professionnelles en réalité.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/offres-emploi"
-                  className="group bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden"
+                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Découvrir nos offres
@@ -68,7 +68,7 @@ export default function Home() {
 
                 <Link
                   href="/contact"
-                  className="group border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-[#3b5335ff] transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center"
+                  className="group border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Nous contacter
@@ -95,20 +95,20 @@ export default function Home() {
                   placeholder="blur"
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB//2Q=="
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent"></div>
 
                 {/* Floating Stats Cards */}
                 <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff]">500+</div>
+                    <div className="text-2xl font-bold text-primary-700">500+</div>
                     <div className="text-xs text-gray-600">Placements</div>
                   </div>
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#ffaf50ff]">98%</div>
+                    <div className="text-2xl font-bold text-accent-500">98%</div>
                     <div className="text-xs text-gray-600">Satisfaction</div>
                   </div>
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff]">15j</div>
+                    <div className="text-2xl font-bold text-primary-700">15j</div>
                     <div className="text-xs text-gray-600">Avg. Time</div>
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function Home() {
           <p className="text-center text-gray-500 dark:text-gray-400 font-semibold mb-8">Ils nous font confiance</p>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
             {['🏢 Microsoft', '🏭 Amazon', '🏛 Google', '🏦 Meta', '🏪 Apple'].map((company, idx) => (
-              <div key={idx} className="text-2xl font-bold text-gray-700 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-[#ffaf50ff] transition-colors cursor-pointer">
+              <div key={idx} className="text-2xl font-bold text-gray-700 dark:text-gray-300 hover:text-primary-700 dark:hover:text-accent-500 transition-colors cursor-pointer">
                 {company}
               </div>
             ))}
@@ -133,16 +133,16 @@ export default function Home() {
       </section>
 
       {/* Services Section avec Images */}
-      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-[#f8f7f3ff] dark:to-gray-800">
+      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-[#3b5335ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
-              <span className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">💼 Nos Services</span>
+            <div className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-4 py-2 rounded-full mb-4">
+              <span className="text-primary-700 dark:text-accent-500 font-semibold">💼 Nos Services</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
               Des Solutions Sur Mesure
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Que vous soyez une entreprise en quête de talents ou un candidat à la recherche d'opportunités, nous avons la solution adaptée à vos besoins
             </p>
           </div>
@@ -155,7 +155,7 @@ export default function Home() {
                 features: ['Profils qualifiés', 'Process rapide', 'Garantie 3 mois', 'Suivi post-placement'],
                 image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=400&fit=crop',
                 icon: '👔',
-                color: 'from-[#3b5335ff] to-[#2a3d26ff]'
+                color: 'from-primary-500 to-primary-600'
               },
               {
                 title: 'Intérim & CDD',
@@ -163,7 +163,7 @@ export default function Home() {
                 features: ['Disponibilité immédiate', 'Profils adaptés', 'Gestion administrative', 'Flexibilité totale'],
                 image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
                 icon: '⚡',
-                color: 'from-[#ffaf50ff] to-[#ff9500ff]'
+                color: 'from-accent-500 to-accent-600'
               },
               {
                 title: 'Chasse de Têtes Executive',
@@ -171,7 +171,7 @@ export default function Home() {
                 features: ['Approche confidentielle', 'Talents rares', 'Expertise sectorielle', 'Network premium'],
                 image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop',
                 icon: '🎯',
-                color: 'from-[#3b5335ff] to-[#ffaf50ff]'
+                color: 'from-primary-500 to-accent-500'
               }
             ].map((service, index) => (
               <div
@@ -193,7 +193,7 @@ export default function Home() {
 
                 {/* Content */}
                 <div className="p-8">
-                  <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-3 group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
+                  <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
@@ -202,14 +202,14 @@ export default function Home() {
                   <ul className="space-y-3 mb-6">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
-                        <svg className="w-5 h-5 text-[#ffaf50ff] mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-5 h-5 text-accent-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
                         {feature}
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-[#ffaf50ff] dark:to-[#ff9500ff] text-white dark:text-[#3b5335ff] py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+                  <button className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 text-white dark:text-primary-700 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
                     En savoir plus →
                   </button>
                 </div>
@@ -223,20 +223,20 @@ export default function Home() {
       <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
-              <span className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">🔄 Notre Méthode</span>
+            <div className="inline-block bg-accent-500/10 dark:bg-accent-500/20 px-4 py-2 rounded-full mb-4">
+              <span className="text-primary-700 dark:text-accent-500 font-semibold">🔄 Notre Méthode</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
               Un Processus Éprouvé
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               De l'analyse de vos besoins jusqu'à l'intégration réussie, nous vous accompagnons à chaque étape
             </p>
           </div>
 
           <div className="relative">
             {/* Vertical Line */}
-            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[#3b5335ff] to-[#ffaf50ff]"></div>
+            <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-primary-500 to-accent-500"></div>
 
             <div className="space-y-12">
               {[
@@ -284,8 +284,8 @@ export default function Home() {
                     <div className="flex items-center gap-4 mb-4">
                       <div className="text-5xl">{process.icon}</div>
                       <div>
-                        <div className="text-sm font-bold text-[#ffaf50ff] mb-1">ÉTAPE {process.step}</div>
-                        <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{process.title}</h3>
+                        <div className="text-sm font-bold text-accent-500 mb-1">ÉTAPE {process.step}</div>
+                        <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500">{process.title}</h3>
                       </div>
                     </div>
                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{process.description}</p>
@@ -302,7 +302,7 @@ export default function Home() {
                         className="w-full h-64 object-cover"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/60 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary-500/60 to-transparent"></div>
                     </div>
                   </div>
                 </div>
@@ -313,16 +313,16 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 bg-gradient-to-b from-[#f8f7f3ff] dark:from-gray-800 to-white dark:to-gray-900">
+      <section className="py-24 bg-gradient-to-b from-cream-100 dark:from-gray-800 to-white dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-[#3b5335ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
-              <span className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">⭐ Témoignages</span>
+            <div className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-4 py-2 rounded-full mb-4">
+              <span className="text-primary-700 dark:text-accent-500 font-semibold">⭐ Témoignages</span>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
               Ce Qu'ils Disent de Nous
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               La satisfaction de nos clients et candidats est notre meilleure récompense
             </p>
           </div>
@@ -361,17 +361,17 @@ export default function Home() {
                     alt={testimonial.name}
                     width={64}
                     height={64}
-                    className="w-16 h-16 rounded-full object-cover ring-4 ring-[#ffaf50ff]/20"
+                    className="w-16 h-16 rounded-full object-cover ring-4 ring-accent-500/20"
                     loading="lazy"
                   />
                   <div>
-                    <h4 className="font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{testimonial.name}</h4>
+                    <h4 className="font-bold text-primary-700 dark:text-accent-500">{testimonial.name}</h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-[#ffaf50ff]" fill="currentColor" viewBox="0 0 20 20">
+                    <svg key={i} className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
@@ -393,15 +393,15 @@ export default function Home() {
             className="object-cover"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#3b5335ff]/95 to-[#2a3d26ff]/95"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/95 to-primary-600/95"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
               Des Chiffres Qui Parlent
             </h2>
-            <p className="text-xl text-gray-200">
+            <p className="text-base sm:text-lg md:text-xl text-gray-200">
               Plus d'une décennie d'excellence dans le recrutement
             </p>
           </div>
@@ -431,7 +431,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-[#3b5335ff] via-[#2a3d26ff] to-[#3b5335ff] text-white relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -439,23 +439,23 @@ export default function Home() {
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <div className="inline-block bg-[#ffaf50ff]/20 backdrop-blur-sm px-6 py-3 rounded-full mb-8">
-            <span className="text-[#ffaf50ff] font-bold text-lg">🚀 Prêt à Démarrer ?</span>
+          <div className="inline-block bg-accent-500/20 backdrop-blur-sm px-6 py-3 rounded-full mb-8">
+            <span className="text-accent-500 font-bold text-lg">🚀 Prêt à Démarrer ?</span>
           </div>
 
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             Transformons Ensemble Votre
-            <span className="block mt-2 text-[#ffaf50ff]">Avenir Professionnel</span>
+            <span className="block mt-2 text-accent-500">Avenir Professionnel</span>
           </h2>
 
-          <p className="text-xl mb-12 text-gray-200 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl mb-12 text-gray-200 max-w-3xl mx-auto leading-relaxed">
             Que vous cherchiez le talent idéal ou l'opportunité de vos rêves, notre équipe d'experts est là pour vous accompagner vers le succès.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
             <Link
               href="/contact"
-              className="group bg-[#ffaf50ff] text-[#3b5335ff] px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg inline-flex items-center justify-center gap-3"
+              className="group bg-accent-500 text-primary-700 px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg inline-flex items-center justify-center gap-3"
             >
               Commencer Maintenant
               <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -465,7 +465,7 @@ export default function Home() {
 
             <Link
               href="/offres-emploi"
-              className="group border-2 border-white text-white px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:text-[#3b5335ff] transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center gap-3"
+              className="group border-2 border-white text-white px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:text-primary-700 transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center gap-3"
             >
               Explorer les Offres
               <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -476,19 +476,19 @@ export default function Home() {
 
           <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-300">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#ffaf50ff]" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               Sans engagement
             </div>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#ffaf50ff]" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               Réponse sous 24h
             </div>
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-[#ffaf50ff]" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               100% gratuit

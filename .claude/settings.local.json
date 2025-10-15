@@ -13,7 +13,9 @@
       "mcp__playwright__browser_fill_form",
       "mcp__playwright__browser_type",
       "Bash(taskkill:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run test:coverage:*)"
     ],
     "deny": [],
     "ask": []

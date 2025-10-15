@@ -229,24 +229,24 @@ export default function Admin() {
 
   return (
     <AdminGuard>
-    <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200 dark:from-gray-900 dark:to-gray-800">
       <AdminHeader />
 
       {/* Hero Section Admin */}
-      <section className="relative bg-gradient-to-br from-[#f9fdf7] via-[#f4f9f2] to-[#eef7ea] dark:from-gray-800 dark:via-gray-850 dark:to-gray-800 py-16 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-cream-50 via-cream-100 to-cream-200 dark:from-gray-800 dark:via-gray-850 dark:to-gray-800 py-16 overflow-hidden">
         {/* Decorative soft blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-5"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#3b5335ff] rounded-full filter blur-3xl opacity-5"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-accent-500 rounded-full filter blur-3xl opacity-5"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary-500 rounded-full filter blur-3xl opacity-5"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
-            <h1 className="text-3xl md:text-5xl font-semibold mb-4 leading-tight text-[#3b5335ff] dark:text-white">
+            <h1 className="text-3xl md:text-5xl font-semibold mb-4 leading-tight text-primary-700 dark:text-white">
               Administration
-              <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold">
+              <span className="block mt-2 bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent font-bold">
                 Tableau de Bord
               </span>
             </h1>
-            <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed text-[#3b5335ff]/70 dark:text-gray-300 font-normal">
+            <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed text-primary-700/70 dark:text-gray-300 font-normal">
               Gérez vos contacts, newsletters et offres d'emploi
             </p>
           </div>
@@ -266,16 +266,16 @@ export default function Admin() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 ${
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
-                      : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
+                      ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 shadow-lg'
+                      : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
                   }`}
                 >
                   <span>{tab.icon}</span>
                   {tab.label}
                   {tab.count !== undefined && (
-                    <span className="bg-[#3b5335ff] dark:bg-[#ffaf50ff] text-white dark:text-[#3b5335ff] px-2 py-1 rounded-full text-sm">
+                    <span className="bg-primary-500 dark:bg-accent-500 text-white dark:text-primary-700 px-2 py-1 rounded-full text-sm">
                       {tab.count}
                     </span>
                   )}
@@ -285,10 +285,10 @@ export default function Admin() {
               {/* Bouton Ajouter une offre - plus petit */}
               <button
                 onClick={() => setActiveTab('add-offre')}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-1.5 ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                   activeTab === 'add-offre'
-                    ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
-                    : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
+                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 shadow-lg'
+                    : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
                 }`}
               >
                 <span>➕</span>
@@ -332,7 +332,7 @@ export default function Admin() {
           {activeTab === 'contacts' && (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
               <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
                   Contacts ({contacts.length})
                 </h2>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -350,12 +350,12 @@ export default function Admin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-700">
                       <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Type</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Nom</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Email</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Téléphone</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Message</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Date</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Type</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Nom</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Email</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Téléphone</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Message</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -392,7 +392,7 @@ export default function Admin() {
           {activeTab === 'newsletters' && (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
                   Inscriptions Newsletter ({newsletters.length})
                 </h2>
               </div>
@@ -400,8 +400,8 @@ export default function Admin() {
                 <table className="w-full">
                   <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Email</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Date d'inscription</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Email</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date d'inscription</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -421,7 +421,7 @@ export default function Admin() {
           {activeTab === 'offres' && (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
               <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
                   Offres d'Emploi ({offres.length})
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -440,13 +440,13 @@ export default function Admin() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-gray-700">
                       <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Titre</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Entreprise</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Lieu</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Type</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Salaire</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Date</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-[#3b5335ff] dark:text-gray-200">Statut</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Titre</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Entreprise</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Lieu</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Type</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Salaire</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Statut</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -480,7 +480,7 @@ export default function Admin() {
             {activeTab === 'add-offre' && (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
                     Ajouter une Nouvelle Offre d'Emploi
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 mt-2">
@@ -527,7 +527,7 @@ export default function Admin() {
 
                     {/* Type de contrat */}
                     <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
+                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
                         Type de contrat *
                     </label>
                     <select
@@ -535,7 +535,7 @@ export default function Admin() {
                         required
                         value={newOffre.typeContrat}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     >
                         <option value="">Sélectionnez un type de contrat *</option>
                         {typesContrat.map(type => (
@@ -546,7 +546,7 @@ export default function Admin() {
 
                     {/* Catégorie */}
                     <div>
-                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
+                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
                         Catégorie *
                     </label>
                     <select
@@ -554,7 +554,7 @@ export default function Admin() {
                         required
                         value={newOffre.categorie}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     >
                         {categories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -590,7 +590,7 @@ export default function Admin() {
 
                     {/* Description du poste */}
                     <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
+                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
                         Description du poste *
                     </label>
                     <textarea
@@ -599,14 +599,14 @@ export default function Admin() {
                         value={newOffre.description}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="Décrivez les missions, responsabilités et enjeux du poste..."
                     />
                     </div>
 
                     {/* Compétences requises */}
                     <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">
+                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
                         Compétences requises
                     </label>
                     <textarea
@@ -614,7 +614,7 @@ export default function Admin() {
                         value={newOffre.competences}
                         onChange={handleInputChange}
                         rows={3}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                         placeholder="Listez les compétences techniques et soft skills requises (séparées par des virgules)"
                     />
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -625,7 +625,7 @@ export default function Admin() {
 
                 {/* Aperçu des données (pour debug) */}
                 <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <h4 className="text-sm font-medium text-[#3b5335ff] dark:text-gray-200 mb-2">Aperçu des données:</h4>
+                    <h4 className="text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">Aperçu des données:</h4>
                     <pre className="text-xs text-gray-600 dark:text-gray-300 overflow-auto">
                     {JSON.stringify(newOffre, null, 2)}
                     </pre>

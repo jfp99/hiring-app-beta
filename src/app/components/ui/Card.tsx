@@ -33,7 +33,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     }
 
     const hoverStyles = hover
-      ? 'hover:shadow-2xl hover:shadow-accent-500/10 dark:hover:shadow-accent-400/20 hover:scale-[1.02] hover:-translate-y-1 before:absolute before:inset-0 before:bg-gradient-to-br before:from-accent-500/5 dark:before:from-accent-400/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500'
+      ? 'hover:shadow-2xl hover:shadow-accent-500/10 dark:hover:shadow-accent-400/20 hover:scale-[1.02] hover:-translate-y-1 before:absolute before:inset-0 before:bg-gradient-to-br before:from-accent-500/5 dark:before:from-accent-400/5 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 before:rounded-lg before:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-2 after:ring-accent-500/0 hover:after:ring-accent-500/20 dark:hover:after:ring-accent-400/30 after:transition-all after:duration-300'
       : ''
 
     const clickableStyles = clickable

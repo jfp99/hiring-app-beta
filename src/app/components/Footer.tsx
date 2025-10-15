@@ -86,17 +86,17 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="bg-gradient-to-br from-[#2a3d26ff] to-[#1e2c1aff] dark:from-gray-900 dark:to-gray-950 text-white">
+    <footer className="bg-gradient-to-br from-primary-600 to-primary-700 dark:from-gray-900 dark:to-gray-950 text-white">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent">
+            <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">
               Hiring
             </h3>
-            <span className="text-lg font-semibold text-[#ffaf50ff]">Cabinet de Conseil en Recrutement</span>
+            <span className="text-lg font-semibold text-accent-500">Cabinet de Conseil en Recrutement</span>
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
               Votre partenaire de confiance pour le recrutement et la mise en relation 
               des talents avec les entreprises les plus innovantes. 
@@ -104,12 +104,12 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => (
-                <a 
+                <a
                   key={index}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center hover:bg-[#ffaf50ff] hover:text-[#3b5335ff] transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
+                  className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent-500 hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400"
                   aria-label={`Suivez-nous sur ${social.name}`}
                 >
                   {social.icon}
@@ -120,7 +120,7 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-6 text-[#ffaf50ff]">Navigation</h4>
+            <h4 className="text-lg font-semibold mb-6 text-accent-500">Navigation</h4>
             <ul className="space-y-3">
               {[
                 { href: '/', label: 'Accueil' },
@@ -129,9 +129,9 @@ export default function Footer() {
                 { href: '/contact', label: 'Contact' },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-[#ffaf50ff] transition-colors duration-300 hover:pl-2 block transform hover:-translate-y-0.5"
+                    className="text-gray-300 hover:text-accent-400 transition-colors duration-300 hover:pl-2 block transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 rounded"
                   >
                     {link.label}
                   </Link>
@@ -142,7 +142,7 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-lg font-semibold mb-6 text-[#ffaf50ff]">Newsletter</h4>
+            <h4 className="text-lg font-semibold mb-6 text-accent-500">Newsletter</h4>
             <p className="text-gray-300 mb-4 text-sm">
               Recevez les dernières offres et actualités du recrutement.
             </p>
@@ -152,22 +152,22 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Votre email"
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent placeholder-gray-400 text-white transition-all duration-300"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent placeholder-gray-400 text-white transition-all duration-300"
                 required
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-md ${
+                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 ${
                   loading
                     ? 'bg-gray-400 cursor-not-allowed text-white'
-                    : 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] hover:shadow-lg'
+                    : 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 hover:shadow-lg'
                 }`}
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-[#3b5335ff] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-primary-700 border-t-transparent rounded-full animate-spin"></div>
                     Inscription...
                   </span>
                 ) : (
@@ -198,15 +198,15 @@ export default function Footer() {
             {/* Social Media Icons */}
             <div className="flex justify-center space-x-4">
               {socialLinks.map((social, index) => (
-                <a 
+                <a
                   key={index}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-[#ffaf50ff] hover:text-[#3b5335ff] transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                  className="min-w-[44px] min-h-[44px] bg-white/10 rounded-full flex items-center justify-center hover:bg-accent-500 hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400"
                   aria-label={`Suivez-nous sur ${social.name}`}
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     {social.icon.props.children}
                   </svg>
                 </a>
@@ -216,10 +216,10 @@ export default function Footer() {
             {/* Copyright */}
             <div className="text-center">
               <div className="text-gray-400 text-xs mb-2">
-                © {currentYear} <span className="text-[#ffaf50ff] font-semibold">Hiring</span>. 
+                © {currentYear} <span className="text-accent-500 font-semibold">Hiring</span>.
                 Tous droits réservés.
               </div>
-              <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] bg-clip-text text-transparent font-bold text-xs">
+              <div className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent font-bold text-xs">
                 2025 HIRING - Cabinet de Recrutement
               </div>
             </div>
@@ -235,7 +235,7 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-gray-400 hover:text-[#ffaf50ff] transition-colors duration-300"
+                  className="text-gray-400 hover:text-accent-400 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 rounded"
                 >
                   {link.label}
                 </Link>

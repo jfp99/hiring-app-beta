@@ -19,7 +19,7 @@ const updateInterviewSchema = z.object({
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; interviewId: string } }
+  { params }: { params: Promise<{ id: string; interviewId: string }> }
 ) {
   try {
     const session = await auth()
@@ -27,8 +27,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const candidateId = params.id
-    const interviewId = params.interviewId
+    // Await params in Next.js 15
+    const resolvedParams = await params
+    const candidateId = resolvedParams.id
+    const interviewId = resolvedParams.interviewId
 
     if (!ObjectId.isValid(candidateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })
@@ -118,7 +120,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; interviewId: string } }
+  { params }: { params: Promise<{ id: string; interviewId: string }> }
 ) {
   try {
     const session = await auth()
@@ -126,8 +128,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
 
-    const candidateId = params.id
-    const interviewId = params.interviewId
+    // Await params in Next.js 15
+    const resolvedParams = await params
+    const candidateId = resolvedParams.id
+    const interviewId = resolvedParams.interviewId
 
     if (!ObjectId.isValid(candidateId)) {
       return NextResponse.json({ error: 'ID invalide' }, { status: 400 })

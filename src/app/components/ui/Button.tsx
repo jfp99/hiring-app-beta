@@ -2,7 +2,7 @@ import React from 'react'
 import { Loader2 } from 'lucide-react'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'tertiary' | 'destructive' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'destructive' | 'ghost' | 'ghost-icon' | 'link'
   size?: 'sm' | 'md' | 'lg'
   isLoading?: boolean
   leftIcon?: React.ReactNode
@@ -75,12 +75,40 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-105
         focus:ring-primary-500 dark:focus:ring-primary-400
       `,
+      'ghost-icon': `
+        bg-transparent text-gray-400 dark:text-gray-500
+        hover:text-gray-600 dark:hover:text-gray-300
+        hover:bg-gray-100 dark:hover:bg-gray-800
+        focus:ring-primary-500 dark:focus:ring-primary-400
+        rounded-xl p-0 flex items-center justify-center
+        hover:scale-110
+      `,
+      link: `
+        bg-transparent text-primary-600 dark:text-accent-500
+        hover:text-primary-700 dark:hover:text-accent-400
+        underline-offset-4 hover:underline
+        focus:ring-primary-500 dark:focus:ring-primary-400
+        p-0 h-auto rounded-none
+      `,
     }
 
     const sizes = {
       sm: 'px-3 py-1.5 text-sm',
       md: 'px-4 py-2.5 text-base',
       lg: 'px-6 py-3 text-lg',
+    }
+
+    // Special size handling for specific variants
+    const getSize = () => {
+      if (variant === 'ghost-icon') {
+        // Icon buttons have fixed sizes
+        return size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-12 h-12' : 'w-10 h-10'
+      }
+      if (variant === 'link') {
+        // Link buttons have minimal padding
+        return size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-lg' : 'text-base'
+      }
+      return sizes[size]
     }
 
     return (
@@ -90,7 +118,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={`
           ${baseStyles}
           ${variants[variant]}
-          ${sizes[size]}
+          ${getSize()}
           ${className}
         `}
         {...props}

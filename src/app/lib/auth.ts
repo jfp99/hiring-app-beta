@@ -1,6 +1,10 @@
 // app/lib/auth.ts
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import bcrypt from 'bcryptjs'
+import { connectToDatabase } from './mongodb'
+import { sanitizeEmail } from './security'
+import { UserRole } from '../types/auth'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -11,40 +15,138 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.log('❌ [AUTH] Missing credentials')
+            return null
+          }
+
+          // Sanitize email input
+          const email = sanitizeEmail(credentials.email as string)
+
+          if (!email) {
+            console.log('❌ [AUTH] Invalid email format')
+            return null
+          }
+
+          // Connect to database
+          const { db } = await connectToDatabase()
+
+          // Find user by email
+          const user = await db.collection('users').findOne({
+            email: email.toLowerCase()
+          })
+
+          if (!user) {
+            console.log(`❌ [AUTH] User not found: ${email}`)
+            return null
+          }
+
+          // Check if user is active
+          if (!user.isActive) {
+            console.log(`❌ [AUTH] User account is disabled: ${email}`)
+            return null
+          }
+
+          // Verify password using bcrypt
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password as string,
+            user.password
+          )
+
+          if (!isPasswordValid) {
+            console.log(`❌ [AUTH] Invalid password for user: ${email}`)
+            return null
+          }
+
+          // Log successful authentication
+          await db.collection('activities').insertOne({
+            type: 'user_login',
+            userId: user._id.toString(),
+            timestamp: new Date().toISOString(),
+            metadata: {
+              email: user.email,
+              ip: 'N/A' // Can be enhanced with request IP
+            }
+          })
+
+          console.log(`✅ [AUTH] User authenticated: ${email}`)
+
+          // Return user object for JWT
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            name: `${user.firstName} ${user.lastName}`,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role || UserRole.RECRUITER,
+            avatar: user.avatar
+          }
+        } catch (error) {
+          console.error('❌ [AUTH] Authorization error:', error)
           return null
         }
-
-        // Vérification simple - remplacez par votre logique
-        if (credentials.email === 'admin@example.com' && credentials.password === 'admin123') {
-          return {
-            id: '1',
-            email: 'admin@example.com',
-            name: 'Administrateur',
-            role: 'admin'
-          }
-        }
-
-        return null
       }
     })
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60 // Update session every 24 hours
   },
   pages: {
-    signIn: '/admin/login'
+    signIn: '/auth/login',
+    error: '/auth/error'
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // Initial sign in
       if (user) {
-        token.role = (user as any).role
+        token.id = user.id
+        token.role = user.role
+        token.firstName = user.firstName
+        token.lastName = user.lastName
+        token.avatar = user.avatar
       }
+
+      // Update token when session is updated
+      if (trigger === 'update' && session) {
+        return { ...token, ...session.user }
+      }
+
       return token
     },
     async session({ session, token }) {
-      (session.user as any).role = token.role
+      // Add user data to session
+      if (token && session.user) {
+        session.user.id = token.id as string
+        session.user.role = token.role as UserRole
+        session.user.firstName = token.firstName as string
+        session.user.lastName = token.lastName as string
+        session.user.avatar = token.avatar as string
+      }
+
       return session
     }
-  }
+  },
+  events: {
+    async signOut({ token }) {
+      // Log sign out event
+      try {
+        const { db } = await connectToDatabase()
+        await db.collection('activities').insertOne({
+          type: 'user_logout',
+          userId: token?.id as string,
+          timestamp: new Date().toISOString(),
+          metadata: {
+            email: token?.email as string
+          }
+        })
+        console.log(`✅ [AUTH] User signed out: ${token?.email}`)
+      } catch (error) {
+        console.error('❌ [AUTH] Error logging sign out:', error)
+      }
+    }
+  },
+  debug: process.env.NODE_ENV === 'development'
 })

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap');
+@import "./lib/animations.css";
 
 /* Enable class-based dark mode for Tailwind v4 */
 @variant dark (&:where(.dark, .dark *));
@@ -18,17 +19,19 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Styles des boutons améliorés */
+/* Styles des boutons améliorés - Optimized with GPU acceleration */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-orange), #ff9500ff);
   color: var(--primary-green);
   padding: 0.875rem 2rem;
   border-radius: 0.75rem;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgba(255, 175, 80, 0.3);
   position: relative;
   overflow: hidden;
+  will-change: transform;
 }
 
 .btn-primary::before {
@@ -51,14 +54,34 @@ body {
   box-shadow: 0 8px 25px rgba(255, 175, 80, 0.4);
 }
 
-/* Animations personnalisées */
+/* Animations personnalisées - GPU optimized */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
 
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float {
+    animation: none;
+  }
+}
+
+/* Ripple effect for micro-interactions */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 0.6s ease-out;
 }
 
 /* Effets de glassmorphisme */

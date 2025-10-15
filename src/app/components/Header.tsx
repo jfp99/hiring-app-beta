@@ -37,7 +37,7 @@ export default function Header() {
     <header className={`sticky top-0 z-50 transition-all duration-300 ${
       isScrolled
         ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50'
-        : 'bg-[#f8f7f3ff] dark:bg-gray-900 shadow-sm'
+        : 'bg-cream-100 dark:bg-gray-900 shadow-sm'
     }`}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -57,7 +57,7 @@ export default function Header() {
                   className="h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#ffaf50ff] to-transparent opacity-0 group-hover:opacity-10 rounded-lg transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-accent-500 to-transparent opacity-0 group-hover:opacity-10 rounded-lg transition-opacity duration-300" />
               </div>
             </Link>
           </div>
@@ -68,21 +68,21 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative group px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                className={`relative group px-6 py-3 rounded-xl font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                   pathname === item.href
-                    ? 'text-[#3b5335ff] dark:text-[#ffaf50ff] bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 shadow-inner'
-                    : 'text-[#3b5335ff]/80 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-[#ffaf50ff] hover:bg-white/50 dark:hover:bg-gray-800/50'
+                    ? 'text-primary-700 dark:text-accent-500 bg-accent-500/10 dark:bg-accent-500/20 shadow-inner'
+                    : 'text-primary-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-accent-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
               >
                 <span className="font-semibold">{item.label}</span>
 
                 {/* Indicateur actif */}
                 {pathname === item.href && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-[#ffaf50ff] rounded-full" />
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-accent-500 rounded-full" />
                 )}
 
                 {/* Effet hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#ffaf50ff]/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-accent-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
               </Link>
             ))}
             <div className="ml-2">
@@ -95,10 +95,10 @@ export default function Header() {
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`p-3 rounded-xl transition-all duration-300 ${
+              className={`p-3 rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                 isMenuOpen
-                  ? 'bg-[#3b5335ff] dark:bg-[#ffaf50ff] text-white'
-                  : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-gray-200 shadow-lg hover:shadow-xl'
+                  ? 'bg-primary-500 dark:bg-accent-500 text-white'
+                  : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 shadow-lg hover:shadow-xl'
               }`}
               aria-label="Toggle menu"
             >
@@ -124,16 +124,16 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={handleLinkClick}
-                  className={`block px-4 py-4 rounded-xl font-medium transition-all duration-300 group relative ${
+                  className={`block px-4 py-4 rounded-xl font-medium transition-all duration-300 group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                     pathname === item.href
-                      ? 'bg-gradient-to-r from-[#ffaf50ff]/10 to-[#3b5335ff]/5 dark:from-[#ffaf50ff]/20 dark:to-[#ffaf50ff]/5 text-[#3b5335ff] dark:text-[#ffaf50ff] border border-[#ffaf50ff]/20 dark:border-[#ffaf50ff]/30'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-[#3b5335ff] dark:hover:text-[#ffaf50ff]'
+                      ? 'bg-gradient-to-r from-accent-500/10 to-primary-500/5 dark:from-accent-500/20 dark:to-accent-500/5 text-primary-700 dark:text-accent-500 border border-accent-500/20 dark:border-accent-500/30'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-accent-400'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">{item.label}</span>
                     {pathname === item.href && (
-                      <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full animate-pulse" />
+                      <span className="w-2 h-2 bg-accent-500 rounded-full animate-pulse" />
                     )}
                   </div>
                 </Link>

@@ -13,11 +13,72 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: 'Hi-ring - Cabinet de Recrutement',
-  description: 'Votre partenaire en recrutement innovant',
+  metadataBase: new URL(process.env.NEXTAUTH_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Hi-ring - Cabinet de Recrutement',
+    template: '%s | Hi-ring'
+  },
+  description: 'Plateforme ATS/CRM de recrutement innovante. Gérez vos candidats, automatisez vos processus et trouvez les meilleurs talents avec Hi-ring.',
+  keywords: [
+    'recrutement',
+    'ATS',
+    'CRM',
+    'gestion candidats',
+    'pipeline recrutement',
+    'cabinet recrutement',
+    'plateforme recrutement',
+    'automatisation recrutement',
+    'talent acquisition'
+  ],
+  authors: [{ name: 'Hi-ring' }],
+  creator: 'Hi-ring',
+  publisher: 'Hi-ring',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: '/favicon.svg',
+    apple: '/favicon.svg',
   },
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    url: process.env.NEXTAUTH_URL || 'http://localhost:3000',
+    siteName: 'Hi-ring',
+    title: 'Hi-ring - Cabinet de Recrutement',
+    description: 'Plateforme ATS/CRM de recrutement innovante',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Hi-ring - Plateforme de recrutement'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Hi-ring - Cabinet de Recrutement',
+    description: 'Plateforme ATS/CRM de recrutement innovante',
+    images: ['/og-image.png'],
+    creator: '@hiring'
+  },
+  alternates: {
+    canonical: process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    // yandex: 'your-yandex-verification-code',
+    // bing: 'your-bing-verification-code',
+  }
 }
 
 export default function RootLayout({
