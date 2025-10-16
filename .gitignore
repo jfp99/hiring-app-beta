@@ -70,8 +70,14 @@ desktop.ini
 *.swo
 *~
 
-# Development docs (optional - comment out if you want to commit)
-# docs-dev/
+# Development docs and test folders (kept locally, not in remote)
+docs/
+docs-dev/
+context/
+tests/
+test-resumes/
+e2e-tests/
+coverage/
 
 # Temporary fix scripts
 scripts/fix-*.js
