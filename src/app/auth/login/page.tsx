@@ -103,6 +103,7 @@ function LoginForm() {
               onChange={handleInputChange}
               placeholder="votre@email.com"
               leftIcon={<Mail className="w-5 h-5" />}
+              autoComplete="email"
               error={error && error.includes('Email') ? error : undefined}
             />
 
@@ -118,6 +119,7 @@ function LoginForm() {
                 onChange={handleInputChange}
                 placeholder="••••••••"
                 leftIcon={<Lock className="w-5 h-5" />}
+                autoComplete="current-password"
                 error={error && !error.includes('Email') ? error : undefined}
               />
               <button
