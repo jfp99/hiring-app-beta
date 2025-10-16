@@ -1,0 +1,20 @@
+{
+  "headers": [
+    {
+      "source": "/contracts/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/contracts/:path*",
+      "destination": "/404",
+      "permanent": false
+    }
+  ]
+}

@@ -85,3 +85,9 @@ lint-full-output.txt
 
 # Browser extension (not for deployment)
 browser-extension/
+
+# Contracts and legal documents (SENSITIVE - DO NOT COMMIT)
+/contracts/
+*.docx
+*.pdf
+!public/**/*.pdf
