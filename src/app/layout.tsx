@@ -5,6 +5,7 @@ import './globals.css'
 import Providers from './providers'
 import { Toaster } from './components/ui/Toaster'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/react'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -119,6 +120,7 @@ export default function RootLayout({
           {children}
           <Toaster />
           <SpeedInsights />
+          <Analytics />
         </Providers>
       </body>
     </html>
