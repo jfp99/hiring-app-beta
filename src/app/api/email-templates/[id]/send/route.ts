@@ -63,8 +63,8 @@ export async function POST(
       email: candidate.email || '',
       position: candidate.currentPosition || 'Non spécifié',
       companyName: 'Hi-Ring',
-      recruiterName: session.user?.name || session.user?.email || 'unknown' || '',
-      recruiterEmail: session.user.email || '',
+      recruiterName: session.user?.name || session.user?.email || '',
+      recruiterEmail: session.user?.email || '',
       recruiterPhone: '+33 1 23 45 67 89', // Default phone
       currentDate: new Date().toLocaleDateString('fr-FR', {
         year: 'numeric',

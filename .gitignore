@@ -82,3 +82,6 @@ SUCCESS-BUILD.log
 final-build.log
 build.log
 lint-full-output.txt
+
+# Browser extension (not for deployment)
+browser-extension/

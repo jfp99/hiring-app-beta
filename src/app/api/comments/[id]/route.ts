@@ -1,6 +1,6 @@
 // src/app/api/comments/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { auth } from '@/app/lib/auth'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { UpdateCommentInput, extractMentions } from '@/app/types/comments'
 
@@ -10,7 +10,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -135,7 +135,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },

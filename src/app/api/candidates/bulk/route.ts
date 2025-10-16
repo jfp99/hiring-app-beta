@@ -1,12 +1,12 @@
 // src/app/api/candidates/bulk/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { auth } from '@/app/lib/auth'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { CandidateStatus } from '@/app/types/candidates'
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },

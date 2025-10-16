@@ -1,13 +1,13 @@
 // src/app/api/custom-fields/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { auth } from '@/app/lib/auth'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { CreateCustomFieldInput, CustomFieldDefinition } from '@/app/types/customFields'
 
 // GET /api/custom-fields - List all custom field definitions
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 // POST /api/custom-fields - Create a new custom field definition
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },

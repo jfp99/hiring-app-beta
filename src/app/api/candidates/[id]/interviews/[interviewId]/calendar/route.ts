@@ -52,8 +52,8 @@ export async function GET(
         email: candidate.email
       },
       recruiter: {
-        name: session.user?.name || session.user?.email || 'unknown' || 'Hi-Ring',
-        email: session.user.email || 'noreply@hi-ring.com'
+        name: session.user?.name || session.user?.email || 'Hi-Ring',
+        email: session.user?.email || 'noreply@hi-ring.com'
       }
     })
 

@@ -1,11 +1,10 @@
 // src/app/lib/auth-helpers.ts
-import { getServerSession } from 'next-auth'
-import { authOptions } from './auth-enhanced'
+import { auth as nextAuthAuth } from './auth'
 
 /**
  * Get the current session on the server
- * Compatible wrapper for NextAuth v4
+ * Compatible wrapper for NextAuth v5
  */
 export async function auth() {
-  return await getServerSession(authOptions)
+  return await nextAuthAuth()
 }

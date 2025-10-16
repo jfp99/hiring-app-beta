@@ -1,12 +1,19 @@
 // src/app/lib/auth-enhanced.ts
-import { AuthOptions } from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
+// Utility functions for authentication
 import bcrypt from 'bcryptjs'
 import { connectToDatabase } from './mongodb'
 import { UserRole, ROLE_PERMISSIONS } from '../types/auth'
+
+// Note: This file contains legacy authentication utilities
+// The main auth configuration is now in auth.ts (NextAuth v5)
+
+// LEGACY CODE - Commented out to prevent build errors
+// The authOptions export was for NextAuth v4
+/*
+import { AuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { z } from 'zod'
 
-// Login validation schema
 const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(6, 'Password must be at least 6 characters')
@@ -166,6 +173,9 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
 }
+*/
+
+// END OF LEGACY CODE
 
 // Utility functions for authentication
 

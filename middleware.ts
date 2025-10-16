@@ -1,73 +1,69 @@
 // middleware.ts
-import { withAuth } from 'next-auth/middleware'
+import { auth } from './src/app/lib/auth'
 import { NextResponse } from 'next/server'
 import { UserRole } from './src/app/types/auth'
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token
-    const path = req.nextUrl.pathname
+export default auth((req) => {
+  const token = req.auth
+  const path = req.nextUrl.pathname
 
-    // Define role-based access control
-    const roleAccess: Record<string, UserRole[]> = {
-      '/admin': [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-      '/recruiter': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.RECRUITER],
-      '/client': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLIENT],
-      '/hiring-manager': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.HIRING_MANAGER],
-      '/candidate': [UserRole.CANDIDATE],
-      '/dashboard': Object.values(UserRole), // All authenticated users
-      '/api/users': [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-      '/api/admin': [UserRole.SUPER_ADMIN, UserRole.ADMIN]
-    }
+  // Public routes
+  const publicRoutes = [
+    '/',
+    '/offres-emploi',
+    '/vision',
+    '/contact',
+    '/auth/login',
+    '/auth/register',
+    '/auth/forgot-password',
+    '/api/jobs', // Public job listings
+    '/api/newsletters' // Newsletter subscription
+  ]
 
-    // Check role-based access
-    for (const [route, allowedRoles] of Object.entries(roleAccess)) {
-      if (path.startsWith(route)) {
-        const userRole = token?.role as UserRole
+  // Check if route is public
+  const isPublicRoute = publicRoutes.some(route =>
+    path === route || path.startsWith(`${route}/`)
+  )
 
-        if (!allowedRoles.includes(userRole)) {
-          // Redirect to appropriate dashboard based on role
-          const redirectUrl = new URL('/dashboard', req.url)
-          return NextResponse.redirect(redirectUrl)
-        }
-      }
-    }
-
+  // Allow public routes
+  if (isPublicRoute) {
     return NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const path = req.nextUrl.pathname
+  }
 
-        // Public routes
-        const publicRoutes = [
-          '/',
-          '/offres-emploi',
-          '/vision',
-          '/contact',
-          '/auth/login',
-          '/auth/register',
-          '/auth/forgot-password',
-          '/api/jobs', // Public job listings
-          '/api/newsletters' // Newsletter subscription
-        ]
+  // Require authentication for non-public routes
+  if (!token) {
+    const redirectUrl = new URL('/auth/login', req.url)
+    redirectUrl.searchParams.set('callbackUrl', path)
+    return NextResponse.redirect(redirectUrl)
+  }
 
-        // Check if route is public
-        const isPublicRoute = publicRoutes.some(route =>
-          path === route || path.startsWith(`${route}/`)
-        )
+  // Define role-based access control
+  const roleAccess: Record<string, UserRole[]> = {
+    '/admin': [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+    '/recruiter': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.RECRUITER],
+    '/client': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLIENT],
+    '/hiring-manager': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.HIRING_MANAGER],
+    '/candidate': [UserRole.CANDIDATE],
+    '/dashboard': Object.values(UserRole), // All authenticated users
+    '/api/users': [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+    '/api/admin': [UserRole.SUPER_ADMIN, UserRole.ADMIN]
+  }
 
-        if (isPublicRoute) {
-          return true
-        }
+  // Check role-based access
+  for (const [route, allowedRoles] of Object.entries(roleAccess)) {
+    if (path.startsWith(route)) {
+      const userRole = (token as any)?.role as UserRole
 
-        // All other routes require authentication
-        return !!token
+      if (!allowedRoles.includes(userRole)) {
+        // Redirect to appropriate dashboard based on role
+        const redirectUrl = new URL('/dashboard', req.url)
+        return NextResponse.redirect(redirectUrl)
       }
     }
   }
-)
+
+  return NextResponse.next()
+})
 
 export const config = {
   matcher: [

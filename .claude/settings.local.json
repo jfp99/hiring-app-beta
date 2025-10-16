@@ -18,7 +18,9 @@
       "Bash(npm run test:coverage:*)",
       "Bash(npm run lint)",
       "Bash(npx tsc:*)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "mcp__playwright__browser_network_requests",
+      "mcp__playwright__browser_wait_for"
     ],
     "deny": [],
     "ask": []

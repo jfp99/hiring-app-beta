@@ -1,13 +1,13 @@
 // src/app/api/comments/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { auth } from '@/app/lib/auth'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { Comment, CreateCommentInput, extractMentions } from '@/app/types/comments'
 
 // GET /api/comments?candidateId=xxx - List all comments for a candidate
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
 // POST /api/comments - Create a new comment
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await auth()
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Unauthorized' },

@@ -130,9 +130,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }
   },
   events: {
-    async signOut({ token }) {
+    async signOut(message) {
       // Log sign out event
       try {
+        const token = 'token' in message ? message.token : null
+        if (!token) return
+
         const { db } = await connectToDatabase()
         await db.collection('activities').insertOne({
           type: 'user_logout',
