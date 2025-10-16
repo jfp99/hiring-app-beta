@@ -371,6 +371,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                         required
                         disabled={loading}
                         placeholder="Votre nom et prénom"
+                        autoComplete="name"
                       />
                     </div>
                     <div>
@@ -385,6 +386,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                         className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400"
                         disabled={loading}
                         placeholder="Votre numéro"
+                        autoComplete="tel"
                       />
                     </div>
                   </div>
@@ -402,6 +404,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       required
                       disabled={loading}
                       placeholder="votre@email.com"
+                      autoComplete="email"
                     />
                   </div>
 
