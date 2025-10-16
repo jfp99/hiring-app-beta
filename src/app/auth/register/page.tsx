@@ -84,7 +84,7 @@ export default function RegisterPage() {
               </Button>
             </Link>
             <Link href="/">
-              <Button variant="outline" className="w-full">
+              <Button variant="tertiary" className="w-full">
                 Retour à l&apos;accueil
               </Button>
             </Link>
