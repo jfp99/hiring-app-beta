@@ -294,6 +294,11 @@ if (typeof window === 'undefined') {
     console.log('✅ Environment variables validated successfully')
   } catch (error) {
     console.error('❌ Failed to load application due to environment validation errors')
+    console.error('Error details:', error)
+    if (error instanceof Error) {
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+    }
     process.exit(1) // Exit with error code
   }
 }
