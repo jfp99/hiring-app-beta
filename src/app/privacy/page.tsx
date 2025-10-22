@@ -184,7 +184,7 @@ export default function PrivacyPage() {
                 <strong>Téléphone:</strong> +33 1 23 45 67 89
               </p>
               <p className="text-gray-700">
-                <strong>Adresse:</strong> 123 Avenue des Recruteurs, 75001 Paris, France
+                <strong>Adresse:</strong> Aix-En-Provence & Marseille, France
               </p>
             </div>
           </section>

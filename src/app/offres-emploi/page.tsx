@@ -184,24 +184,24 @@ export default function OffresEmploi() {
       </section>
 
       {/* Barre de recherche et filtres */}
-      <section className="py-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
+      <section className="py-4 sm:py-6 lg:py-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-6 items-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 items-stretch sm:items-center">
             {/* Barre de recherche */}
             <div className="flex-1 w-full">
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Rechercher un poste, une entreprise, une compétence..."
+                  placeholder="Rechercher un poste, une entreprise..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-6 py-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent placeholder-gray-400 dark:placeholder-gray-400 text-lg text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 sm:px-6 sm:py-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl sm:rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent placeholder-gray-400 dark:placeholder-gray-400 text-base sm:text-lg text-gray-900 dark:text-white"
                   suppressHydrationWarning
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100"
+                    className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-100 text-xl"
                   >
                     ✕
                   </button>
@@ -210,20 +210,20 @@ export default function OffresEmploi() {
             </div>
 
             {/* Compteur de résultats */}
-            <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-6 py-3 rounded-2xl font-bold shadow-lg">
+            <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-4 py-3 sm:px-6 rounded-xl sm:rounded-2xl font-bold shadow-lg text-center sm:text-left whitespace-nowrap">
               {offres.length} offre{offres.length > 1 ? 's' : ''}
             </div>
           </div>
 
           {/* Filtres avancés */}
-          <div className="mt-6 flex flex-wrap gap-4 justify-center">
+          <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 sm:justify-center">
             <select
               value={filters.categorie}
               onChange={(e) => setFilters({...filters, categorie: e.target.value})}
-              className="px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent text-gray-900 dark:text-white"
+              className="px-3 py-2 sm:px-4 sm:py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent text-gray-900 dark:text-white text-sm sm:text-base"
               suppressHydrationWarning
             >
-              <option value="toutes">Toutes les catégories</option>
+              <option value="toutes">Catégories</option>
               {categories.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -232,10 +232,10 @@ export default function OffresEmploi() {
             <select
               value={filters.lieu}
               onChange={(e) => setFilters({...filters, lieu: e.target.value})}
-              className="px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent text-gray-900 dark:text-white"
+              className="px-3 py-2 sm:px-4 sm:py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent text-gray-900 dark:text-white text-sm sm:text-base"
               suppressHydrationWarning
             >
-              <option value="tous">Tous les lieux</option>
+              <option value="tous">Lieux</option>
               {lieux.map(lieu => (
                 <option key={lieu} value={lieu}>{lieu}</option>
               ))}
@@ -244,10 +244,10 @@ export default function OffresEmploi() {
             <select
               value={filters.typeContrat}
               onChange={(e) => setFilters({...filters, typeContrat: e.target.value})}
-              className="px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent text-gray-900 dark:text-white"
+              className="px-3 py-2 sm:px-4 sm:py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent text-gray-900 dark:text-white text-sm sm:text-base"
               suppressHydrationWarning
             >
-              <option value="tous">Tous les types de contrat</option>
+              <option value="tous">Contrats</option>
               {typesContrat.map(type => (
                 <option key={type} value={type}>{type}</option>
               ))}
@@ -255,7 +255,7 @@ export default function OffresEmploi() {
 
             <button
               onClick={() => setFilters({categorie: 'toutes', lieu: 'tous', typeContrat: 'tous'})}
-              className="px-4 py-3 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-200 rounded-xl shadow-md hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors font-semibold"
+              className="px-3 py-2 sm:px-4 sm:py-3 bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-200 rounded-lg sm:rounded-xl shadow-md hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors font-semibold text-sm sm:text-base"
               suppressHydrationWarning
             >
               Réinitialiser

@@ -42,11 +42,11 @@ export default function Header() {
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${
       isScrolled
-        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50'
+        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 py-2 sm:py-0'
         : 'bg-cream-100 dark:bg-gray-900 shadow-sm'
     }`}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-16 sm:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link 
@@ -60,7 +60,7 @@ export default function Header() {
                   alt="Hi-ring Logo"
                   width={180}
                   height={80}
-                  className="h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                  className="h-10 sm:h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-accent-500 to-transparent opacity-0 group-hover:opacity-10 rounded-lg transition-opacity duration-300" />

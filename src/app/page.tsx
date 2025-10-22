@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { SectionHeaderBadge, SparklesIcon, BriefcaseIcon, RefreshIcon, TargetIcon, UsersIcon, ChatIcon, RocketIcon, StarIcon } from './components/ui/SectionHeaderBadge'
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false)
@@ -37,9 +38,9 @@ export default function Home() {
             <div className={`transform transition-all duration-1000 ${
               isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
             }`}>
-              <div className="inline-block bg-accent-500/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                <span className="text-accent-500 font-semibold">🚀 Votre succès commence ici</span>
-              </div>
+              <SectionHeaderBadge variant="hero" icon={<SparklesIcon />}>
+                Votre succès commence ici
+              </SectionHeaderBadge>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 Connectons les
@@ -49,13 +50,13 @@ export default function Home() {
               </h1>
 
               <p className="text-lg sm:text-xl md:text-xl lg:text-2xl mb-10 leading-relaxed text-gray-200">
-                Expertise en recrutement depuis plus de 10 ans. Nous transformons vos ambitions professionnelles en réalité.
+                Cabinet de conseil en recrutement fondé par Hugo et Izia. Spécialistes du recrutement IT, Digital, Finance, et Conseil avec une approche personnalisée et exigeante.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/offres-emploi"
-                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2"
+                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Découvrir nos offres
@@ -102,16 +103,16 @@ export default function Home() {
                 {/* Floating Stats Cards */}
                 <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-primary-700">500+</div>
+                    <div className="text-2xl font-bold text-primary-700">50+</div>
                     <div className="text-xs text-gray-600">Placements</div>
                   </div>
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-accent-500">98%</div>
+                    <div className="text-2xl font-bold text-accent-500">95%</div>
                     <div className="text-xs text-gray-600">Satisfaction</div>
                   </div>
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-primary-700">15j</div>
-                    <div className="text-xs text-gray-600">Avg. Time</div>
+                    <div className="text-2xl font-bold text-primary-700">20j</div>
+                    <div className="text-xs text-gray-600">Délai Moyen</div>
                   </div>
                 </div>
               </div>
@@ -120,68 +121,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Logo Partners Section */}
-      <section className="py-12 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-y border-gray-200/50 dark:border-gray-700/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 dark:text-gray-400 font-semibold mb-8">Ils nous font confiance</p>
-          <div className="flex flex-wrap justify-center items-center gap-12 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-            {['🏢 Microsoft', '🏭 Amazon', '🏛 Google', '🏦 Meta', '🏪 Apple'].map((company, idx) => (
-              <div key={idx} className="text-2xl font-bold text-gray-700 dark:text-gray-300 hover:text-primary-700 dark:hover:text-accent-500 transition-colors cursor-pointer">
-                {company}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Services Section avec Images */}
       <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-4 py-2 rounded-full mb-4">
-              <span className="text-primary-700 dark:text-accent-500 font-semibold">💼 Nos Services</span>
-            </div>
+            <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
+              Nos Services
+            </SectionHeaderBadge>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
-              Des Solutions Sur Mesure
+              Notre Accompagnement
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Que vous soyez une entreprise en quête de talents ou un candidat à la recherche d'opportunités, nous avons la solution adaptée à vos besoins
+              Une collaboration flexible et sur mesure, conçue pour s'adapter à vos objectifs et à vos priorités
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {[
               {
-                title: 'Recrutement Permanent',
-                description: 'Trouvez le talent parfait pour vos équipes en CDI avec notre processus de sélection rigoureux et notre accompagnement personnalisé',
-                features: ['Profils qualifiés', 'Process rapide', 'Garantie 3 mois', 'Suivi post-placement'],
+                title: 'Recrutements en CDI',
+                description: 'Pour renforcer durablement vos équipes avec des talents qualifiés et alignés sur vos valeurs',
+                features: ['Profils qualifiés', 'Approche personnalisée', 'Suivi post-placement', 'Garantie période d\'essai'],
                 image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=400&fit=crop',
                 icon: '👔',
-                color: 'from-primary-500 to-primary-600'
+                color: 'from-primary-500 to-primary-600',
+                slug: 'cdi'
               },
               {
-                title: 'Intérim & CDD',
-                description: 'Solutions flexibles et réactives pour répondre à vos besoins de renforcement temporaire avec des profils disponibles immédiatement',
-                features: ['Disponibilité immédiate', 'Profils adaptés', 'Gestion administrative', 'Flexibilité totale'],
+                title: 'Missions Freelance',
+                description: 'Pour répondre à vos besoins ponctuels avec des profils experts disponibles rapidement',
+                features: ['Disponibilité rapide', 'Experts qualifiés', 'Flexibilité', 'Gestion administrative'],
                 image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
                 icon: '⚡',
-                color: 'from-accent-500 to-accent-600'
+                color: 'from-accent-500 to-accent-600',
+                slug: 'freelance'
               },
               {
-                title: 'Chasse de Têtes Executive',
-                description: 'Accédez aux profils de direction et experts les plus recherchés grâce à notre approche discrète et notre réseau exclusif',
-                features: ['Approche confidentielle', 'Talents rares', 'Expertise sectorielle', 'Network premium'],
+                title: 'Portage Salarial',
+                description: 'Solutions flexibles grâce à notre partenariat avec une société de portage salarial',
+                features: ['Partenariat exclusif', 'Solution souple', 'Sécurité juridique', 'Simplicité administrative'],
+                image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
+                icon: '🤝',
+                color: 'from-primary-600 to-accent-500',
+                slug: 'portage'
+              },
+              {
+                title: 'Recrutement RPO',
+                description: 'Bénéficiez d\'une expertise dédiée, d\'une agilité renforcée et d\'une optimisation des coûts pour atteindre vos objectifs plus efficacement',
+                features: ['Expertise dédiée', 'Agilité renforcée', 'Optimisation coûts', 'Objectifs atteints'],
                 image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop',
                 icon: '🎯',
-                color: 'from-primary-500 to-accent-500'
+                color: 'from-primary-500 to-accent-600',
+                slug: 'rpo'
               }
             ].map((service, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden flex flex-col h-full"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-48 overflow-hidden flex-shrink-0">
                   <Image
                     src={service.image}
                     alt={service.title}
@@ -196,14 +195,14 @@ export default function Home() {
                 </div>
 
                 {/* Content */}
-                <div className="p-8">
+                <div className="p-8 flex flex-col flex-grow">
                   <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                     {service.description}
                   </p>
-                  <ul className="space-y-3 mb-6">
+                  <ul className="space-y-3 mb-6 flex-grow">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
                         <svg className="w-5 h-5 text-accent-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -213,9 +212,12 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 text-white dark:text-primary-700 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300" suppressHydrationWarning>
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mt-auto"
+                  >
                     En savoir plus →
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -227,14 +229,14 @@ export default function Home() {
       <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-accent-500/10 dark:bg-accent-500/20 px-4 py-2 rounded-full mb-4">
-              <span className="text-primary-700 dark:text-accent-500 font-semibold">🔄 Notre Méthode</span>
-            </div>
+            <SectionHeaderBadge variant="accent" icon={<RefreshIcon />}>
+              Notre Stratégie d'Accompagnement
+            </SectionHeaderBadge>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
-              Un Processus Éprouvé
+              Une Approche Personnalisée et Exigeante
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              De l'analyse de vos besoins jusqu'à l'intégration réussie, nous vous accompagnons à chaque étape
+              Pour connecter les bons talents aux bons projets, nous vous accompagnons à chaque étape avec rigueur et proximité
             </p>
           </div>
 
@@ -246,34 +248,50 @@ export default function Home() {
               {[
                 {
                   step: '01',
-                  title: 'Analyse Approfondie',
-                  description: 'Nous prenons le temps de comprendre votre culture d\'entreprise, vos enjeux et vos objectifs pour cibler les profils parfaitement alignés',
+                  title: 'Comprendre Votre Besoin',
+                  description: 'Échange approfondi avec les différents décideurs pour cerner le contexte du recrutement et vos enjeux stratégiques. Nous identifions vos attentes, votre culture d\'entreprise et votre projet pour définir ensemble un processus de recrutement sur mesure.',
                   image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop',
-                  icon: '🔍',
+                  icon: (
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  ),
                   side: 'left'
                 },
                 {
                   step: '02',
-                  title: 'Sourcing Actif',
-                  description: 'Notre équipe utilise des techniques avancées de chasse et notre réseau étendu pour identifier les meilleurs talents du marché',
+                  title: 'L\'Approche',
+                  description: 'Élaboration d\'une stratégie de sourcing construite selon votre besoin : sélection de talents issus de notre vivier interne et de canaux spécialisés, entretiens approfondis pour évaluer compétences techniques et soft skills, validation de l\'alignement entre aspirations des candidats et votre entreprise. Constitution d\'une short-list de talents qualifiés et motivés.',
                   image: 'https://images.unsplash.com/photo-1556155092-490a1ba16284?w=600&h=400&fit=crop',
-                  icon: '🎯',
+                  icon: (
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                  ),
                   side: 'right'
                 },
                 {
                   step: '03',
-                  title: 'Évaluation Rigoureuse',
-                  description: 'Tests techniques, entretiens comportementaux et vérification des références pour garantir le match parfait',
+                  title: 'L\'Accompagnement',
+                  description: 'Planification et coordination des différentes étapes du recrutement. Débriefs réguliers avec vos interlocuteurs clés, prise de références si nécessaire et aide à la décision. Conseil sur la formulation de l\'offre pour maximiser son attractivité et son acceptation.',
                   image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop',
-                  icon: '✅',
+                  icon: (
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  ),
                   side: 'left'
                 },
                 {
                   step: '04',
-                  title: 'Intégration & Suivi',
-                  description: 'Un accompagnement continu pour assurer une prise de poste réussie et une satisfaction durable des deux parties',
+                  title: 'L\'Engagement',
+                  description: 'Notre implication se poursuit après la signature. Points de suivi réguliers tout au long de la période d\'essai. Conseils sur vos enjeux de rétention, incluant une phase d\'audit et la définition de leviers d\'action adaptés à votre organisation.',
                   image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
-                  icon: '🚀',
+                  icon: (
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  ),
                   side: 'right'
                 }
               ].map((process, index) => (
@@ -286,7 +304,7 @@ export default function Home() {
                   {/* Content */}
                   <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="text-5xl">{process.icon}</div>
+                      <div className="text-gray-900 dark:text-white">{process.icon}</div>
                       <div>
                         <div className="text-sm font-bold text-accent-500 mb-1">ÉTAPE {process.step}</div>
                         <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500">{process.title}</h3>
@@ -318,13 +336,157 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 bg-gradient-to-b from-cream-100 dark:from-gray-800 to-white dark:to-gray-900">
+      {/* Expertise Domains Section - NEW */}
+      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-4 py-2 rounded-full mb-4">
-              <span className="text-primary-700 dark:text-accent-500 font-semibold">⭐ Témoignages</span>
+            <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
+              Nos Domaines d'Expertise
+            </SectionHeaderBadge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
+              Notre Savoir-Faire
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Du recrutement IT aux métiers du conseil, nous accompagnons une grande diversité de clients en France et à l'étranger
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'Métiers de l\'IT',
+                description: 'Une véritable expertise où nous disposons d\'un savoir-faire reconnu',
+                specialties: ['Développement', 'Infrastructure', 'Data', 'Cybersécurité', 'DevOps', 'Cloud'],
+                image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop&q=80',
+                category: 'IT & Tech'
+              },
+              {
+                title: 'Digital & Finance',
+                description: 'Postes technico-fonctionnels dans le Digital et la Finance',
+                specialties: ['Product Management', 'UX/UI Design', 'Finance', 'Contrôle de gestion', 'Analyse financière'],
+                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop&q=80',
+                category: 'Digital & Finance'
+              },
+              {
+                title: 'Conseil & Expertise',
+                description: 'Métiers du Conseil, de l\'Audit et de l\'Expertise Comptable',
+                specialties: ['Conseil en stratégie', 'Audit', 'Expertise comptable', 'Conseil fiscal', 'Transformation'],
+                image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&h=600&fit=crop&q=80',
+                category: 'Conseil & Audit'
+              }
+            ].map((domain, index) => (
+              <div
+                key={index}
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
+              >
+                <div className="relative h-56 overflow-hidden">
+                  <Image
+                    src={domain.image}
+                    alt={domain.title}
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    loading="lazy"
+                    quality={85}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/60 via-[#ffaf50ff]/20 to-transparent opacity-40 group-hover:opacity-30 transition-opacity duration-300"></div>
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold text-primary-700">
+                      {domain.category}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-8">
+                  <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3">
+                    {domain.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                    {domain.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {domain.specialties.map((specialty, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-0.5 bg-primary-500/10 dark:bg-accent-500/20 text-primary-700 dark:text-accent-500 rounded-full text-xs font-medium"
+                      >
+                        {specialty}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Talent Pool Section - Notre vivier de talents */}
+      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Image */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&auto=format&q=80"
+                  alt="Notre réseau de talents"
+                  width={800}
+                  height={600}
+                  className="w-full h-auto"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
+                  quality={85}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent"></div>
+              </div>
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20"></div>
             </div>
+
+            {/* Content */}
+            <div>
+              <SectionHeaderBadge variant="accent" icon={<UsersIcon />}>
+                Notre Réseau
+              </SectionHeaderBadge>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-700 dark:text-accent-500 mb-6">
+                Notre Vivier de Talents
+              </h2>
+              <div className="space-y-4 text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                <p>
+                  Nous échangeons chaque jour avec un <strong className="text-primary-700 dark:text-accent-500">réseau exclusif de professionnels qualifiés</strong>, certains en recherche active, d'autres à l'écoute d'opportunités ciblées.
+                </p>
+                <p>
+                  Nous connaissons leurs motivations et leurs expertises, afin de proposer des <strong className="text-primary-700 dark:text-accent-500">profils "off-market"</strong> en quête de confidentialité et d'un accompagnement sur mesure.
+                </p>
+                <p>
+                  Notre vivier, <strong className="text-primary-700 dark:text-accent-500">sélectif et dynamique</strong>, nous permet d'identifier rapidement les talents les plus alignés avec vos besoins stratégiques.
+                </p>
+              </div>
+
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                <div className="bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4">
+                  <div className="text-3xl mb-2">🔍</div>
+                  <div className="font-semibold text-primary-700 dark:text-accent-500">Sourcing Ciblé</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Profils qualifiés et motivés</div>
+                </div>
+                <div className="bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4">
+                  <div className="text-3xl mb-2">🤝</div>
+                  <div className="font-semibold text-primary-700 dark:text-accent-500">Accompagnement</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Suivi personnalisé</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
+              Témoignages
+            </SectionHeaderBadge>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
               Ce Qu'ils Disent de Nous
             </h2>
@@ -391,55 +553,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section avec Images */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1920&h=600&fit=crop&auto=format&q=75"
-            alt="Office background"
-            fill
-            className="object-cover"
-            sizes="100vw"
-            loading="lazy"
-            quality={75}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/95 to-primary-600/95"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-              Des Chiffres Qui Parlent
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-200">
-              Plus d'une décennie d'excellence dans le recrutement
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { icon: '🎯', number: '500+', label: 'Placements Réussis', suffix: '' },
-              { icon: '🏢', number: '150+', label: 'Entreprises Partenaires', suffix: '' },
-              { icon: '😊', number: '98', label: 'Taux de Satisfaction', suffix: '%' },
-              { icon: '⚡', number: '15', label: 'Jours en Moyenne', suffix: 'j' }
-            ].map((stat, index) => (
-              <div
-                key={index}
-                className="text-center group"
-              >
-                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 transform group-hover:scale-110 transition-all duration-300 border border-white/20">
-                  <div className="text-5xl mb-4">{stat.icon}</div>
-                  <div className="text-5xl font-bold text-white mb-2">
-                    {stat.number}{stat.suffix}
-                  </div>
-                  <div className="text-gray-200 font-medium">{stat.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA Section */}
       <section className="py-24 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -449,9 +562,9 @@ export default function Home() {
         </div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <div className="inline-block bg-accent-500/20 backdrop-blur-sm px-6 py-3 rounded-full mb-8">
-            <span className="text-accent-500 font-bold text-lg">🚀 Prêt à Démarrer ?</span>
-          </div>
+          <SectionHeaderBadge variant="hero" icon={<RocketIcon />} className="mb-8">
+            Prêt à Démarrer ?
+          </SectionHeaderBadge>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             Transformons Ensemble Votre

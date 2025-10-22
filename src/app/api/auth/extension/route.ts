@@ -11,6 +11,19 @@ const loginSchema = z.object({
   password: z.string().min(6)
 })
 
+// CORS headers for browser extension
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400',
+}
+
+// OPTIONS: Handle CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 // POST: Authenticate extension user
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         { error: 'Invalid email or password format' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       )
     }
 
@@ -38,7 +51,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
@@ -46,7 +59,7 @@ export async function POST(request: NextRequest) {
     if (user.status !== 'active') {
       return NextResponse.json(
         { error: 'Account is not active' },
-        { status: 403 }
+        { status: 403, headers: corsHeaders }
       )
     }
 
@@ -55,7 +68,7 @@ export async function POST(request: NextRequest) {
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
@@ -67,7 +80,7 @@ export async function POST(request: NextRequest) {
     if (!normalizedAllowedRoles.includes(userRole)) {
       return NextResponse.json(
         { error: 'Insufficient permissions to use this extension' },
-        { status: 403 }
+        { status: 403, headers: corsHeaders }
       )
     }
 
@@ -108,13 +121,13 @@ export async function POST(request: NextRequest) {
         avatar: user.avatar
       },
       expiresIn: 30 * 24 * 60 * 60 // 30 days in seconds
-    })
+    }, { headers: corsHeaders })
 
   } catch (error) {
     console.error('Extension authentication error:', error)
     return NextResponse.json(
       { error: 'Authentication failed' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     )
   }
 }
@@ -127,7 +140,7 @@ export async function GET(request: NextRequest) {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'No token provided' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
@@ -150,7 +163,7 @@ export async function GET(request: NextRequest) {
     if (!user || user.status !== 'active') {
       return NextResponse.json(
         { error: 'User not found or inactive' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
@@ -163,27 +176,27 @@ export async function GET(request: NextRequest) {
         name: `${user.firstName} ${user.lastName}`,
         role: user.role
       }
-    })
+    }, { headers: corsHeaders })
 
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       return NextResponse.json(
         { error: 'Invalid token' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
     if (error instanceof jwt.TokenExpiredError) {
       return NextResponse.json(
         { error: 'Token expired' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
     console.error('Token verification error:', error)
     return NextResponse.json(
       { error: 'Token verification failed' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     )
   }
 }

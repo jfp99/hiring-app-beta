@@ -52,9 +52,9 @@ export default auth((req) => {
   // Check role-based access
   for (const [route, allowedRoles] of Object.entries(roleAccess)) {
     if (path.startsWith(route)) {
-      const userRole = (token as any)?.role as UserRole
+      const userRole = (token && 'role' in token ? token.role : undefined) as UserRole | undefined
 
-      if (!allowedRoles.includes(userRole)) {
+      if (!userRole || !allowedRoles.includes(userRole)) {
         // Redirect to appropriate dashboard based on role
         const redirectUrl = new URL('/dashboard', req.url)
         return NextResponse.redirect(redirectUrl)

@@ -1,6 +1,6 @@
 // src/app/api/candidates/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@/app/lib/auth-helpers'
+import { auth, authWithToken } from '@/app/lib/auth-helpers'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import { PERMISSIONS, hasPermission } from '@/app/types/auth'
 import {
@@ -34,8 +34,29 @@ const createCandidateSchema = z.object({
   availability: z.nativeEnum(AvailabilityStatus).optional(),
   contractPreference: z.array(z.nativeEnum(ContractPreference)).optional(),
   status: z.nativeEnum(CandidateStatus).optional(),
-  assignedTo: z.string().optional()
+  assignedTo: z.string().optional(),
+  // Additional fields from LinkedIn extension
+  linkedinUrl: z.string().optional(),
+  workExperience: z.array(z.any()).optional(),
+  education: z.array(z.any()).optional(),
+  languages: z.array(z.any()).optional(),
+  certifications: z.array(z.any()).optional(),
+  summary: z.string().optional(),
+  profilePictureUrl: z.string().optional()
 })
+
+// CORS headers for browser extension
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400',
+}
+
+// OPTIONS: Handle CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
 
 // GET: List/Search candidates with filters
 export async function GET(request: NextRequest) {
@@ -211,11 +232,11 @@ export async function GET(request: NextRequest) {
 // POST: Create a new candidate
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await authWithToken(request)
     if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       )
     }
 
@@ -223,7 +244,7 @@ export async function POST(request: NextRequest) {
     if (!hasPermission(session.user as any, PERMISSIONS.CANDIDATE_CREATE)) {
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
-        { status: 403 }
+        { status: 403, headers: corsHeaders }
       )
     }
 
@@ -240,7 +261,7 @@ export async function POST(request: NextRequest) {
     if (existingCandidate) {
       return NextResponse.json(
         { error: 'Candidate with this email already exists' },
-        { status: 409 }
+        { status: 409, headers: corsHeaders }
       )
     }
 
@@ -263,11 +284,11 @@ export async function POST(request: NextRequest) {
 
       skills: validatedData.skills || [],
       primarySkills: validatedData.skills?.slice(0, 5).map(s => s.name) || [],
-      languages: [],
+      languages: (validatedData as any).languages || [],
 
-      workExperience: [],
-      education: [],
-      certifications: [],
+      workExperience: (validatedData as any).workExperience || [],
+      education: (validatedData as any).education || [],
+      certifications: (validatedData as any).certifications || [],
 
       desiredPosition: [],
       contractPreference: validatedData.contractPreference || [ContractPreference.ANY],
@@ -280,9 +301,11 @@ export async function POST(request: NextRequest) {
       resumeId: undefined,
       coverLetterId: undefined,
       portfolioUrl: undefined,
-      linkedinUrl: undefined,
+      linkedinUrl: (validatedData as any).linkedinUrl || undefined,
       githubUrl: undefined,
       websiteUrl: undefined,
+      profilePictureUrl: (validatedData as any).profilePictureUrl || undefined,
+      summary: (validatedData as any).summary || undefined,
 
       interviews: [],
       applicationIds: [],
@@ -350,20 +373,20 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Candidate created successfully',
       candidateId: result.insertedId.toString()
-    })
+    }, { headers: corsHeaders })
 
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Données de validation invalides', details: (error as any).errors },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       )
     }
 
     console.error('❌ [CANDIDATES] Error creating candidate:', error)
     return NextResponse.json(
       { error: 'Failed to create candidate', details: getErrorMessage(error) },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     )
   }
 }

@@ -5,27 +5,30 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { SectionHeaderBadge, CheckCircleIcon, UsersIcon, TargetIcon, StarIcon, ChatIcon, BuildingIcon } from '../components/ui/SectionHeaderBadge'
 
 const recruteurs = [
   {
-    nom: 'Izia Grazilly',
-    poste: 'Senior Recruiter & Tech Specialist',
-    experience: '5 ans d\'expérience',
-    description: 'Spécialiste en recrutement tech, Izia excelle dans la détection des talents rares et leur accompagnement personnalisé. Son approche humaine et sa connaissance approfondie des métiers techniques en font une partenaire de choix pour les startups et scale-ups.',
-    competences: ['Recrutement Tech', 'Chasse de Têtes', 'Gestion de Carrière', 'Startup Ecosystem'],
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop',
-    stats: { placements: 80, satisfaction: 98, specialite: 'Tech' },
-    citation: "Chaque recrutement réussi est une nouvelle success story qui commence."
+    nom: 'Hugo Mathieu',
+    poste: 'Responsable Commerce',
+    experience: 'Co-fondateur Hi-ring',
+    description: 'Après avoir vécu au Mexique, Hugo maîtrise l\'espagnol et accompagne des clients sur des postes stratégiques en Espagne. Fort de son expérience dans la grande distribution, le retail et l\'IT (où il a encadré une équipe de recrutement IT dans une ESN), il développe une vision concrète du recrutement alliant compréhension des besoins opérationnels, management et approche humaine des relations professionnelles.',
+    competences: ['Espagnol courant', 'Grande Distribution', 'Retail', 'IT Recruitment', 'Team Management', 'Développement Commercial'],
+    photo: '/team/hugo-mathieu.jpg',
+    stats: { experience: 'Multi-sectoriel', satisfaction: 98, specialite: 'IT & Digital', placements: 150 },
+    citation: "Une approche personnalisée et exigeante pour connecter les bons talents aux bons projets.",
+    contact: { email: 'hugo@hi-ring.fr', phone: '06 66 74 76 18' }
   },
   {
-    nom: 'Hugo Mathieu',
-    poste: 'Talent Acquisition Manager',
-    experience: '4 ans d\'expérience',
-    description: 'Passionné par l\'innovation, Hugo accompagne les startups dans leur croissance et les aide à bâtir des équipes performantes. Son expertise en employer branding et sa vision stratégique du recrutement font de lui un acteur clé du paysage entrepreneurial français.',
-    competences: ['Startups', 'Growth Hiring', 'Employer Branding', 'Stratégie RH'],
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop',
-    stats: { placements: 120, satisfaction: 96, specialite: 'Growth' },
-    citation: "Le bon talent au bon moment peut transformer une entreprise."
+    nom: 'Izia Grazilly',
+    poste: 'Responsable Recrutement',
+    experience: 'Co-fondatrice Hi-ring',
+    description: 'Izia a débuté sa carrière dans un cabinet de recrutement IT, spécialisée sur les métiers de la Data, de l\'Infrastructure et de la Cybersécurité à l\'échelle nationale. Première salariée d\'une ESN aixoise, elle a contribué activement à la croissance des agences d\'Aix, Toulouse et Paris, ainsi qu\'à la structuration de la stratégie de recrutement. Ses principaux enjeux : attirer, engager et fidéliser les talents. Cette expérience lui a permis de développer des compétences clés : adaptabilité, écoute, résilience et créativité.',
+    competences: ['Data', 'Infrastructure', 'Cybersécurité', 'IT Recruitment', 'Stratégie de Recrutement', 'Talent Acquisition'],
+    photo: '/team/izia-grazilly.jpg',
+    stats: { experience: 'IT & Tech', satisfaction: 98, specialite: 'Data & Cybersécurité', placements: 200 },
+    citation: "Attirer, engager et fidéliser les talents avec adaptabilité et créativité.",
+    contact: { email: 'izia@hi-ring.fr', phone: '06 09 11 15 98' }
   }
 ]
 
@@ -60,9 +63,9 @@ export default function Vision() {
             <div className={`transform transition-all duration-1000 ${
               isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
             }`}>
-              <div className="inline-block bg-[#ffaf50ff]/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                <span className="text-[#ffaf50ff] font-semibold">🎯 Notre Vision</span>
-              </div>
+              <SectionHeaderBadge variant="hero" icon={<CheckCircleIcon />}>
+                Notre Vision
+              </SectionHeaderBadge>
 
               <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
                 Révolutionner le
@@ -120,15 +123,15 @@ export default function Vision() {
                 {/* Floating Stats Cards */}
                 <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff]">10+</div>
+                    <div className="text-2xl font-bold text-[#3b5335ff]">5+</div>
                     <div className="text-xs text-gray-600">Années</div>
                   </div>
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#ffaf50ff]">200+</div>
+                    <div className="text-2xl font-bold text-[#ffaf50ff]">50+</div>
                     <div className="text-xs text-gray-600">Placements</div>
                   </div>
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff]">97%</div>
+                    <div className="text-2xl font-bold text-[#3b5335ff]">95%</div>
                     <div className="text-xs text-gray-600">Succès</div>
                   </div>
                 </div>
@@ -136,7 +139,12 @@ export default function Vision() {
 
               {/* Decorative Badge */}
               <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
-                🌟 Excellence
+                <span className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Excellence
+                </span>
               </div>
             </div>
           </div>
@@ -174,9 +182,9 @@ export default function Vision() {
           <section>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <div className="inline-block bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
-                  <span className="text-[#ffaf50ff] font-semibold text-sm">👥 Équipe Experte</span>
-                </div>
+                <SectionHeaderBadge variant="accent" icon={<UsersIcon />}>
+                  Équipe Experte
+                </SectionHeaderBadge>
                 <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
                   Notre Équipe de Choc
                 </h2>
@@ -189,7 +197,7 @@ export default function Vision() {
                 {recruteurs.map((recruteur, index) => (
                   <div
                     key={index}
-                    className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+                    className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden flex flex-col"
                   >
                     {/* Large Profile Image Header */}
                     <div className="relative h-64 overflow-hidden">
@@ -212,12 +220,16 @@ export default function Vision() {
                       </div>
                     </div>
 
-                    <div className="p-8">
+                    <div className="p-8 flex flex-col flex-grow">
+                      {/* Description - Variable height */}
                       <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                         {recruteur.description}
                       </p>
 
-                      {/* Citation */}
+                      {/* Spacer to push content below */}
+                      <div className="flex-grow"></div>
+
+                      {/* Citation - Aligned */}
                       <div className="mb-6 p-4 bg-gradient-to-r from-[#f8f7f3ff] dark:from-gray-700 to-[#f0eee4ff] dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 relative">
                         <div className="absolute -top-3 left-4 text-4xl text-[#ffaf50ff]">&ldquo;</div>
                         <p className="text-gray-700 dark:text-gray-200 italic text-center pt-2">
@@ -225,19 +237,19 @@ export default function Vision() {
                         </p>
                       </div>
 
-                      {/* Compétences */}
-                      <div className="flex flex-wrap gap-2 mb-6">
+                      {/* Compétences - Aligned */}
+                      <div className="flex flex-wrap gap-1.5 mb-6 min-h-[48px]">
                         {recruteur.competences.map((competence, idx) => (
                           <span
                             key={idx}
-                            className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-3 py-1 rounded-full text-sm font-semibold shadow-sm"
+                            className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-2 py-0.5 rounded-full text-xs font-medium shadow-sm h-fit"
                           >
                             {competence}
                           </span>
                         ))}
                       </div>
 
-                      {/* Stats */}
+                      {/* Stats - Aligned at bottom */}
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors">
                           <div className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
@@ -255,7 +267,6 @@ export default function Vision() {
                           <div className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
                             {recruteur.stats.specialite}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">Spécialité</div>
                         </div>
                       </div>
                     </div>
@@ -316,9 +327,9 @@ export default function Vision() {
           <section>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <div className="inline-block bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
-                  <span className="text-[#ffaf50ff] font-semibold text-sm">⭐ Nos Principes</span>
-                </div>
+                <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
+                  Nos Principes
+                </SectionHeaderBadge>
                 <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
                   Nos Valeurs
                 </h2>
@@ -331,7 +342,11 @@ export default function Vision() {
                 {[
                   {
                     title: 'Confiance',
-                    icon: '🤝',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                      </svg>
+                    ),
                     description: 'Nous bâtissons des relations durables basées sur la transparence et la confiance mutuelle.',
                     features: ['Transparence totale', 'Engagement mutuel', 'Respect des engagements'],
                     color: 'from-[#3b5335ff] to-[#2a3d26ff]',
@@ -339,7 +354,11 @@ export default function Vision() {
                   },
                   {
                     title: 'Innovation',
-                    icon: '💡',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    ),
                     description: 'Nous repoussons les limites du recrutement traditionnel avec des approches créatives.',
                     features: ['Solutions innovantes', 'Adaptabilité', 'Veille technologique'],
                     color: 'from-[#ffaf50ff] to-[#ff9500ff]',
@@ -347,7 +366,11 @@ export default function Vision() {
                   },
                   {
                     title: 'Excellence',
-                    icon: '🏆',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                      </svg>
+                    ),
                     description: 'Chaque recrutement est minutieusement préparé pour garantir la parfaite adéquation.',
                     features: ['Rigueur méthodologique', 'Attention aux détails', 'Qualité constante'],
                     color: 'from-[#3b5335ff] to-[#ffaf50ff]',
@@ -367,7 +390,7 @@ export default function Vision() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                       <div className="absolute bottom-4 left-4 right-4 text-white flex items-center gap-3">
-                        <span className="text-4xl">{valeur.icon}</span>
+                        <div className="text-white">{valeur.icon}</div>
                         <h3 className="text-2xl font-bold">{valeur.title}</h3>
                       </div>
                     </div>
@@ -433,9 +456,9 @@ export default function Vision() {
           <section>
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <div className="inline-block bg-[#ffaf50ff]/10 dark:bg-[#ffaf50ff]/20 px-4 py-2 rounded-full mb-4">
-                  <span className="text-[#ffaf50ff] font-semibold text-sm">🎯 Notre Mission</span>
-                </div>
+                <SectionHeaderBadge variant="accent" icon={<CheckCircleIcon />}>
+                  Notre Mission
+                </SectionHeaderBadge>
                 <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
                   Notre Mission
                 </h2>
@@ -449,11 +472,13 @@ export default function Vision() {
                 <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
                   <div className="p-8">
                     <div className="flex items-center justify-center mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-[#ffaf50ff] to-[#ff9500ff] rounded-full flex items-center justify-center text-3xl">
-                        👤
+                      <div className="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6 text-center group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
+                    <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-6 text-center group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
                       Pour les Candidats
                     </h3>
                     <ul className="space-y-4">
@@ -464,8 +489,8 @@ export default function Vision() {
                         'Transparence totale sur les postes et les entreprises'
                       ].map((item, index) => (
                         <li key={index} className="flex items-start space-x-3">
-                          <span className="w-6 h-6 bg-[#ffaf50ff] rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300">
-                            <span className="text-white text-sm">✓</span>
+                          <span className="w-6 h-6 bg-accent-500 dark:bg-accent-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                            <span className="text-white text-sm font-bold">✓</span>
                           </span>
                           <span className="text-gray-700 dark:text-gray-300">{item}</span>
                         </li>
@@ -474,18 +499,20 @@ export default function Vision() {
                   </div>
 
                   {/* Barre colorée en bas avec effet hover */}
-                  <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                  <div className="h-2 bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                 </div>
 
                 {/* Pour les Entreprises */}
                 <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
                   <div className="p-8">
                     <div className="flex items-center justify-center mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-[#3b5335ff] to-[#2a3d26ff] rounded-full flex items-center justify-center text-3xl">
-                        🏢
+                      <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 rounded-full flex items-center justify-center text-white shadow-lg">
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6 text-center group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
+                    <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-6 text-center group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
                       Pour les Entreprises
                     </h3>
                     <ul className="space-y-4">
@@ -496,8 +523,8 @@ export default function Vision() {
                         'Garantie de satisfaction et de pérennité'
                       ].map((item, index) => (
                         <li key={index} className="flex items-start space-x-3">
-                          <span className="w-6 h-6 bg-[#ffaf50ff] rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300">
-                            <span className="text-white text-sm">✓</span>
+                          <span className="w-6 h-6 bg-accent-500 dark:bg-accent-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                            <span className="text-white text-sm font-bold">✓</span>
                           </span>
                           <span className="text-gray-700 dark:text-gray-300">{item}</span>
                         </li>
@@ -506,26 +533,102 @@ export default function Vision() {
                   </div>
 
                   {/* Barre colorée en bas avec effet hover */}
-                  <div className="h-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                  <div className="h-2 bg-gradient-to-r from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                 </div>
               </div>
 
               {/* CTA Section */}
-              <div className="mt-16 group bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden">
+              <div className="mt-16 group bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 dark:from-primary-600 dark:via-primary-700 dark:to-primary-600 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden">
                 <div className="p-8 text-white text-center">
                   <h4 className="text-2xl font-bold mb-4">
                     Rejoignez la Révolution Hiring
                   </h4>
-                  <p className="text-lg opacity-90 mb-6">
+                  <p className="text-lg opacity-90 dark:opacity-95 mb-6">
                     Découvrez comment nous pouvons transformer votre approche du recrutement
                   </p>
-                  <a href="/contact" className="inline-block bg-[#ffaf50ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                  <a href="/contact" className="inline-block bg-accent-500 dark:bg-accent-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-primary-700 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
                     Prendre rendez-vous
                   </a>
                 </div>
 
                 {/* Barre colorée en bas avec effet hover */}
-                <div className="h-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                <div className="h-2 bg-gradient-to-r from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+              </div>
+
+              {/* Nos Clients Section */}
+              <div className="mt-24">
+                <div className="text-center mb-16">
+                  <SectionHeaderBadge variant="accent" icon={<BuildingIcon />}>
+                    Nos Clients
+                  </SectionHeaderBadge>
+                  <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
+                    Une Diversité de Clients
+                  </h2>
+                  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                    Qu'il s'agisse de <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">petites structures ou de grands groupes</strong>, nous accompagnons une grande diversité de clients dans des <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">environnements multiples et exigeants</strong> sur la France entière mais également à l'étranger.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                        </svg>
+                      ),
+                      title: 'Start-ups',
+                      description: 'Entreprises innovantes en croissance',
+                      color: 'from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700'
+                    },
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      ),
+                      title: 'PME/ETI',
+                      description: 'Structures en développement',
+                      color: 'from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700'
+                    },
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                        </svg>
+                      ),
+                      title: 'Grands Groupes',
+                      description: 'Organisations internationales',
+                      color: 'from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700'
+                    },
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      ),
+                      title: 'International',
+                      description: 'France et étranger',
+                      color: 'from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700'
+                    }
+                  ].map((client, index) => (
+                    <div
+                      key={index}
+                      className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden"
+                    >
+                      <div className={`h-2 bg-gradient-to-r ${client.color}`}></div>
+                      <div className="p-6 text-center">
+                        <div className="text-gray-600 dark:text-gray-400 mb-4 flex justify-center group-hover:text-primary-600 dark:group-hover:text-accent-500 transition-colors duration-300">{client.icon}</div>
+                        <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500 mb-2 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors duration-300">
+                          {client.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          {client.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
