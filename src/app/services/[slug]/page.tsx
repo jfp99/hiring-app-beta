@@ -119,12 +119,12 @@ export default function ServicePage({ params }: { params: Promise<{ slug: string
           <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Retour aux services
+          Retour à l'accueil
         </Link>
       </div>
 
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden py-6">
+      <section className="relative h-[50vh] sm:h-[40vh] min-h-[450px] sm:min-h-[400px] flex items-center justify-center overflow-hidden py-8 sm:py-6">
         <Image
           src={service.heroImage}
           alt={service.title}
@@ -136,26 +136,26 @@ export default function ServicePage({ params }: { params: Promise<{ slug: string
         <div className={`absolute inset-0 bg-gradient-to-r ${service.color} opacity-80`}></div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
-          <SectionHeaderBadge variant="hero" className="mb-3">
+          <SectionHeaderBadge variant="hero" className="mb-2 sm:mb-3">
             {service.title}
           </SectionHeaderBadge>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 leading-tight">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3 leading-tight px-2">
             {service.subtitle}
           </h1>
-          <p className="text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed mb-4">
+          <p className="text-sm xs:text-base sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed mb-4 px-2">
             {service.description}
           </p>
 
-          <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center px-4">
             <Link
               href="/contact"
-              className="px-6 py-3 bg-white text-primary-700 rounded-xl font-bold text-base hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+              className="px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-primary-700 rounded-xl font-bold text-sm sm:text-base hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
             >
               Demander un devis
             </Link>
             <button
               onClick={scrollToDetails}
-              className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white border-2 border-white rounded-xl font-bold text-base hover:bg-white/30 transition-all duration-300"
+              className="px-5 sm:px-6 py-2.5 sm:py-3 bg-white/20 backdrop-blur-sm text-white border-2 border-white rounded-xl font-bold text-sm sm:text-base hover:bg-white/30 transition-all duration-300"
             >
               En savoir plus ↓
             </button>

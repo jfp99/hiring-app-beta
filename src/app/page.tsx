@@ -20,7 +20,7 @@ export default function Home() {
       <Header />
 
       {/* Hero Section avec Image de fond */}
-      <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-16 sm:py-24 md:py-32 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -42,25 +42,25 @@ export default function Home() {
                 Votre succès commence ici
               </SectionHeaderBadge>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
                 Connectons les
-                <span className="block mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent animate-pulse">
+                <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent animate-pulse">
                   Talents & Entreprises
                 </span>
               </h1>
 
-              <p className="text-lg sm:text-xl md:text-xl lg:text-2xl mb-10 leading-relaxed text-gray-200">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 leading-relaxed text-gray-200">
                 Cabinet de conseil en recrutement fondé par Hugo et Izia. Spécialistes du recrutement IT, Digital, Finance, et Conseil avec une approche personnalisée et exigeante.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link
                   href="/offres-emploi"
-                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2"
+                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Découvrir nos offres
-                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </span>
@@ -69,11 +69,11 @@ export default function Home() {
 
                 <Link
                   href="/contact"
-                  className="group border-2 border-white text-white px-8 py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600"
+                  className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Nous contacter
-                    <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </span>
