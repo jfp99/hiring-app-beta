@@ -122,17 +122,17 @@ export default function Vision() {
 
                 {/* Floating Stats Cards */}
                 <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff]">5+</div>
-                    <div className="text-xs text-gray-600">Années</div>
+                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
+                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">5+</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">Années</div>
                   </div>
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
+                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
                     <div className="text-2xl font-bold text-[#ffaf50ff]">50+</div>
-                    <div className="text-xs text-gray-600">Placements</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">Placements</div>
                   </div>
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff]">95%</div>
-                    <div className="text-xs text-gray-600">Succès</div>
+                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
+                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">95%</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-300">Succès</div>
                   </div>
                 </div>
               </div>
