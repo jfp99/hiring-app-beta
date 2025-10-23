@@ -45,9 +45,11 @@ next-env.d.ts
 
 # test artifacts
 .playwright-mcp/
-*.png
-*.jpg
-*.jpeg
+test-results/**/*.png
+test-results/**/*.jpg
+test-results/**/*.jpeg
+playwright-report/**/*.png
+playwright-report/**/*.jpg
 
 # backup files
 *.backup
