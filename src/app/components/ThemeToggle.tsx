@@ -15,7 +15,7 @@ export default function ThemeToggle() {
   // Prevent SSR mismatch
   if (!mounted) {
     return (
-      <div className="w-10 h-10 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
+      <div className="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
     )
   }
 
@@ -24,21 +24,22 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       className="
         flex items-center justify-center
-        w-10 h-10 rounded-lg
+        w-9 h-9 md:w-10 md:h-10 rounded-lg
         bg-white dark:bg-gray-800
         border border-gray-200 dark:border-gray-700
         hover:bg-gray-50 dark:hover:bg-gray-700
         text-gray-700 dark:text-gray-200
         transition-all duration-300
         hover:scale-110 hover:rotate-180
-        focus:outline-none focus:ring-2 focus:ring-accent-500
+        focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-1
+        cursor-pointer
       "
       aria-label={`Passer au mode ${theme === 'light' ? 'sombre' : 'clair'}`}
     >
       {theme === 'light' ? (
-        <Moon className="w-5 h-5" />
+        <Moon className="w-4 h-4 md:w-5 md:h-5" />
       ) : (
-        <Sun className="w-5 h-5" />
+        <Sun className="w-4 h-4 md:w-5 md:h-5" />
       )}
     </button>
   )

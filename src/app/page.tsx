@@ -56,7 +56,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Link
                   href="/offres-emploi"
-                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base"
+                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Découvrir nos offres
@@ -69,7 +69,7 @@ export default function Home() {
 
                 <Link
                   href="/contact"
-                  className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base"
+                  className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Nous contacter
@@ -101,7 +101,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent"></div>
 
                 {/* Floating Stats Cards */}
-                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
+                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-4">
                   <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
                     <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">50+</div>
                     <div className="text-xs text-gray-600 dark:text-gray-300">Placements</div>
@@ -115,6 +115,16 @@ export default function Home() {
                     <div className="text-xs text-gray-600 dark:text-gray-300">Délai Moyen</div>
                   </div>
                 </div>
+              </div>
+
+              {/* Decorative Badge */}
+              <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
+                <span className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Expert Recrutement
+                </span>
               </div>
             </div>
           </div>
@@ -143,7 +153,6 @@ export default function Home() {
                 description: 'Pour renforcer durablement vos équipes avec des talents qualifiés et alignés sur vos valeurs',
                 features: ['Profils qualifiés', 'Approche personnalisée', 'Suivi post-placement', 'Garantie période d\'essai'],
                 image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=400&fit=crop',
-                icon: '👔',
                 color: 'from-primary-500 to-primary-600',
                 slug: 'cdi'
               },
@@ -152,7 +161,6 @@ export default function Home() {
                 description: 'Pour répondre à vos besoins ponctuels avec des profils experts disponibles rapidement',
                 features: ['Disponibilité rapide', 'Experts qualifiés', 'Flexibilité', 'Gestion administrative'],
                 image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
-                icon: '⚡',
                 color: 'from-accent-500 to-accent-600',
                 slug: 'freelance'
               },
@@ -161,7 +169,6 @@ export default function Home() {
                 description: 'Solutions flexibles grâce à notre partenariat avec une société de portage salarial',
                 features: ['Partenariat exclusif', 'Solution souple', 'Sécurité juridique', 'Simplicité administrative'],
                 image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
-                icon: '🤝',
                 color: 'from-primary-600 to-accent-500',
                 slug: 'portage'
               },
@@ -170,7 +177,6 @@ export default function Home() {
                 description: 'Bénéficiez d\'une expertise dédiée, d\'une agilité renforcée et d\'une optimisation des coûts pour atteindre vos objectifs plus efficacement',
                 features: ['Expertise dédiée', 'Agilité renforcée', 'Optimisation coûts', 'Objectifs atteints'],
                 image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop',
-                icon: '🎯',
                 color: 'from-primary-500 to-accent-600',
                 slug: 'rpo'
               }
@@ -214,7 +220,7 @@ export default function Home() {
                   </ul>
                   <Link
                     href={`/services/${service.slug}`}
-                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mt-auto"
+                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mt-auto cursor-pointer"
                   >
                     En savoir plus →
                   </Link>
@@ -337,78 +343,82 @@ export default function Home() {
       </section>
 
       {/* Expertise Domains Section - NEW */}
-      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section className="py-16 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
               Nos Domaines d'Expertise
             </SectionHeaderBadge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-700 dark:text-accent-500 mb-3">
               Notre Savoir-Faire
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Du recrutement IT aux métiers du conseil, nous accompagnons une grande diversité de clients en France et à l'étranger
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Du recrutement IT aux métiers du conseil, nous accompagnons une grande diversité de clients
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 title: 'Métiers de l\'IT',
                 description: 'Une véritable expertise où nous disposons d\'un savoir-faire reconnu',
                 specialties: ['Développement', 'Infrastructure', 'Data', 'Cybersécurité', 'DevOps', 'Cloud'],
-                image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop&q=80',
+                icon: (
+                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                ),
                 category: 'IT & Tech'
               },
               {
                 title: 'Digital & Finance',
                 description: 'Postes technico-fonctionnels dans le Digital et la Finance',
                 specialties: ['Product Management', 'UX/UI Design', 'Finance', 'Contrôle de gestion', 'Analyse financière'],
-                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop&q=80',
+                icon: (
+                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ),
                 category: 'Digital & Finance'
               },
               {
                 title: 'Conseil & Expertise',
                 description: 'Métiers du Conseil, de l\'Audit et de l\'Expertise Comptable',
                 specialties: ['Conseil en stratégie', 'Audit', 'Expertise comptable', 'Conseil fiscal', 'Transformation'],
-                image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&h=600&fit=crop&q=80',
+                icon: (
+                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                ),
                 category: 'Conseil & Audit'
               }
             ].map((domain, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden"
+                className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100 dark:border-gray-700"
               >
-                <div className="relative h-56 overflow-hidden">
-                  <Image
-                    src={domain.image}
-                    alt={domain.title}
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    loading="lazy"
-                    quality={85}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/60 via-[#ffaf50ff]/20 to-transparent opacity-40 group-hover:opacity-30 transition-opacity duration-300"></div>
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold text-primary-700">
-                      {domain.category}
-                    </span>
+                <div className="p-6">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex-shrink-0 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-accent-500 transition-colors">
+                      {domain.icon}
+                    </div>
+                    <div className="flex-1">
+                      <span className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-3 py-1 rounded-full text-xs font-bold text-primary-700 dark:text-accent-500 mb-2">
+                        {domain.category}
+                      </span>
+                      <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500">
+                        {domain.title}
+                      </h3>
+                    </div>
                   </div>
-                </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3">
-                    {domain.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
                     {domain.description}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {domain.specialties.map((specialty, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-0.5 bg-primary-500/10 dark:bg-accent-500/20 text-primary-700 dark:text-accent-500 rounded-full text-xs font-medium"
+                        className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs font-medium"
                       >
                         {specialty}
                       </span>
@@ -465,12 +475,20 @@ export default function Home() {
 
               <div className="mt-8 grid grid-cols-2 gap-4">
                 <div className="bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4">
-                  <div className="text-3xl mb-2">🔍</div>
+                  <div className="mb-2">
+                    <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
                   <div className="font-semibold text-primary-700 dark:text-accent-500">Sourcing Ciblé</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Profils qualifiés et motivés</div>
                 </div>
                 <div className="bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4">
-                  <div className="text-3xl mb-2">🤝</div>
+                  <div className="mb-2">
+                    <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
                   <div className="font-semibold text-primary-700 dark:text-accent-500">Accompagnement</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Suivi personnalisé</div>
                 </div>
@@ -578,7 +596,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
             <Link
               href="/contact"
-              className="group bg-accent-500 text-primary-700 px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg inline-flex items-center justify-center gap-3"
+              className="group bg-accent-500 text-primary-700 px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg inline-flex items-center justify-center gap-3 cursor-pointer"
             >
               Commencer Maintenant
               <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -588,7 +606,7 @@ export default function Home() {
 
             <Link
               href="/offres-emploi"
-              className="group border-2 border-white text-white px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:text-primary-700 transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center gap-3"
+              className="group border-2 border-white text-white px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:text-primary-700 transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center gap-3 cursor-pointer"
             >
               Explorer les Offres
               <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -206,7 +206,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
 
                 {/* Floating Stats Cards */}
-                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3">
+                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-4">
                   <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
                     <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">24h</div>
                     <div className="text-xs text-gray-600 dark:text-gray-300">Réponse</div>
@@ -225,7 +225,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               {/* Decorative Badge */}
               <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
                 <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                   Nous sommes là
@@ -307,7 +307,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </div>
 
                 {error && (
-                  <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+                  <div role="alert" className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
                     <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
                       <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
@@ -754,10 +754,10 @@ const handleSubmit = async (e: React.FormEvent) => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-gray-800 dark:to-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Prêt à commencer ?
           </h2>
-          <p className="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl mb-10 opacity-90 max-w-2xl mx-auto">
             Rejoignez les centaines de talents et d&apos;entreprises qui nous font confiance
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

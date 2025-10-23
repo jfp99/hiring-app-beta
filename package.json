@@ -13,6 +13,10 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest watch",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:chromium": "playwright test --project=chromium",
     "db:init": "tsx scripts/init-database.ts",
     "db:seed": "tsx scripts/init-database.ts",
     "db:indexes": "tsx scripts/create-indexes.ts",
@@ -48,6 +52,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
