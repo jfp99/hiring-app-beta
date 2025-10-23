@@ -5,7 +5,7 @@ import AdminHeader from '../components/AdminHeader'
 import Footer from '../components/Footer'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Briefcase, Building2, MapPin, Mail, DollarSign, FileText, RefreshCw } from 'lucide-react'
+import { Briefcase, Building2, MapPin, Mail, DollarSign, FileText, RefreshCw, Edit2, Trash2 } from 'lucide-react'
 import { useApi } from '../hooks/useApi'
 import AdminGuard from '@/app/components/AdminGuard'
 import { signOut } from 'next-auth/react'
@@ -14,6 +14,8 @@ import { toast } from 'sonner'
 import { EmptyData } from '@/app/components/ui'
 import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
+import DeleteConfirmModal from '@/app/components/DeleteConfirmModal'
+import EditOffreModal from '@/app/components/EditOffreModal'
 
 interface ContactForm {
   id: string
@@ -74,6 +76,27 @@ export default function Admin() {
     competences: '',
     emailContact: '',
     categorie: 'Technologie'
+  })
+
+  // Delete modal state
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean
+    type: 'contact' | 'newsletter' | 'offre' | null
+    item: any | null
+  }>({
+    isOpen: false,
+    type: null,
+    item: null
+  })
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  // Edit modal state
+  const [editOffreModal, setEditOffreModal] = useState<{
+    isOpen: boolean
+    offre: Offre | null
+  }>({
+    isOpen: false,
+    offre: null
   })
 
   const { loading, error, callApi } = useApi()
@@ -229,6 +252,116 @@ export default function Admin() {
     await signOut({ callbackUrl: '/auth/login' })
   }
 
+  // Delete handlers
+  const handleDeleteClick = (type: 'contact' | 'newsletter' | 'offre', item: any) => {
+    setDeleteModal({
+      isOpen: true,
+      type,
+      item
+    })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.item || !deleteModal.type) return
+
+    setIsDeleting(true)
+    try {
+      let endpoint = ''
+      let params = ''
+
+      switch (deleteModal.type) {
+        case 'contact':
+          endpoint = '/contacts'
+          params = `?id=${deleteModal.item.id}&type=${deleteModal.item.type}`
+          break
+        case 'newsletter':
+          endpoint = '/newsletters'
+          params = `?id=${deleteModal.item.id}`
+          break
+        case 'offre':
+          endpoint = '/offres'
+          params = `?id=${deleteModal.item.id}`
+          break
+      }
+
+      await callApi(`${endpoint}${params}`, {
+        method: 'DELETE'
+      })
+
+      toast.success('Suppression réussie', {
+        description: `${deleteModal.type === 'contact' ? 'Contact' : deleteModal.type === 'newsletter' ? 'Abonnement' : 'Offre'} supprimé(e) avec succès`
+      })
+
+      // Recharger les données
+      await fetchData()
+
+      // Fermer le modal
+      setDeleteModal({
+        isOpen: false,
+        type: null,
+        item: null
+      })
+    } catch (err) {
+      console.error('Error deleting item:', err)
+      toast.error('Erreur de suppression', {
+        description: 'Une erreur est survenue lors de la suppression'
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({
+      isOpen: false,
+      type: null,
+      item: null
+    })
+  }
+
+  // Edit handlers
+  const handleEditClick = (offre: Offre) => {
+    setEditOffreModal({
+      isOpen: true,
+      offre
+    })
+  }
+
+  const handleEditSave = async (offre: Offre) => {
+    try {
+      await callApi(`/offres?id=${offre.id}`, {
+        method: 'PUT',
+        body: offre
+      })
+
+      toast.success('Modification réussie', {
+        description: 'L\'offre a été mise à jour avec succès'
+      })
+
+      // Recharger les données
+      await fetchData()
+
+      // Fermer le modal
+      setEditOffreModal({
+        isOpen: false,
+        offre: null
+      })
+    } catch (err) {
+      console.error('Error updating offer:', err)
+      toast.error('Erreur de modification', {
+        description: 'Une erreur est survenue lors de la mise à jour'
+      })
+      throw err
+    }
+  }
+
+  const handleEditCancel = () => {
+    setEditOffreModal({
+      isOpen: false,
+      offre: null
+    })
+  }
+
   return (
     <AdminGuard>
     <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200 dark:from-gray-900 dark:to-gray-800">
@@ -365,6 +498,7 @@ export default function Admin() {
                         <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Téléphone</th>
                         <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Message</th>
                         <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date</th>
+                        <th className="px-6 py-4 text-right text-sm font-semibold text-primary-700 dark:text-gray-200">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -388,6 +522,16 @@ export default function Admin() {
                             </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(contact.date)}</td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={() => handleDeleteClick('contact', contact)}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                              title="Supprimer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Supprimer
+                            </button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -411,6 +555,7 @@ export default function Admin() {
                     <tr>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Email</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date d'inscription</th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-primary-700 dark:text-gray-200">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -418,6 +563,16 @@ export default function Admin() {
                       <tr key={sub.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                         <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{sub.email}</td>
                         <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(sub.date)}</td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            onClick={() => handleDeleteClick('newsletter', sub)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            title="Supprimer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Supprimer
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -456,6 +611,7 @@ export default function Admin() {
                         <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Salaire</th>
                         <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date</th>
                         <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Statut</th>
+                        <th className="px-6 py-4 text-right text-sm font-semibold text-primary-700 dark:text-gray-200">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -475,6 +631,26 @@ export default function Admin() {
                             }`}>
                               {offre.statut}
                             </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleEditClick(offre)}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                title="Modifier"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                                Modifier
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick('offre', offre)}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                title="Supprimer"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Supprimer
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -682,6 +858,39 @@ export default function Admin() {
       {showCustomFieldManager && (
         <CustomFieldManager onClose={() => setShowCustomFieldManager(false)} />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title={
+          deleteModal.type === 'contact' ? 'Supprimer le contact' :
+          deleteModal.type === 'newsletter' ? 'Supprimer l\'abonnement' :
+          'Supprimer l\'offre'
+        }
+        message={
+          deleteModal.type === 'contact' ? 'Êtes-vous sûr de vouloir supprimer ce contact ?' :
+          deleteModal.type === 'newsletter' ? 'Êtes-vous sûr de vouloir supprimer cet abonnement ?' :
+          'Êtes-vous sûr de vouloir supprimer cette offre d\'emploi ?'
+        }
+        itemName={
+          deleteModal.type === 'contact' ? deleteModal.item?.email :
+          deleteModal.type === 'newsletter' ? deleteModal.item?.email :
+          deleteModal.item?.titre
+        }
+        isDeleting={isDeleting}
+      />
+
+      {/* Edit Offre Modal */}
+      <EditOffreModal
+        isOpen={editOffreModal.isOpen}
+        onClose={handleEditCancel}
+        onSave={handleEditSave}
+        offre={editOffreModal.offre}
+        categories={categories}
+        typesContrat={typesContrat}
+      />
     </div>
     </AdminGuard>
   )

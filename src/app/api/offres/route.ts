@@ -65,11 +65,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     console.log('📝 [OFFRES] Creating new job offer...');
-    
+
     // Lire le corps de la requête
     const text = await request.text();
     console.log('📦 [OFFRES] Raw request body:', text);
-    
+
     let body;
     try {
       body = JSON.parse(text);
@@ -77,14 +77,14 @@ export async function POST(request: Request) {
     } catch (parseError) {
       console.error('❌ [OFFRES] JSON parse error:', parseError);
       return NextResponse.json(
-        { 
+        {
           success: false,
-          error: 'Invalid JSON format' 
-        }, 
+          error: 'Invalid JSON format'
+        },
         { status: 400 }
       );
     }
-    
+
     // DEBUG: Afficher chaque champ individuellement
     console.log('🔍 [OFFRES] Field check:');
     console.log('  - titre:', body.titre);
@@ -93,34 +93,34 @@ export async function POST(request: Request) {
     console.log('  - typeContrat:', body.typeContrat);
     console.log('  - description:', body.description);
     console.log('  - emailContact:', body.emailContact);
-    
+
     // Validation des champs requis
     const requiredFields = ['titre', 'entreprise', 'lieu', 'typeContrat', 'description', 'emailContact'];
     const missingFields: string[] = [];
-    
+
     requiredFields.forEach(field => {
       const value = body[field];
       console.log(`🔍 [OFFRES] Checking field "${field}":`, value, 'Type:', typeof value);
-      
+
       if (!value || (typeof value === 'string' && value.trim() === '')) {
         missingFields.push(field);
       }
     });
-    
+
     console.log('🔍 [OFFRES] Missing fields found:', missingFields);
-    
+
     if (missingFields.length > 0) {
       return NextResponse.json(
-        { 
+        {
           success: false,
-          error: `Champs manquants: ${missingFields.join(', ')}` 
-        }, 
+          error: `Champs manquants: ${missingFields.join(', ')}`
+        },
         { status: 400 }
       );
     }
-    
+
     const { db } = await connectToDatabase();
-    
+
     // Créer la nouvelle offre
     const nouvelleOffre = {
       titre: body.titre.trim(),
@@ -137,26 +137,155 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-    
+
     console.log('💾 [OFFRES] Saving offer to database:', nouvelleOffre);
-    
+
     const result = await db.collection('offres').insertOne(nouvelleOffre);
-    
+
     console.log('✅ [OFFRES] Job offer created with id:', result.insertedId);
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       message: 'Offre créée avec succès',
       id: result.insertedId.toString()
     });
-    
+
   } catch (error: unknown) {
     console.error('❌ [OFFRES] Error creating job offer:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to create job offer'
-      }, 
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    console.log('✏️ [OFFRES] Updating job offer...');
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ID is required'
+        },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+    console.log('📦 [OFFRES] Update body:', body);
+
+    const { db } = await connectToDatabase();
+    const { ObjectId } = require('mongodb');
+
+    // Préparer les données à mettre à jour
+    const updateData = {
+      titre: body.titre?.trim(),
+      entreprise: body.entreprise?.trim(),
+      lieu: body.lieu?.trim(),
+      typeContrat: body.typeContrat?.trim(),
+      salaire: body.salaire?.trim() || 'À négocier',
+      description: body.description?.trim(),
+      competences: body.competences?.trim() || '',
+      emailContact: body.emailContact?.trim(),
+      categorie: body.categorie?.trim() || 'Technologie',
+      statut: body.statut || 'active',
+      updatedAt: new Date().toISOString()
+    };
+
+    console.log(`✏️ [OFFRES] Updating ID: ${id} with data:`, updateData);
+
+    const result = await db.collection('offres').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Job offer not found'
+        },
+        { status: 404 }
+      );
+    }
+
+    console.log(`✅ [OFFRES] Job offer updated successfully`);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Offre mise à jour avec succès'
+    });
+
+  } catch (error: unknown) {
+    console.error('❌ [OFFRES] Error updating job offer:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to update job offer'
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    console.log('🗑️ [OFFRES] Deleting job offer...');
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'ID is required'
+        },
+        { status: 400 }
+      );
+    }
+
+    const { db } = await connectToDatabase();
+    const { ObjectId } = require('mongodb');
+
+    console.log(`🗑️ [OFFRES] Deleting ID: ${id}`);
+
+    const result = await db.collection('offres').deleteOne({
+      _id: new ObjectId(id)
+    });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Job offer not found'
+        },
+        { status: 404 }
+      );
+    }
+
+    console.log(`✅ [OFFRES] Job offer deleted successfully`);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Offre supprimée avec succès'
+    });
+
+  } catch (error: unknown) {
+    console.error('❌ [OFFRES] Error deleting job offer:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to delete job offer'
+      },
       { status: 500 }
     );
   }

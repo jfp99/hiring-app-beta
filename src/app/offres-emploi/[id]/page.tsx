@@ -162,17 +162,28 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               )}
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
+              <a
                 href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis intéressé(e) par le poste de ${offre.titre} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-4 rounded-lg text-lg font-bold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg text-center"
+                className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
               >
-                Postuler maintenant
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Postuler maintenant
+                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </span>
+                <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
               </a>
-              <Link 
+              <Link
                 href="/offres-emploi"
-                className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-bold hover:bg-white hover:text-[#3b5335ff] transform hover:-translate-y-1 transition-all duration-300 text-center"
+                className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
               >
-                Voir toutes les offres
+                <span className="flex items-center justify-center gap-2">
+                  Voir toutes les offres
+                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </span>
               </Link>
             </div>
           </div>
@@ -402,15 +413,26 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   </p>
                   <a
                     href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis intéressé(e) par le poste de ${offre.titre} chez ${offre.entreprise} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                    className="block w-full bg-[#ffaf50ff] text-[#3b5335ff] dark:text-gray-900 py-3 rounded-xl font-bold hover:bg-white hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mb-3 text-center"
+                    className="group block w-full bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-4 py-3 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm mb-3 cursor-pointer"
                   >
-                    Postuler par email
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      Postuler par email
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                   </a>
                   <Link
                     href="/contact"
-                    className="block w-full border-2 border-white text-white py-3 rounded-xl font-bold hover:bg-white hover:text-[#3b5335ff] dark:hover:text-gray-900 transform hover:-translate-y-1 transition-all duration-300 text-center"
+                    className="group block w-full border-2 border-white text-white px-4 py-3 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transform hover:-translate-y-1 transition-all duration-300 text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm cursor-pointer"
                   >
-                    Nous contacter
+                    <span className="flex items-center justify-center gap-2">
+                      Nous contacter
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                    </span>
                   </Link>
                 </div>
                 <div className="h-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>

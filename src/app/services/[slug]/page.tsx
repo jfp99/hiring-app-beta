@@ -133,7 +133,8 @@ export default function ServicePage({ params }: { params: Promise<{ slug: string
           priority
           quality={90}
         />
-        <div className={`absolute inset-0 bg-gradient-to-r ${service.color} opacity-80`}></div>
+        <div className={`absolute inset-0 bg-gradient-to-r ${service.color} opacity-90`}></div>
+        <div className="absolute inset-0 bg-black/20"></div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
           <SectionHeaderBadge variant="hero" className="mb-2 sm:mb-3">
@@ -164,7 +165,7 @@ export default function ServicePage({ params }: { params: Promise<{ slug: string
       </section>
 
       {/* Navigation Tabs */}
-      <section id="details" className="sticky top-16 z-40 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-gray-700">
+      <section id="details" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex overflow-x-auto">
             {[
