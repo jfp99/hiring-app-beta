@@ -102,12 +102,17 @@ export interface CandidateNote {
 
 export interface CandidateActivity {
   id: string
-  type: 'status_change' | 'note_added' | 'interview_scheduled' | 'document_uploaded' | 'email_sent' | 'call_made' | 'application_submitted' | 'profile_updated' | 'quick_score_added'
+  type: 'status_change' | 'note_added' | 'interview_scheduled' | 'document_uploaded' | 'email_sent' | 'call_made' | 'application_submitted' | 'profile_updated' | 'quick_score_added' | 'process_added' | 'process_removed' | 'process_stage_changed'
   description: string
   userId: string
   userName: string
   timestamp: string
   metadata?: Record<string, any>
+  // Process-related fields
+  processId?: string
+  processName?: string
+  fromStage?: string
+  toStage?: string
 }
 
 // Quick Score - Lightweight alternative to full interview feedback
@@ -304,6 +309,28 @@ export interface Candidate {
   interviews: InterviewSchedule[]
   applicationIds: string[] // Reference to applications
 
+  // Process Management
+  processIds?: string[] // Array of process IDs this candidate is part of
+  currentProcesses?: {
+    processId: string
+    processName: string
+    stageId: string
+    stageName: string
+    enteredStageAt: string
+    daysInStage?: number
+  }[] // Current active processes with stage info
+  processHistory?: {
+    processId: string
+    processName: string
+    action: 'added' | 'removed' | 'stage_changed' | 'completed'
+    stageId?: string
+    stageName?: string
+    timestamp: string
+    userId: string
+    userName: string
+    notes?: string
+  }[] // Historical record of all process assignments
+
   // Notes & Activity
   notes: CandidateNote[]
   activities: CandidateActivity[]
@@ -389,6 +416,9 @@ export interface UpdateCandidateDTO {
   marketingConsent?: boolean
   isActive?: boolean
   customFields?: Record<string, any>
+  // Process-related updates
+  processIds?: string[]
+  currentProcesses?: Candidate['currentProcesses']
 }
 
 export interface CandidateSearchFilters {

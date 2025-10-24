@@ -1,15 +1,31 @@
 // src/app/components/CandidateCard.tsx
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { Candidate, EXPERIENCE_LEVEL_LABELS } from '@/app/types/candidates'
+import { Candidate, CandidateStatus, EXPERIENCE_LEVEL_LABELS } from '@/app/types/candidates'
 import { TagList } from '@/app/components/Tag'
+import {
+  MoreVertical,
+  Eye,
+  UserPlus,
+  Edit2,
+  Archive,
+  Clock,
+  MapPin,
+  Briefcase
+} from 'lucide-react'
 
 interface CandidateCardProps {
   candidate: Candidate
   isDragging?: boolean
   onDragStart?: (e: React.DragEvent) => void
   onDragEnd?: (e: React.DragEvent) => void
+  onAddToProcess?: (candidate: Candidate) => void
+  onEdit?: (candidate: Candidate) => void
+  onArchive?: (candidate: Candidate) => void
+  showActions?: boolean
+  showProcessInfo?: boolean
 }
 
 // Generate initials avatar
@@ -33,12 +49,41 @@ function getAvatarColor(name: string): string {
   return colors[index]
 }
 
+// Get status color and label
+function getStatusColor(status: CandidateStatus): string {
+  const colors: Record<CandidateStatus, string> = {
+    [CandidateStatus.NEW]: 'bg-blue-100 text-blue-800 border-blue-200',
+    [CandidateStatus.CONTACTED]: 'bg-purple-100 text-purple-800 border-purple-200',
+    [CandidateStatus.SCREENING]: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+    [CandidateStatus.INTERVIEW_SCHEDULED]: 'bg-orange-100 text-orange-800 border-orange-200',
+    [CandidateStatus.INTERVIEW_COMPLETED]: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+    [CandidateStatus.OFFER_SENT]: 'bg-indigo-100 text-indigo-800 border-indigo-200',
+    [CandidateStatus.OFFER_ACCEPTED]: 'bg-green-100 text-green-800 border-green-200',
+    [CandidateStatus.OFFER_REJECTED]: 'bg-red-100 text-red-800 border-red-200',
+    [CandidateStatus.HIRED]: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    [CandidateStatus.REJECTED]: 'bg-red-100 text-red-800 border-red-200',
+    [CandidateStatus.ON_HOLD]: 'bg-gray-100 text-gray-800 border-gray-200',
+    [CandidateStatus.ARCHIVED]: 'bg-gray-100 text-gray-600 border-gray-200'
+  }
+  return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200'
+}
+
+function formatStatus(status: CandidateStatus): string {
+  return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
 export default function CandidateCard({
   candidate,
   isDragging = false,
   onDragStart,
-  onDragEnd
+  onDragEnd,
+  onAddToProcess,
+  onEdit,
+  onArchive,
+  showActions = true,
+  showProcessInfo = true
 }: CandidateCardProps) {
+  const [showMenu, setShowMenu] = useState(false)
   const initials = getInitials(candidate.firstName, candidate.lastName)
   const avatarColor = getAvatarColor(candidate.firstName + candidate.lastName)
 
@@ -50,16 +95,15 @@ export default function CandidateCard({
       role="button"
       tabIndex={0}
       aria-label={`${candidate.firstName} ${candidate.lastName}, ${candidate.currentPosition || 'No position'}`}
-      className={`group bg-white rounded-lg shadow-sm p-2.5 mb-2 cursor-grab active:cursor-grabbing hover:shadow-xl transition-all duration-200 border border-transparent hover:border-accent-500 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 ${
+      className={`group bg-white rounded-xl shadow-sm p-3 mb-2 cursor-grab active:cursor-grabbing hover:shadow-xl transition-all duration-200 border border-gray-200 hover:border-accent-500 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 relative ${
         isDragging ? 'opacity-40 scale-95' : 'opacity-100'
-      }`}
+      } ${candidate.isArchived ? 'opacity-60' : ''}`}
     >
-      {/* Drag Indicator - More Compact */}
-      <div className="flex items-center gap-1 mb-2 text-gray-300 group-hover:text-accent-500 transition-colors" aria-hidden="true">
-        <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
-        <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
-        <div className="w-0.5 h-0.5 rounded-full bg-current"></div>
-        <div className="flex-1 h-px bg-gray-200 group-hover:bg-accent-500/30"></div>
+      {/* Status Badge - Top Right */}
+      <div className="absolute top-2 right-2 z-10">
+        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(candidate.status)}`}>
+          {formatStatus(candidate.status)}
+        </span>
       </div>
 
       {/* Header with Avatar */}
@@ -148,13 +192,104 @@ export default function CandidateCard({
         </div>
       )}
 
-      {/* Footer - More Compact */}
-      <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 space-y-1">
-        <div className="truncate" title={candidate.email}>
-          📧 {candidate.email.split('@')[0]}
+      {/* Process Info */}
+      {showProcessInfo && candidate.currentProcesses && candidate.currentProcesses.length > 0 && (
+        <div className="mb-2 p-2 bg-blue-50 rounded-lg border border-blue-100">
+          <p className="text-xs font-medium text-blue-700 mb-1">
+            Processus actifs ({candidate.currentProcesses.length})
+          </p>
+          {candidate.currentProcesses.slice(0, 2).map((process, index) => (
+            <div key={index} className="text-xs text-blue-600 truncate">
+              • {process.processName} - {process.stageName}
+            </div>
+          ))}
+          {candidate.currentProcesses.length > 2 && (
+            <div className="text-xs text-blue-500 mt-1">
+              +{candidate.currentProcesses.length - 2} autres...
+            </div>
+          )}
         </div>
-        {candidate.assignedToName && (
-          <div className="text-xs text-gray-400 truncate">👤 {candidate.assignedToName}</div>
+      )}
+
+      {/* Footer with Contact Info and Actions */}
+      <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="truncate" title={candidate.email}>
+            📧 {candidate.email}
+          </div>
+          {candidate.assignedToName && (
+            <div className="text-xs text-gray-400 truncate">👤 {candidate.assignedToName}</div>
+          )}
+        </div>
+
+        {/* Action Menu */}
+        {showActions && (
+          <div className="relative">
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowMenu(!showMenu)
+              }}
+              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <MoreVertical className="w-4 h-4 text-gray-500" />
+            </button>
+
+            {showMenu && (
+              <div className="absolute right-0 bottom-full mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                <Link
+                  href={`/candidates/${candidate.id}`}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Eye className="w-4 h-4" />
+                  Voir le profil
+                </Link>
+
+                {onAddToProcess && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onAddToProcess(candidate)
+                      setShowMenu(false)
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Ajouter au processus
+                  </button>
+                )}
+
+                {onEdit && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onEdit(candidate)
+                      setShowMenu(false)
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Modifier
+                  </button>
+                )}
+
+                {onArchive && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onArchive(candidate)
+                      setShowMenu(false)
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left border-t border-gray-100"
+                  >
+                    <Archive className="w-4 h-4" />
+                    Archiver
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

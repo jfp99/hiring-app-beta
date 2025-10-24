@@ -26,10 +26,10 @@ export default function AdminHeader() {
   }, [])
 
   const navItems: Array<{ href: string; label: string; icon: string; badge?: string }> = [
-    { href: '/admin', label: 'Dashboard', icon: '📊' },
-    { href: '/candidates', label: 'Candidats', icon: '👥' },
+    { href: '/admin', label: 'Candidats Hub', icon: '👥', badge: 'CRM' },
+    { href: '/admin/processes', label: 'Processus', icon: '🎯' },
     { href: '/admin/workflows', label: 'Workflows', icon: '🤖' },
-    { href: '/admin/analytics-enhanced', label: 'Analytics', icon: '📈', badge: 'NEW' },
+    { href: '/admin/analytics-enhanced', label: 'Analytics', icon: '📈' },
     { href: '/admin/settings', label: 'Paramètres', icon: '⚙️' },
   ]
 

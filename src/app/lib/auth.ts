@@ -29,6 +29,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null
           }
 
+          // Email whitelist check for admin access
+          const ALLOWED_ADMIN_EMAILS = ['hugo@hi-ring.fr', 'izia@hi-ring.fr']
+          const normalizedEmail = email.toLowerCase()
+
+          if (!ALLOWED_ADMIN_EMAILS.includes(normalizedEmail)) {
+            console.log(`❌ [AUTH] Email not in whitelist: ${email}`)
+            return null
+          }
+
           // Connect to database
           const { db } = await connectToDatabase()
 

@@ -1,897 +1,679 @@
 // app/admin/page.tsx
 'use client'
 
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import AdminHeader from '../components/AdminHeader'
-import Footer from '../components/Footer'
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { Briefcase, Building2, MapPin, Mail, DollarSign, FileText, RefreshCw, Edit2, Trash2 } from 'lucide-react'
-import { useApi } from '../hooks/useApi'
 import AdminGuard from '@/app/components/AdminGuard'
-import { signOut } from 'next-auth/react'
-import CustomFieldManager from '@/app/components/CustomFieldManager'
+import CandidateCard from '@/app/components/CandidateCard'
+import SelectProcessModal from '@/app/components/SelectProcessModal'
+import { useApi } from '../hooks/useApi'
+import { Candidate, CandidateStatus, ExperienceLevel } from '../types/candidates'
 import { toast } from 'sonner'
-import { EmptyData } from '@/app/components/ui'
+import {
+  Search,
+  Filter,
+  Plus,
+  RefreshCw,
+  Users,
+  UserPlus,
+  Building2,
+  Briefcase,
+  Grid,
+  List,
+  Archive,
+  Download,
+  Upload,
+  ChevronRight
+} from 'lucide-react'
 import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
-import DeleteConfirmModal from '@/app/components/DeleteConfirmModal'
-import EditOffreModal from '@/app/components/EditOffreModal'
+import Link from 'next/link'
 
-interface ContactForm {
-  id: string
-  nom: string
-  email: string
-  telephone: string
-  message: string
-  type: 'candidat' | 'entreprise'
-  date: string
+interface FilterState {
+  search: string
+  status: CandidateStatus[]
+  experienceLevel: ExperienceLevel[]
+  tags: string[]
+  skills: string[]
+  assignedTo: string
+  hasProcesses: boolean | null
+  showArchived: boolean
 }
 
-interface Newsletter {
-  id: string
-  email: string
-  date: string
-}
-
-interface Offre {
-  id: string
-  titre: string
-  entreprise: string
-  lieu: string
-  typeContrat: string
-  salaire: string
-  description: string
-  competences: string
-  emailContact: string
-  datePublication: string
-  categorie: string
-  statut: 'active' | 'inactive'
-}
-
-interface NewOffre {
-  titre: string
-  entreprise: string
-  lieu: string
-  typeContrat: string
-  salaire: string
-  description: string
-  competences: string
-  emailContact: string
-  categorie: string
-}
-
-export default function Admin() {
-  const [activeTab, setActiveTab] = useState<'contacts' | 'newsletters' | 'offres' | 'add-offre'>('contacts')
-  const [contacts, setContacts] = useState<ContactForm[]>([])
-  const [newsletters, setNewsletters] = useState<Newsletter[]>([])
-  const [offres, setOffres] = useState<Offre[]>([])
-  const [showCustomFieldManager, setShowCustomFieldManager] = useState(false)
-  const [newOffre, setNewOffre] = useState<NewOffre>({
-    titre: '',
-    entreprise: '',
-    lieu: '',
-    typeContrat: '',
-    salaire: '',
-    description: '',
-    competences: '',
-    emailContact: '',
-    categorie: 'Technologie'
-  })
-
-  // Delete modal state
-  const [deleteModal, setDeleteModal] = useState<{
-    isOpen: boolean
-    type: 'contact' | 'newsletter' | 'offre' | null
-    item: any | null
-  }>({
-    isOpen: false,
-    type: null,
-    item: null
-  })
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  // Edit modal state
-  const [editOffreModal, setEditOffreModal] = useState<{
-    isOpen: boolean
-    offre: Offre | null
-  }>({
-    isOpen: false,
-    offre: null
-  })
-
+export default function AdminCandidatesHub() {
+  const router = useRouter()
   const { loading, error, callApi } = useApi()
 
-  // Charger les données
+  // State
+  const [candidates, setCandidates] = useState<Candidate[]>([])
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [showFilters, setShowFilters] = useState(true)
+  const [showProcessModal, setShowProcessModal] = useState(false)
+  const [selectedCandidateForProcess, setSelectedCandidateForProcess] = useState<Candidate | null>(null)
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([])
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // Filter state
+  const [filters, setFilters] = useState<FilterState>({
+    search: '',
+    status: [],
+    experienceLevel: [],
+    tags: [],
+    skills: [],
+    assignedTo: '',
+    hasProcesses: null,
+    showArchived: false
+  })
+
+  // Pagination
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const pageSize = 24 // 6 cols x 4 rows on large screens
+
+  // Available filter options (derived from candidates)
+  const [availableTags, setAvailableTags] = useState<string[]>([])
+  const [availableSkills, setAvailableSkills] = useState<string[]>([])
+
+  // Fetch candidates
+  const fetchCandidates = useCallback(async () => {
+    try {
+      setIsRefreshing(true)
+
+      // Build query params
+      const params = new URLSearchParams()
+      if (filters.search) params.append('search', filters.search)
+      if (filters.status.length > 0) params.append('status', filters.status.join(','))
+      if (filters.experienceLevel.length > 0) params.append('experienceLevel', filters.experienceLevel.join(','))
+      if (filters.tags.length > 0) params.append('tags', filters.tags.join(','))
+      if (filters.skills.length > 0) params.append('skills', filters.skills.join(','))
+      if (filters.assignedTo) params.append('assignedTo', filters.assignedTo)
+      if (filters.hasProcesses !== null) params.append('hasProcesses', filters.hasProcesses.toString())
+      params.append('isArchived', filters.showArchived.toString())
+      params.append('isActive', 'true')  // Only show active candidates by default
+      params.append('page', page.toString())
+      params.append('limit', pageSize.toString())
+
+      const response = await callApi(`/candidates?${params}`)
+
+      if (response) {
+        setCandidates(response.candidates || [])
+        setTotalPages(response.totalPages || 1)
+        setTotalCount(response.total || 0)
+
+        // Extract available tags and skills
+        const allTags = new Set<string>()
+        const allSkills = new Set<string>()
+
+        response.candidates?.forEach((candidate: Candidate) => {
+          candidate.tags?.forEach(tag => allTags.add(tag))
+          candidate.primarySkills?.forEach(skill => allSkills.add(skill))
+        })
+
+        setAvailableTags(Array.from(allTags).sort())
+        setAvailableSkills(Array.from(allSkills).sort())
+      }
+    } catch (err) {
+      console.error('Error fetching candidates:', err)
+      toast.error('Erreur lors du chargement des candidats')
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [filters, page, pageSize, callApi])
+
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchCandidates()
+  }, [fetchCandidates])
 
-  const fetchData = async () => {
-    try {
-      console.log('🔄 Starting data fetch...');
-      
-      // Charger les contacts
-      const contactsData = await callApi('/contacts')
-      setContacts(contactsData.contacts || [])
-      console.log('✅ Contacts loaded:', contactsData.contacts?.length);
-
-      // Charger les newsletters
-      const newslettersData = await callApi('/newsletters')
-      setNewsletters(newslettersData.newsletters || [])
-      console.log('✅ Newsletters loaded:', newslettersData.newsletters?.length);
-
-      // Charger les offres
-      const offresData = await callApi('/offres')
-      setOffres(offresData.offres || [])
-      console.log('✅ Offres loaded:', offresData.offres?.length);
-
-    } catch (err) {
-      console.error('❌ Error loading data:', err)
-    }
+  // Filter handlers
+  const handleSearchChange = (value: string) => {
+    setFilters(prev => ({ ...prev, search: value }))
+    setPage(1)
   }
 
-  const handleAddOffre = async (e: React.FormEvent) => {
-  e.preventDefault()
-  try {
-    console.log('📝 [ADMIN] Starting to add new offer...');
-    console.log('📦 [ADMIN] Form data (raw):', newOffre);
-    
-    // Validation manuelle avant envoi
-    const requiredFields = ['titre', 'entreprise', 'lieu', 'typeContrat', 'description', 'emailContact'];
-    const missingFields = requiredFields.filter(field => !newOffre[field as keyof NewOffre] || newOffre[field as keyof NewOffre].trim() === '');
-    
-    if (missingFields.length > 0) {
-      console.log('❌ [ADMIN] Missing fields detected:', missingFields);
-      toast.error('Champs manquants', {
-        description: missingFields.join(', ')
-      });
-      return;
-    }
-
-    // Vérifier que typeContrat n'est pas vide
-    if (!newOffre.typeContrat) {
-      toast.warning('Veuillez sélectionner un type de contrat');
-      return;
-    }
-
-    // Créer l'objet à envoyer
-    const offreToSend = {
-      titre: newOffre.titre,
-      entreprise: newOffre.entreprise,
-      lieu: newOffre.lieu,
-      typeContrat: newOffre.typeContrat,
-      salaire: newOffre.salaire,
-      description: newOffre.description,
-      competences: newOffre.competences,
-      emailContact: newOffre.emailContact,
-      categorie: newOffre.categorie
-    };
-
-    console.log('📤 [ADMIN] Sending data:', offreToSend);
-
-    const result = await callApi('/offres', {
-      method: 'POST',
-      body: offreToSend // On envoie l'objet directement, le hook gère le JSON.stringify
-    })
-    
-    console.log('✅ [ADMIN] Offer added successfully:', result);
-    
-    // Réinitialiser le formulaire
-    setNewOffre({
-      titre: '',
-      entreprise: '',
-      lieu: '',
-      typeContrat: '',
-      salaire: '',
-      description: '',
-      competences: '',
-      emailContact: '',
-      categorie: 'Technologie'
-    })
-    
-    // Recharger les données
-    await fetchData()
-
-    toast.success('Offre ajoutée avec succès!', {
-      description: 'L\'offre est maintenant visible sur le site'
-    })
-  } catch (err) {
-    console.error('❌ [ADMIN] Error adding offer:', err);
-    const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue'
-    toast.error('Erreur lors de l\'ajout de l\'offre', {
-      description: errorMessage
-    })
-  }
-}
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target
-    setNewOffre(prev => ({
+  const handleStatusToggle = (status: CandidateStatus) => {
+    setFilters(prev => ({
       ...prev,
-      [name]: value
+      status: prev.status.includes(status)
+        ? prev.status.filter(s => s !== status)
+        : [...prev.status, status]
     }))
+    setPage(1)
   }
 
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    } catch (error) {
-      return 'Date invalide'
-    }
+  const handleExperienceToggle = (level: ExperienceLevel) => {
+    setFilters(prev => ({
+      ...prev,
+      experienceLevel: prev.experienceLevel.includes(level)
+        ? prev.experienceLevel.filter(l => l !== level)
+        : [...prev.experienceLevel, level]
+    }))
+    setPage(1)
   }
 
-  const categories = ['Technologie', 'Management', 'Data', 'Marketing', 'Design', 'Commercial', 'Finance']
-  const typesContrat = ['CDI', 'CDD', 'Freelance', 'Stage', 'Alternance', 'Intérim']
-
-  // Test de connexion à la base de données
-  const testConnection = async () => {
-    try {
-      const debugData = await callApi('/debug')
-      console.log('🔧 Debug data:', debugData)
-      toast.info('Données de debug', {
-        description: 'Consultez la console pour les détails'
-      })
-    } catch (err) {
-      console.error('Debug error:', err)
-      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue'
-      toast.error('Erreur de debug', {
-        description: errorMessage
-      })
-    }
+  const handleTagToggle = (tag: string) => {
+    setFilters(prev => ({
+      ...prev,
+      tags: prev.tags.includes(tag)
+        ? prev.tags.filter(t => t !== tag)
+        : [...prev.tags, tag]
+    }))
+    setPage(1)
   }
 
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: '/auth/login' })
+  const handleSkillToggle = (skill: string) => {
+    setFilters(prev => ({
+      ...prev,
+      skills: prev.skills.includes(skill)
+        ? prev.skills.filter(s => s !== skill)
+        : [...prev.skills, skill]
+    }))
+    setPage(1)
   }
 
-  // Delete handlers
-  const handleDeleteClick = (type: 'contact' | 'newsletter' | 'offre', item: any) => {
-    setDeleteModal({
-      isOpen: true,
-      type,
-      item
+  const clearFilters = () => {
+    setFilters({
+      search: '',
+      status: [],
+      experienceLevel: [],
+      tags: [],
+      skills: [],
+      assignedTo: '',
+      hasProcesses: null,
+      showArchived: false
     })
+    setPage(1)
   }
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteModal.item || !deleteModal.type) return
+  // Action handlers
+  const handleAddToProcess = async (candidate: Candidate) => {
+    setSelectedCandidateForProcess(candidate)
+    setShowProcessModal(true)
+  }
 
-    setIsDeleting(true)
+  const handleEditCandidate = (candidate: Candidate) => {
+    router.push(`/candidates/${candidate.id}/edit`)
+  }
+
+  const handleArchiveCandidate = async (candidate: Candidate) => {
     try {
-      let endpoint = ''
-      let params = ''
+      await callApi(`/candidates/${candidate.id}`, {
+        method: 'PUT',
+        body: { isArchived: true, status: CandidateStatus.ARCHIVED }
+      })
+      toast.success('Candidat archivé')
+      fetchCandidates()
+    } catch (err) {
+      toast.error('Erreur lors de l\'archivage')
+    }
+  }
 
-      switch (deleteModal.type) {
-        case 'contact':
-          endpoint = '/contacts'
-          params = `?id=${deleteModal.item.id}&type=${deleteModal.item.type}`
+  const handleBulkAction = async (action: string) => {
+    if (selectedCandidates.length === 0) {
+      toast.warning('Sélectionnez au moins un candidat')
+      return
+    }
+
+    try {
+      switch (action) {
+        case 'add-to-process':
+          router.push(`/admin/processes?addCandidates=${selectedCandidates.join(',')}`)
           break
-        case 'newsletter':
-          endpoint = '/newsletters'
-          params = `?id=${deleteModal.item.id}`
+        case 'archive':
+          await callApi('/candidates/bulk', {
+            method: 'PUT',
+            body: {
+              candidateIds: selectedCandidates,
+              updates: { isArchived: true, status: CandidateStatus.ARCHIVED }
+            }
+          })
+          toast.success(`${selectedCandidates.length} candidat(s) archivé(s)`)
+          setSelectedCandidates([])
+          fetchCandidates()
           break
-        case 'offre':
-          endpoint = '/offres'
-          params = `?id=${deleteModal.item.id}`
+        case 'export':
+          // TODO: Implement export functionality
+          toast.info('Export en cours de développement')
           break
       }
-
-      await callApi(`${endpoint}${params}`, {
-        method: 'DELETE'
-      })
-
-      toast.success('Suppression réussie', {
-        description: `${deleteModal.type === 'contact' ? 'Contact' : deleteModal.type === 'newsletter' ? 'Abonnement' : 'Offre'} supprimé(e) avec succès`
-      })
-
-      // Recharger les données
-      await fetchData()
-
-      // Fermer le modal
-      setDeleteModal({
-        isOpen: false,
-        type: null,
-        item: null
-      })
     } catch (err) {
-      console.error('Error deleting item:', err)
-      toast.error('Erreur de suppression', {
-        description: 'Une erreur est survenue lors de la suppression'
-      })
-    } finally {
-      setIsDeleting(false)
+      toast.error('Erreur lors de l\'action groupée')
     }
   }
 
-  const handleDeleteCancel = () => {
-    setDeleteModal({
-      isOpen: false,
-      type: null,
-      item: null
-    })
-  }
-
-  // Edit handlers
-  const handleEditClick = (offre: Offre) => {
-    setEditOffreModal({
-      isOpen: true,
-      offre
-    })
-  }
-
-  const handleEditSave = async (offre: Offre) => {
-    try {
-      await callApi(`/offres?id=${offre.id}`, {
-        method: 'PUT',
-        body: offre
-      })
-
-      toast.success('Modification réussie', {
-        description: 'L\'offre a été mise à jour avec succès'
-      })
-
-      // Recharger les données
-      await fetchData()
-
-      // Fermer le modal
-      setEditOffreModal({
-        isOpen: false,
-        offre: null
-      })
-    } catch (err) {
-      console.error('Error updating offer:', err)
-      toast.error('Erreur de modification', {
-        description: 'Une erreur est survenue lors de la mise à jour'
-      })
-      throw err
-    }
-  }
-
-  const handleEditCancel = () => {
-    setEditOffreModal({
-      isOpen: false,
-      offre: null
-    })
-  }
+  // Computed values
+  const activeFiltersCount = useMemo(() => {
+    return (
+      (filters.search ? 1 : 0) +
+      filters.status.length +
+      filters.experienceLevel.length +
+      filters.tags.length +
+      filters.skills.length +
+      (filters.assignedTo ? 1 : 0) +
+      (filters.hasProcesses !== null ? 1 : 0) +
+      (filters.showArchived ? 1 : 0)
+    )
+  }, [filters])
 
   return (
     <AdminGuard>
-    <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200 dark:from-gray-900 dark:to-gray-800">
-      <AdminHeader />
+      <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200">
+        <AdminHeader />
 
-      {/* Hero Section Admin */}
-      <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-16 overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
-        </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-5xl font-semibold mb-4 leading-tight text-white">
-              Administration
-              <span className="block mt-2 bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent font-bold">
-                Tableau de Bord
-              </span>
-            </h1>
-            <p className="text-lg md:text-xl mb-6 max-w-2xl mx-auto leading-relaxed text-gray-200 font-normal">
-              Gérez vos contacts, newsletters et offres d'emploi
-            </p>
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-12 overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}></div>
           </div>
-        </div>
-      </section>
 
-      {/* Navigation des Tabs */}
-      <section className="py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-4 justify-between items-center">
-            <div className="flex flex-wrap gap-4">
-              {[
-                { id: 'contacts' as const, label: 'Contacts', count: contacts.length, icon: '👤' },
-                { id: 'newsletters' as const, label: 'Newsletters', count: newsletters.length, icon: '📧' },
-                { id: 'offres' as const, label: 'Offres', count: offres.length, icon: '💼' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 shadow-lg'
-                      : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
-                  }`}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                  Hub des Candidats
+                </h1>
+                <p className="text-lg text-gray-200">
+                  {totalCount} candidat{totalCount > 1 ? 's' : ''} •
+                  {selectedCandidates.length > 0 && ` ${selectedCandidates.length} sélectionné(s)`}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Quick Actions */}
+                <Link href="/admin/processes">
+                  <Button variant="secondary" size="lg" leftIcon={<Briefcase className="w-5 h-5" />}>
+                    Processus
+                  </Button>
+                </Link>
+                <Link href="/candidates/new">
+                  <Button variant="primary" size="lg" leftIcon={<UserPlus className="w-5 h-5" />}>
+                    Nouveau Candidat
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Toolbar */}
+        <section className="sticky top-16 z-30 bg-white border-b border-gray-200 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between gap-4">
+              {/* Search Bar */}
+              <div className="flex-1 max-w-md">
+                <Input
+                  type="text"
+                  placeholder="Rechercher par nom, email, compétence..."
+                  value={filters.search}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  leftIcon={<Search className="w-5 h-5" />}
+                />
+              </div>
+
+              {/* Toolbar Actions */}
+              <div className="flex items-center gap-2">
+                {/* Filter Toggle */}
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  onClick={() => setShowFilters(!showFilters)}
+                  leftIcon={<Filter className="w-4 h-4" />}
+                  className="relative"
                 >
-                  <span>{tab.icon}</span>
-                  {tab.label}
-                  {tab.count !== undefined && (
-                    <span className="bg-primary-500 dark:bg-accent-500 text-white dark:text-primary-700 px-2 py-1 rounded-full text-sm">
-                      {tab.count}
+                  Filtres
+                  {activeFiltersCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {activeFiltersCount}
                     </span>
                   )}
-                </button>
-              ))}
+                </Button>
 
-              {/* Bouton Ajouter une offre - plus petit */}
-              <button
-                onClick={() => setActiveTab('add-offre')}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
-                  activeTab === 'add-offre'
-                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 shadow-lg'
-                    : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:shadow-lg'
-                }`}
-              >
-                <span>➕</span>
-                Ajouter une offre
-              </button>
-            </div>
+                {/* View Mode */}
+                <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded transition-colors ${
+                      viewMode === 'grid' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'
+                    }`}
+                  >
+                    <Grid className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded transition-colors ${
+                      viewMode === 'list' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'
+                    }`}
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
 
-            {/* Boutons d'action */}
-            <div className="flex gap-2 items-center">
-              {/* Bouton Actualiser */}
-              <Button
-                onClick={fetchData}
-                disabled={loading}
-                variant="tertiary"
-                size="md"
-                leftIcon={<RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />}
-              >
-                Actualiser
-              </Button>
+                {/* Refresh */}
+                <Button
+                  variant="tertiary"
+                  size="md"
+                  onClick={fetchCandidates}
+                  disabled={isRefreshing}
+                  leftIcon={<RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />}
+                >
+                  Actualiser
+                </Button>
+
+                {/* Bulk Actions */}
+                {selectedCandidates.length > 0 && (
+                  <div className="flex items-center gap-2 pl-2 border-l border-gray-300">
+                    <Button
+                      variant="tertiary"
+                      size="sm"
+                      onClick={() => handleBulkAction('add-to-process')}
+                    >
+                      Ajouter au processus
+                    </Button>
+                    <Button
+                      variant="tertiary"
+                      size="sm"
+                      onClick={() => handleBulkAction('archive')}
+                    >
+                      Archiver
+                    </Button>
+                    <Button
+                      variant="tertiary"
+                      size="sm"
+                      onClick={() => handleBulkAction('export')}
+                    >
+                      Exporter
+                    </Button>
+                    <button
+                      onClick={() => setSelectedCandidates([])}
+                      className="text-sm text-gray-500 hover:text-gray-700 ml-2"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Affichage des erreurs */}
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
-                <span>❌</span>
-                <span className="font-semibold">Erreur:</span>
-                <span>{error}</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Contenu des Tabs */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Tab: Contacts */}
-          {activeTab === 'contacts' && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
-                  Contacts ({contacts.length})
-                </h2>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Dernière mise à jour: {new Date().toLocaleTimeString('fr-FR')}
-                </span>
-              </div>
-              
-              {contacts.length === 0 ? (
-                <EmptyData
-                  title="Aucun contact"
-                  description="Les contacts soumis via le formulaire apparaîtront ici."
-                />
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Type</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Nom</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Email</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Téléphone</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Message</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date</th>
-                        <th className="px-6 py-4 text-right text-sm font-semibold text-primary-700 dark:text-gray-200">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                      {contacts.map((contact) => (
-                        <tr key={contact.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                          <td className="px-6 py-4">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              contact.type === 'candidat'
-                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                                : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                            }`}>
-                              {contact.type}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">{contact.nom}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{contact.email}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{contact.telephone}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 max-w-xs">
-                            <div className="truncate" title={contact.message}>
-                              {contact.message}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(contact.date)}</td>
-                          <td className="px-6 py-4 text-right">
-                            <button
-                              onClick={() => handleDeleteClick('contact', contact)}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                              title="Supprimer"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              Supprimer
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Tab: Newsletters */}
-          {activeTab === 'newsletters' && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
-                  Inscriptions Newsletter ({newsletters.length})
-                </h2>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Email</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date d'inscription</th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-primary-700 dark:text-gray-200">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {newsletters.map((sub) => (
-                      <tr key={sub.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                        <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{sub.email}</td>
-                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(sub.date)}</td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => handleDeleteClick('newsletter', sub)}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                            title="Supprimer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Supprimer
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* Tab: Offres */}
-          {activeTab === 'offres' && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
-                  Offres d'Emploi ({offres.length})
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {offres.filter(o => o.statut === 'active').length} active(s),
-                  {offres.filter(o => o.statut === 'inactive').length} inactive(s)
-                </p>
-              </div>
-
-              {offres.length === 0 ? (
-                <EmptyData
-                  title="Aucune offre d'emploi"
-                  description="Ajoutez votre première offre pour commencer."
-                />
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                      <tr>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Titre</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Entreprise</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Lieu</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Type</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Salaire</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Date</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-primary-700 dark:text-gray-200">Statut</th>
-                        <th className="px-6 py-4 text-right text-sm font-semibold text-primary-700 dark:text-gray-200">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                      {offres.map((offre) => (
-                        <tr key={offre.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                          <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">{offre.titre}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.entreprise}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.lieu}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.typeContrat}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">{offre.salaire}</td>
-                          <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{formatDate(offre.datePublication)}</td>
-                          <td className="px-6 py-4">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              offre.statut === 'active'
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                            }`}>
-                              {offre.statut}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => handleEditClick(offre)}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
-                                title="Modifier"
-                              >
-                                <Edit2 className="w-4 h-4" />
-                                Modifier
-                              </button>
-                              <button
-                                onClick={() => handleDeleteClick('offre', offre)}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                title="Supprimer"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                                Supprimer
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Tab: Ajouter une offre */}
-            {activeTab === 'add-offre' && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-primary-700 dark:text-accent-500">
-                    Ajouter une Nouvelle Offre d'Emploi
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mt-2">
-                    Tous les champs marqués d&apos;un * sont obligatoires
-                </p>
-                </div>
-                <form onSubmit={handleAddOffre} className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Titre du poste */}
-                    <Input
-                        type="text"
-                        name="titre"
-                        label="Titre du poste"
-                        required
-                        value={newOffre.titre}
-                        onChange={handleInputChange}
-                        leftIcon={<Briefcase className="w-5 h-5" />}
-                        placeholder="Ex: Développeur Full Stack"
-                    />
-
-                    {/* Entreprise */}
-                    <Input
-                        type="text"
-                        name="entreprise"
-                        label="Entreprise"
-                        required
-                        value={newOffre.entreprise}
-                        onChange={handleInputChange}
-                        leftIcon={<Building2 className="w-5 h-5" />}
-                        placeholder="Ex: TechCorp"
-                    />
-
-                    {/* Lieu */}
-                    <Input
-                        type="text"
-                        name="lieu"
-                        label="Lieu"
-                        required
-                        value={newOffre.lieu}
-                        onChange={handleInputChange}
-                        leftIcon={<MapPin className="w-5 h-5" />}
-                        placeholder="Ex: Paris, Lyon, Remote"
-                    />
-
-                    {/* Type de contrat */}
-                    <div>
-                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
-                        Type de contrat *
-                    </label>
-                    <select
-                        name="typeContrat"
-                        required
-                        value={newOffre.typeContrat}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    >
-                        <option value="">Sélectionnez un type de contrat *</option>
-                        {typesContrat.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                        ))}
-                    </select>
-                    </div>
-
-                    {/* Catégorie */}
-                    <div>
-                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
-                        Catégorie *
-                    </label>
-                    <select
-                        name="categorie"
-                        required
-                        value={newOffre.categorie}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    >
-                        {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                    </select>
-                    </div>
-
-                    {/* Salaire */}
-                    <Input
-                        type="text"
-                        name="salaire"
-                        label="Salaire"
-                        value={newOffre.salaire}
-                        onChange={handleInputChange}
-                        leftIcon={<DollarSign className="w-5 h-5" />}
-                        placeholder="Ex: 45-55K€, Selon profil"
-                        helpText="Facultatif - Indiquez une fourchette ou 'Selon profil'"
-                    />
-
-                    {/* Email de contact */}
-                    <div className="md:col-span-2">
-                        <Input
-                            type="email"
-                            name="emailContact"
-                            label="Email de contact"
-                            required
-                            value={newOffre.emailContact}
-                            onChange={handleInputChange}
-                            leftIcon={<Mail className="w-5 h-5" />}
-                            placeholder="contact@entreprise.com"
-                        />
-                    </div>
-
-                    {/* Description du poste */}
-                    <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
-                        Description du poste *
-                    </label>
-                    <textarea
-                        name="description"
-                        required
-                        value={newOffre.description}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                        placeholder="Décrivez les missions, responsabilités et enjeux du poste..."
-                    />
-                    </div>
-
-                    {/* Compétences requises */}
-                    <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">
-                        Compétences requises
-                    </label>
-                    <textarea
-                        name="competences"
-                        value={newOffre.competences}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
-                        placeholder="Listez les compétences techniques et soft skills requises (séparées par des virgules)"
-                    />
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                        Ex: React, Node.js, MongoDB, Communication, Travail d'équipe
-                    </p>
-                    </div>
-                </div>
-
-                {/* Aperçu des données (pour debug) */}
-                <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <h4 className="text-sm font-medium text-primary-700 dark:text-gray-200 mb-2">Aperçu des données:</h4>
-                    <pre className="text-xs text-gray-600 dark:text-gray-300 overflow-auto">
-                    {JSON.stringify(newOffre, null, 2)}
-                    </pre>
-                </div>
-
-                <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <Button
-                        type="button"
-                        onClick={() => setNewOffre({
-                            titre: '',
-                            entreprise: '',
-                            lieu: '',
-                            typeContrat: '',
-                            salaire: '',
-                            description: '',
-                            competences: '',
-                            emailContact: '',
-                            categorie: 'Technologie'
-                        })}
-                        variant="tertiary"
-                        size="lg"
-                    >
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex gap-6">
+            {/* Filters Sidebar */}
+            {showFilters && (
+              <aside className="w-64 flex-shrink-0">
+                <div className="bg-white rounded-xl shadow-sm p-4 sticky top-32">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900">Filtres</h3>
+                    {activeFiltersCount > 0 && (
+                      <button
+                        onClick={clearFilters}
+                        className="text-sm text-accent-500 hover:text-accent-600"
+                      >
                         Réinitialiser
-                    </Button>
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        variant="secondary"
-                        size="lg"
-                        isLoading={loading}
-                    >
-                        Publier l&apos;offre
-                    </Button>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Status Filter */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Statut</h4>
+                    <div className="space-y-2">
+                      {Object.values(CandidateStatus).map(status => (
+                        <label key={status} className="flex items-center text-sm">
+                          <input
+                            type="checkbox"
+                            checked={filters.status.includes(status)}
+                            onChange={() => handleStatusToggle(status)}
+                            className="mr-2 rounded text-accent-500"
+                          />
+                          <span className="text-gray-700">
+                            {status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Experience Level Filter */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Expérience</h4>
+                    <div className="space-y-2">
+                      {Object.values(ExperienceLevel).map(level => (
+                        <label key={level} className="flex items-center text-sm">
+                          <input
+                            type="checkbox"
+                            checked={filters.experienceLevel.includes(level)}
+                            onChange={() => handleExperienceToggle(level)}
+                            className="mr-2 rounded text-accent-500"
+                          />
+                          <span className="text-gray-700">
+                            {level.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Skills Filter */}
+                  {availableSkills.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Compétences</h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {availableSkills.map(skill => (
+                          <label key={skill} className="flex items-center text-sm">
+                            <input
+                              type="checkbox"
+                              checked={filters.skills.includes(skill)}
+                              onChange={() => handleSkillToggle(skill)}
+                              className="mr-2 rounded text-accent-500"
+                            />
+                            <span className="text-gray-700">{skill}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tags Filter */}
+                  {availableTags.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">Tags</h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {availableTags.map(tag => (
+                          <label key={tag} className="flex items-center text-sm">
+                            <input
+                              type="checkbox"
+                              checked={filters.tags.includes(tag)}
+                              onChange={() => handleTagToggle(tag)}
+                              className="mr-2 rounded text-accent-500"
+                            />
+                            <span className="text-gray-700">{tag}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Process Filter */}
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Processus</h4>
+                    <div className="space-y-2">
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="radio"
+                          name="hasProcesses"
+                          checked={filters.hasProcesses === null}
+                          onChange={() => setFilters(prev => ({ ...prev, hasProcesses: null }))}
+                          className="mr-2"
+                        />
+                        <span className="text-gray-700">Tous</span>
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="radio"
+                          name="hasProcesses"
+                          checked={filters.hasProcesses === true}
+                          onChange={() => setFilters(prev => ({ ...prev, hasProcesses: true }))}
+                          className="mr-2"
+                        />
+                        <span className="text-gray-700">Avec processus</span>
+                      </label>
+                      <label className="flex items-center text-sm">
+                        <input
+                          type="radio"
+                          name="hasProcesses"
+                          checked={filters.hasProcesses === false}
+                          onChange={() => setFilters(prev => ({ ...prev, hasProcesses: false }))}
+                          className="mr-2"
+                        />
+                        <span className="text-gray-700">Sans processus</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Archive Toggle */}
+                  <div className="pt-4 border-t border-gray-200">
+                    <label className="flex items-center text-sm">
+                      <input
+                        type="checkbox"
+                        checked={filters.showArchived}
+                        onChange={(e) => setFilters(prev => ({ ...prev, showArchived: e.target.checked }))}
+                        className="mr-2 rounded text-accent-500"
+                      />
+                      <Archive className="w-4 h-4 mr-1 text-gray-500" />
+                      <span className="text-gray-700">Afficher les archivés</span>
+                    </label>
+                  </div>
                 </div>
-                </form>
-            </div>
+              </aside>
             )}
 
+            {/* Candidates Grid */}
+            <div className="flex-1">
+              {loading && !isRefreshing ? (
+                <div className="flex items-center justify-center py-32">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-500 mx-auto mb-4"></div>
+                    <p className="text-gray-500">Chargement des candidats...</p>
+                  </div>
+                </div>
+              ) : candidates.length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+                  <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Aucun candidat trouvé
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    Essayez de modifier vos filtres ou d'ajouter de nouveaux candidats
+                  </p>
+                  <div className="flex items-center justify-center gap-4">
+                    <Button variant="tertiary" size="md" onClick={clearFilters}>
+                      Réinitialiser les filtres
+                    </Button>
+                    <Link href="/candidates/new">
+                      <Button variant="secondary" size="md" leftIcon={<UserPlus className="w-5 h-5" />}>
+                        Ajouter un candidat
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className={viewMode === 'grid' ?
+                  'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' :
+                  'space-y-4'
+                }>
+                  {candidates.map(candidate => (
+                    <CandidateCard
+                      key={candidate.id}
+                      candidate={candidate}
+                      onAddToProcess={handleAddToProcess}
+                      onEdit={handleEditCandidate}
+                      onArchive={handleArchiveCandidate}
+                      showActions={true}
+                      showProcessInfo={true}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-8 flex items-center justify-center gap-2">
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  >
+                    Précédent
+                  </Button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      const pageNum = i + 1
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setPage(pageNum)}
+                          className={`px-3 py-1 rounded ${
+                            page === pageNum
+                              ? 'bg-accent-500 text-white'
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
+                    })}
+                    {totalPages > 5 && (
+                      <>
+                        <span className="px-2 text-gray-500">...</span>
+                        <button
+                          onClick={() => setPage(totalPages)}
+                          className={`px-3 py-1 rounded ${
+                            page === totalPages
+                              ? 'bg-accent-500 text-white'
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                          }`}
+                        >
+                          {totalPages}
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  >
+                    Suivant
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
-      <Footer />
-
-      {/* Custom Field Manager Modal */}
-      {showCustomFieldManager && (
-        <CustomFieldManager onClose={() => setShowCustomFieldManager(false)} />
-      )}
-
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmModal
-        isOpen={deleteModal.isOpen}
-        onClose={handleDeleteCancel}
-        onConfirm={handleDeleteConfirm}
-        title={
-          deleteModal.type === 'contact' ? 'Supprimer le contact' :
-          deleteModal.type === 'newsletter' ? 'Supprimer l\'abonnement' :
-          'Supprimer l\'offre'
-        }
-        message={
-          deleteModal.type === 'contact' ? 'Êtes-vous sûr de vouloir supprimer ce contact ?' :
-          deleteModal.type === 'newsletter' ? 'Êtes-vous sûr de vouloir supprimer cet abonnement ?' :
-          'Êtes-vous sûr de vouloir supprimer cette offre d\'emploi ?'
-        }
-        itemName={
-          deleteModal.type === 'contact' ? deleteModal.item?.email :
-          deleteModal.type === 'newsletter' ? deleteModal.item?.email :
-          deleteModal.item?.titre
-        }
-        isDeleting={isDeleting}
+      {/* Process Selection Modal */}
+      <SelectProcessModal
+        isOpen={showProcessModal}
+        onClose={() => {
+          setShowProcessModal(false)
+          setSelectedCandidateForProcess(null)
+        }}
+        candidate={selectedCandidateForProcess}
+        onProcessSelected={(process) => {
+          toast.success(`${selectedCandidateForProcess?.firstName} ${selectedCandidateForProcess?.lastName} added to ${process.name}`)
+          loadCandidates() // Refresh candidates to update their process info
+        }}
       />
-
-      {/* Edit Offre Modal */}
-      <EditOffreModal
-        isOpen={editOffreModal.isOpen}
-        onClose={handleEditCancel}
-        onSave={handleEditSave}
-        offre={editOffreModal.offre}
-        categories={categories}
-        typesContrat={typesContrat}
-      />
-    </div>
     </AdminGuard>
   )
 }

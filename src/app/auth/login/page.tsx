@@ -74,10 +74,10 @@ function LoginForm() {
             />
           </Link>
           <h1 className="mt-6 text-3xl font-bold text-[#3b5335ff]">
-            Connexion
+            Bienvenue sur Hi-Ring
           </h1>
           <p className="mt-2 text-gray-600">
-            Accédez à votre espace professionnel
+            Connectez-vous à votre espace administrateur
           </p>
         </div>
 
@@ -162,48 +162,11 @@ function LoginForm() {
             </Button>
           </form>
 
-          {/* Divider */}
-          <div className="mt-6 relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Ou</span>
-            </div>
-          </div>
-
-          {/* Alternative Actions */}
-          <div className="mt-6 space-y-3">
-            {/* Demo Accounts Info */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-blue-800 font-medium mb-2">
-                Comptes de démonstration:
-              </p>
-              <div className="text-xs text-blue-700 space-y-1">
-                <div>
-                  <span className="font-semibold">Admin:</span> admin@hi-ring.com / Admin123!@#
-                </div>
-                <div>
-                  <span className="font-semibold">Recruteur:</span> recruiter@hi-ring.com / Admin123!@#
-                </div>
-                <div>
-                  <span className="font-semibold">Client:</span> client@techcorp.com / Admin123!@#
-                </div>
-              </div>
-            </div>
-
-            {/* Sign Up Link */}
-            <div className="text-center">
-              <span className="text-sm text-gray-600">
-                Pas encore de compte?{' '}
-              </span>
-              <Link
-                href="/auth/register"
-                className="text-sm text-[#ffaf50ff] hover:text-[#ff9500ff] font-medium"
-              >
-                Demander un accès
-              </Link>
-            </div>
+          {/* Help Text */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500">
+              Besoin d&apos;aide? Contactez votre administrateur système.
+            </p>
           </div>
         </div>
 

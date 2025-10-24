@@ -9,8 +9,8 @@ export default defineConfig({
     environment: 'happy-dom',
     globals: true,
     setupFiles: ['./tests/setup.ts'],
-    include: ['**/*.{test,spec}.{ts,tsx}'],
-    exclude: ['node_modules', '.next', 'out', 'dist'],
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', '.next', 'out', 'dist', 'browser-extension', 'tests/e2e-*', '**/*.spec.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -36,11 +36,18 @@ export default defineConfig({
     restoreMocks: true,
     clearMocks: true,
     // Mock CSS imports
-    css: true
+    css: {
+      modules: {
+        classNameStrategy: 'non-scoped'
+      }
+    }
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  css: {
+    postcss: {}
   }
 })
