@@ -73,7 +73,7 @@ export default function AddCandidatesToProcessModal({
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(c => {
-        const name = c.name || `${c.firstName || ''} ${c.lastName || ''}`.trim()
+        const name = (c as any).name || `${c.firstName || ''} ${c.lastName || ''}`.trim()
         return (
           name.toLowerCase().includes(query) ||
           c.firstName?.toLowerCase().includes(query) ||
@@ -81,7 +81,7 @@ export default function AddCandidatesToProcessModal({
           c.email?.toLowerCase().includes(query) ||
           c.currentPosition?.toLowerCase().includes(query) ||
           c.primarySkills?.some(s => s.toLowerCase().includes(query)) ||
-          c.tags?.some(t => t.label.toLowerCase().includes(query))
+          c.tags?.some(t => (typeof t === 'string' ? t : (t as any).label).toLowerCase().includes(query))
         )
       })
     }
@@ -129,12 +129,12 @@ export default function AddCandidatesToProcessModal({
     try {
       setLoading(true)
 
-      const response = await fetch(`/api/processes/${process._id || process.id}/candidates`, {
+      const response = await fetch(`/api/processes/${(process as any)._id || process.id}/candidates`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           candidateIds: Array.from(selectedCandidates),
-          stage: process.stages?.[0]?.name || 'Screening' // Add to first stage by default
+          stage: (process as any).stages?.[0]?.name || 'Screening' // Add to first stage by default
         })
       })
 
@@ -167,7 +167,7 @@ export default function AddCandidatesToProcessModal({
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900">
-              Add Candidates to {process?.title || process?.name || 'Process'}
+              Add Candidates to {(process as any)?.title || process?.name || 'Process'}
             </h2>
           </div>
           <button
@@ -307,7 +307,7 @@ export default function AddCandidatesToProcessModal({
                         />
                       ) : (
                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white font-bold">
-                          {(candidate.firstName?.[0] || candidate.name?.[0] || 'U').toUpperCase()}
+                          {(candidate.firstName?.[0] || (candidate as any).name?.[0] || 'U').toUpperCase()}
                           {(candidate.lastName?.[0] || '').toUpperCase()}
                         </div>
                       )}
@@ -316,7 +316,7 @@ export default function AddCandidatesToProcessModal({
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-gray-900">
-                        {candidate.name || `${candidate.firstName || ''} ${candidate.lastName || ''}`.trim() || 'Unknown'}
+                        {(candidate as any).name || `${candidate.firstName || ''} ${candidate.lastName || ''}`.trim() || 'Unknown'}
                       </h3>
                       <p className="text-sm text-gray-600 truncate">
                         {candidate.currentPosition || 'No position'}

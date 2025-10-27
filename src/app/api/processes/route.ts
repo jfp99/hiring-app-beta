@@ -262,7 +262,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Insert process
-    const result = await db.collection('processes').insertOne(process)
+    const result = await db.collection('processes').insertOne(process as any)
 
     // If candidates were provided, update them to include this process
     if (body.candidateIds && body.candidateIds.length > 0) {
