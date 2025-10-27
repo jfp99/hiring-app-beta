@@ -214,7 +214,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create process document
-    const process: Process = {
+    const process: any = {
       id: new ObjectId().toString(),
       name: body.name,
       type: body.type,
@@ -282,13 +282,13 @@ export async function POST(req: NextRequest) {
               id: new ObjectId().toString(),
               type: 'process_added',
               description: `Ajouté au processus: ${process.name}`,
-              userId: session.user.id,
-              userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+              userId: (session.user as any).id || '',
+              userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
               timestamp: new Date().toISOString(),
               processId: process.id,
               processName: process.name
             }
-          },
+          } as any,
           $set: { updatedAt: new Date().toISOString() }
         }
       )
@@ -345,8 +345,8 @@ export async function PUT(req: NextRequest) {
     const updateData: any = {
       ...body,
       updatedAt: new Date().toISOString(),
-      updatedBy: session.user.id,
-      updatedByName: session.user.name || `${session.user.firstName} ${session.user.lastName}`
+      updatedBy: (session.user as any)?.id || '',
+      updatedByName: (session.user as any)?.name || `${(session.user as any)?.firstName} ${(session.user as any)?.lastName}`
     }
 
     // Remove fields that shouldn't be updated directly
@@ -363,8 +363,8 @@ export async function PUT(req: NextRequest) {
           id: new ObjectId().toString(),
           type: 'status_changed',
           timestamp: new Date().toISOString(),
-          userId: session.user.id,
-          userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+          userId: (session.user as any)?.id || '',
+          userName: (session.user as any)?.name || `${(session.user as any)?.firstName} ${(session.user as any)?.lastName}`,
           details: {
             from: existingProcess.status,
             to: body.status
@@ -432,7 +432,7 @@ export async function DELETE(req: NextRequest) {
         $set: {
           isArchived: true,
           archivedAt: new Date().toISOString(),
-          archivedBy: session.user.id,
+          archivedBy: (session.user as any)?.id || '',
           status: ProcessStatus.ARCHIVED
         }
       }
@@ -452,18 +452,18 @@ export async function DELETE(req: NextRequest) {
         $pull: {
           processIds: processId,
           currentProcesses: { processId }
-        },
+        } as any,
         $push: {
           processHistory: {
             processId,
             processName: 'Process Archived',
             action: 'removed',
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any)?.id || '',
+            userName: (session.user as any)?.name || `${(session.user as any)?.firstName} ${(session.user as any)?.lastName}`,
             notes: 'Process was archived'
           }
-        },
+        } as any,
         $set: { updatedAt: new Date().toISOString() }
       }
     )
