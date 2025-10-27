@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { BarChart3, TrendingDown, Target, Users, Rocket, Zap, AlertTriangle, Star } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -321,9 +322,10 @@ export default function EnhancedAnalyticsPage() {
 
                 <button
                   onClick={exportToCSV}
-                  className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-2 rounded-lg font-bold hover:shadow-lg transition-all"
+                  className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-2 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
                 >
-                  📊 Exporter CSV
+                  <BarChart3 className="w-5 h-5" />
+                  Exporter CSV
                 </button>
               </div>
             </div>
@@ -335,23 +337,27 @@ export default function EnhancedAnalyticsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-2">
               {[
-                { id: 'overview' as const, label: 'Vue d\'ensemble', icon: '📊' },
-                { id: 'funnel' as const, label: 'Entonnoir', icon: '🔽' },
-                { id: 'sources' as const, label: 'Sources', icon: '🎯' },
-                { id: 'recruiters' as const, label: 'Recruteurs', icon: '👥' }
-              ].map(view => (
-                <button
-                  key={view.id}
-                  onClick={() => setSelectedView(view.id)}
-                  className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                    selectedView === view.id
-                      ? 'bg-[#3b5335ff] text-white'
-                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {view.icon} {view.label}
-                </button>
-              ))}
+                { id: 'overview' as const, label: 'Vue d\'ensemble', Icon: BarChart3 },
+                { id: 'funnel' as const, label: 'Entonnoir', Icon: TrendingDown },
+                { id: 'sources' as const, label: 'Sources', Icon: Target },
+                { id: 'recruiters' as const, label: 'Recruteurs', Icon: Users }
+              ].map(view => {
+                const Icon = view.Icon
+                return (
+                  <button
+                    key={view.id}
+                    onClick={() => setSelectedView(view.id)}
+                    className={`px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+                      selectedView === view.id
+                        ? 'bg-[#3b5335ff] text-white'
+                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {view.label}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -509,13 +515,13 @@ export default function EnhancedAnalyticsPage() {
                           </td>
                           <td className="py-3 px-4 text-right text-gray-900 dark:text-gray-100">{source.avgTimeToHire} jours</td>
                           <td className="py-3 px-4 text-right">
-                            <span className={`px-2 py-1 rounded font-bold ${
+                            <span className={`px-2 py-1 rounded font-bold flex items-center gap-1 justify-end ${
                               source.conversionRate > 10 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
                               source.conversionRate > 5 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
                               'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
                             }`}>
-                              {source.conversionRate > 10 ? '🚀 Excellent' :
-                               source.conversionRate > 5 ? '⚡ Bon' : '⚠️ À améliorer'}
+                              {source.conversionRate > 10 ? <><Rocket className="w-3 h-3" /> Excellent</> :
+                               source.conversionRate > 5 ? <><Zap className="w-3 h-3" /> Bon</> : <><AlertTriangle className="w-3 h-3" /> À améliorer</>}
                             </span>
                           </td>
                         </tr>
@@ -555,13 +561,13 @@ export default function EnhancedAnalyticsPage() {
                         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                           <div className="flex items-center justify-between">
                             <span className="text-xs text-gray-500 dark:text-gray-400">Performance</span>
-                            <span className={`px-2 py-1 rounded text-xs font-bold ${
+                            <span className={`px-2 py-1 rounded text-xs font-bold flex items-center gap-1 ${
                               recruiter.hired >= 5 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' :
                               recruiter.hired >= 2 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' :
                               'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
                             }`}>
-                              {recruiter.hired >= 5 ? '🌟 Excellent' :
-                               recruiter.hired >= 2 ? '⭐ Bon' : '📊 Débutant'}
+                              {recruiter.hired >= 5 ? <><Star className="w-3 h-3 fill-current" /> Excellent</> :
+                               recruiter.hired >= 2 ? <><Star className="w-3 h-3" /> Bon</> : <><BarChart3 className="w-3 h-3" /> Débutant</>}
                             </span>
                           </div>
                         </div>
