@@ -10,7 +10,7 @@ export async function PUT(
 ) {
   try {
     const session = await auth()
-    const userRole = session?.user?.role as string | undefined
+    const userRole = (session?.user as any)?.role as string | undefined
     if (!session || !userRole || !['admin', 'super_admin'].includes(userRole)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

@@ -394,10 +394,10 @@ export default function ProcessKanbanPage() {
                       <Clock className="w-3 h-3" />
                       Avg: {metrics.avgTimeInStage}d
                     </span>
-                    {stage.targetDuration && (
+                    {stage.slaHours && (
                       <span className="flex items-center gap-1">
                         <Target className="w-3 h-3" />
-                        Target: {stage.targetDuration}d
+                        SLA: {Math.round(stage.slaHours / 24)}d
                       </span>
                     )}
                   </div>

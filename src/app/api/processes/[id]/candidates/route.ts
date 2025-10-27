@@ -141,15 +141,15 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             id: new ObjectId().toString(),
             type: 'candidate_added',
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             details: {
               count: candidateIds.length,
               stageId: targetStageId,
               stageName: targetStage.name
             }
           }
-        }
+        } as any
       }
     )
 
@@ -170,8 +170,8 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             id: new ObjectId().toString(),
             type: 'process_added',
             description: `Ajouté au processus: ${process.name} - ${targetStage.name}`,
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             timestamp: new Date().toISOString(),
             processId,
             processName: process.name
@@ -183,10 +183,10 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             stageId: targetStageId,
             stageName: targetStage.name,
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`
           }
-        },
+        } as any,
         $set: { updatedAt: new Date().toISOString() }
       }
     )
@@ -282,8 +282,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
             id: new ObjectId().toString(),
             type: 'stage_changed',
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             candidateId,
             fromStage: fromStage.name,
             toStage: toStage.name,
@@ -292,7 +292,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
               toStageId
             }
           }
-        }
+        } as any
       }
     )
 
@@ -311,8 +311,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
             id: new ObjectId().toString(),
             type: 'process_stage_changed',
             description: `Déplacé de ${fromStage.name} vers ${toStage.name} dans ${process.name}`,
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             timestamp: new Date().toISOString(),
             processId,
             processName: process.name,
@@ -326,11 +326,11 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
             stageId: toStageId,
             stageName: toStage.name,
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             notes: `De ${fromStage.name} vers ${toStage.name}`
           }
-        }
+        } as any
       },
       {
         arrayFilters: [{ 'elem.processId': processId }]
@@ -423,15 +423,15 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
             id: new ObjectId().toString(),
             type: 'candidate_removed',
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             candidateId,
             details: {
               stageId,
               stageName: stage.name
             }
           }
-        }
+        } as any
       }
     )
 
@@ -442,14 +442,14 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
         $pull: {
           processIds: processId,
           currentProcesses: { processId }
-        },
+        } as any,
         $push: {
           activities: {
             id: new ObjectId().toString(),
             type: 'process_removed',
             description: `Retiré du processus: ${process.name}`,
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             timestamp: new Date().toISOString(),
             processId,
             processName: process.name
@@ -459,11 +459,11 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
             processName: process.name,
             action: 'removed',
             timestamp: new Date().toISOString(),
-            userId: session.user.id,
-            userName: session.user.name || `${session.user.firstName} ${session.user.lastName}`,
+            userId: (session.user as any).id,
+            userName: (session.user as any).name || `${(session.user as any).firstName} ${(session.user as any).lastName}`,
             notes: `Retiré de l'étape ${stage.name}`
           }
-        },
+        } as any,
         $set: { updatedAt: new Date().toISOString() }
       }
     )

@@ -671,7 +671,7 @@ export default function AdminCandidatesHub() {
         candidate={selectedCandidateForProcess}
         onProcessSelected={(process) => {
           toast.success(`${selectedCandidateForProcess?.firstName} ${selectedCandidateForProcess?.lastName} added to ${process.name}`)
-          loadCandidates() // Refresh candidates to update their process info
+          fetchCandidates() // Refresh candidates to update their process info
         }}
       />
     </AdminGuard>

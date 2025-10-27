@@ -10,8 +10,8 @@ export async function GET(
 ) {
   try {
     const session = await auth()
-    console.log('[GET /api/processes/[id]] Session:', session ? {email: session.user?.email, role: session.user?.role} : 'null')
-    const userRole = session?.user?.role as string | undefined
+    console.log('[GET /api/processes/[id]] Session:', session ? {email: session.user?.email, role: (session.user as any)?.role} : 'null')
+    const userRole = (session?.user as any)?.role as string | undefined
     if (!session || !userRole || !['admin', 'super_admin'].includes(userRole)) {
       console.log('[GET /api/processes/[id]] Authorization failed - session:', !!session, 'userRole:', userRole)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -117,7 +117,7 @@ export async function PUT(
 ) {
   try {
     const session = await auth()
-    const userRole = session?.user?.role as string | undefined
+    const userRole = (session?.user as any)?.role as string | undefined
     if (!session || !userRole || !['admin', 'super_admin'].includes(userRole)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -173,7 +173,7 @@ export async function DELETE(
 ) {
   try {
     const session = await auth()
-    const userRole = session?.user?.role as string | undefined
+    const userRole = (session?.user as any)?.role as string | undefined
     if (!session || !userRole || !['admin', 'super_admin'].includes(userRole)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -204,7 +204,7 @@ export async function DELETE(
         $pull: {
           processIds: processId,
           currentProcesses: { processId }
-        },
+        } as any,
         $set: {
           lastUpdated: new Date()
         }
