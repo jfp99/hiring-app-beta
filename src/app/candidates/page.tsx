@@ -388,7 +388,7 @@ export default function CandidatesPage() {
           <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
           <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
               <div className="flex-1">
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">
                   Gestion des Candidats
@@ -437,6 +437,57 @@ export default function CandidatesPage() {
                     Nouveau Candidat
                   </Button>
                 </Link>
+              </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-200 text-sm">Total</p>
+                    <p className="text-2xl font-bold text-white">{total}</p>
+                  </div>
+                  <UserPlus className="w-8 h-8 text-white/50" />
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-200 text-sm">Nouveaux</p>
+                    <p className="text-2xl font-bold text-white">
+                      {candidates.filter(c => c.status === CandidateStatus.NEW).length}
+                    </p>
+                  </div>
+                  <span className="text-2xl">🆕</span>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-200 text-sm">En cours</p>
+                    <p className="text-2xl font-bold text-white">
+                      {candidates.filter(c =>
+                        [CandidateStatus.CONTACTED, CandidateStatus.SCREENING, CandidateStatus.INTERVIEW_SCHEDULED, CandidateStatus.INTERVIEW_COMPLETED].includes(c.status)
+                      ).length}
+                    </p>
+                  </div>
+                  <span className="text-2xl">⏳</span>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-200 text-sm">Embauchés</p>
+                    <p className="text-2xl font-bold text-white">
+                      {candidates.filter(c => c.status === CandidateStatus.HIRED).length}
+                    </p>
+                  </div>
+                  <span className="text-2xl">✅</span>
+                </div>
               </div>
             </div>
           </div>
