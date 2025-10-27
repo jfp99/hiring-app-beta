@@ -1,14 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffaf50;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ff9500;stop-opacity:1" />
-    </linearGradient>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&amp;display=swap');
+    </style>
   </defs>
 
   <!-- Orange circle background -->
-  <circle cx="16" cy="16" r="15" fill="url(#orangeGradient)"/>
+  <circle cx="256" cy="256" r="240" fill="#FFAF50"/>
 
-  <!-- White "H" letter -->
-  <text x="16" y="23" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">H</text>
+  <!-- Green "hi" text in script style -->
+  <text x="256" y="320" font-family="'Caveat', cursive, 'Segoe Script', 'Bradley Hand', cursive" font-size="280" font-weight="700" fill="#3B5335" text-anchor="middle" dominant-baseline="middle">hi</text>
 </svg>
