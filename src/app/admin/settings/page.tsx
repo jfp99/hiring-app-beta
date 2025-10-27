@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import Link from 'next/link'
+import { Settings as SettingsIcon, Wrench, ChevronRight } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
 import CustomFieldManager from '@/app/components/CustomFieldManager'
 
 export default function SettingsPage() {
-  const { data: session } = useSession()
   const [showCustomFieldManager, setShowCustomFieldManager] = useState(false)
 
   return (
@@ -34,10 +34,10 @@ export default function SettingsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="space-y-6">
               {/* Configuration Section */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-2xl font-bold text-[#3b5335ff] flex items-center gap-3">
-                    <span>⚙️</span>
+                  <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-gray-100 flex items-center gap-3">
+                    <SettingsIcon className="w-7 h-7 text-accent-500" />
                     <span>Configuration Système</span>
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
@@ -52,23 +52,21 @@ export default function SettingsPage() {
                       onClick={() => setShowCustomFieldManager(true)}
                       className="group text-left w-full"
                     >
-                      <div className="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-[#ffaf50ff] hover:shadow-lg transition-all duration-300 h-full">
+                      <div className="p-6 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-[#ffaf50ff] dark:hover:border-accent-400 hover:shadow-lg transition-all duration-300 ease-in-out h-full bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
                         <div className="flex items-start gap-4">
-                          <div className="w-14 h-14 bg-[#ffaf50ff]/10 rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                            🔧
+                          <div className="w-14 h-14 bg-[#ffaf50ff]/10 dark:bg-accent-500/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <Wrench className="w-7 h-7 text-accent-500" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-lg font-bold text-[#3b5335ff] mb-2">
+                            <h3 className="text-lg font-bold text-[#3b5335ff] dark:text-gray-100 mb-2">
                               Champs Personnalisés
                             </h3>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                               Créez et gérez des champs personnalisés pour enrichir les profils candidats
                             </p>
-                            <div className="flex items-center gap-2 text-[#ffaf50ff] font-medium text-sm">
+                            <div className="flex items-center gap-2 text-[#ffaf50ff] dark:text-accent-400 font-medium text-sm">
                               <span>Gérer les champs</span>
-                              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
+                              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                             </div>
                           </div>
                         </div>
@@ -76,16 +74,16 @@ export default function SettingsPage() {
                     </button>
 
                     {/* Placeholder for future settings */}
-                    <div className="p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl h-full opacity-50">
+                    <div className="p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl h-full opacity-50 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
                       <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-2xl">
-                          ⚙️
+                        <div className="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                          <SettingsIcon className="w-7 h-7 text-gray-400" />
                         </div>
                         <div className="flex-1">
                           <h3 className="text-lg font-bold text-gray-400 mb-2">
                             Autres paramètres
                           </h3>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-gray-400 dark:text-gray-500">
                             D&apos;autres options de configuration seront ajoutées ici
                           </p>
                         </div>
@@ -139,7 +137,7 @@ export default function SettingsPage() {
                       </div>
                     </a>
 
-                    <a
+                    <Link
                       href="/admin/email-templates"
                       className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-400 hover:shadow-lg transition-all duration-300"
                     >
@@ -152,7 +150,7 @@ export default function SettingsPage() {
                           <p className="text-xs text-gray-600 dark:text-gray-300">Modèles d&apos;emails</p>
                         </div>
                       </div>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

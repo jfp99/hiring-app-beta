@@ -11,9 +11,8 @@ import {
   UserPlus,
   Edit2,
   Archive,
-  Clock,
-  MapPin,
-  Briefcase
+  Mail,
+  User
 } from 'lucide-react'
 
 interface CandidateCardProps {
@@ -95,7 +94,7 @@ export default function CandidateCard({
       role="button"
       tabIndex={0}
       aria-label={`${candidate.firstName} ${candidate.lastName}, ${candidate.currentPosition || 'No position'}`}
-      className={`group bg-white rounded-xl shadow-sm p-3 mb-2 cursor-grab active:cursor-grabbing hover:shadow-xl transition-all duration-200 border border-gray-200 hover:border-accent-500 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 relative ${
+      className={`group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md p-3 mb-2 cursor-grab active:cursor-grabbing transition-all duration-300 ease-in-out border border-gray-200 dark:border-gray-700 hover:border-accent-500 dark:hover:border-accent-400 hover:-translate-y-1 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 relative ${
         isDragging ? 'opacity-40 scale-95' : 'opacity-100'
       } ${candidate.isArchived ? 'opacity-60' : ''}`}
     >
@@ -132,25 +131,25 @@ export default function CandidateCard({
         <div className="flex-1 min-w-0">
           <Link
             href={`/candidates/${candidate.id}`}
-            className="font-bold text-primary-500 hover:text-accent-500 text-sm block truncate leading-tight transition-colors duration-200 focus:outline-none focus:underline"
+            className="font-bold text-primary-500 dark:text-accent-400 hover:text-accent-500 dark:hover:text-accent-300 text-sm block truncate leading-tight transition-colors duration-300 ease-in-out focus:outline-none focus:underline"
             onClick={(e) => e.stopPropagation()}
           >
             {candidate.firstName} {candidate.lastName}
           </Link>
-          <p className="text-xs text-gray-600 truncate leading-tight">
+          <p className="text-xs text-gray-600 dark:text-gray-400 truncate leading-tight">
             {candidate.currentPosition || 'N/A'}
           </p>
           {candidate.currentCompany && (
-            <p className="text-xs text-gray-500 truncate">{candidate.currentCompany}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 truncate">{candidate.currentCompany}</p>
           )}
         </div>
 
         {/* Rating Badge */}
         {candidate.overallRating && (
           <div className="flex flex-col items-end gap-1 flex-shrink-0">
-            <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded shadow-sm">
-              <span className="text-yellow-500 text-xs">★</span>
-              <span className="text-xs font-bold">{candidate.overallRating.toFixed(1)}</span>
+            <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-1.5 py-0.5 rounded shadow-sm border border-yellow-200 dark:border-yellow-800/30">
+              <span className="text-yellow-500 dark:text-yellow-400 text-xs">★</span>
+              <span className="text-xs font-bold text-gray-900 dark:text-gray-100">{candidate.overallRating.toFixed(1)}</span>
             </div>
           </div>
         )}
@@ -212,13 +211,17 @@ export default function CandidateCard({
       )}
 
       {/* Footer with Contact Info and Actions */}
-      <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 flex items-center justify-between">
+      <div className="text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
         <div className="flex-1 min-w-0">
-          <div className="truncate" title={candidate.email}>
-            📧 {candidate.email}
+          <div className="flex items-center gap-1.5 truncate" title={candidate.email}>
+            <Mail className="w-3.5 h-3.5 flex-shrink-0 text-accent-500" />
+            <span className="truncate">{candidate.email}</span>
           </div>
           {candidate.assignedToName && (
-            <div className="text-xs text-gray-400 truncate">👤 {candidate.assignedToName}</div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 truncate mt-1">
+              <User className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{candidate.assignedToName}</span>
+            </div>
           )}
         </div>
 
@@ -230,16 +233,16 @@ export default function CandidateCard({
                 e.stopPropagation()
                 setShowMenu(!showMenu)
               }}
-              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
             >
-              <MoreVertical className="w-4 h-4 text-gray-500" />
+              <MoreVertical className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 bottom-full mb-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+              <div className="absolute right-0 bottom-full mb-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
                 <Link
                   href={`/candidates/${candidate.id}`}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Eye className="w-4 h-4" />
@@ -253,7 +256,7 @@ export default function CandidateCard({
                       onAddToProcess(candidate)
                       setShowMenu(false)
                     }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 w-full text-left"
                   >
                     <UserPlus className="w-4 h-4" />
                     Ajouter au processus
@@ -267,7 +270,7 @@ export default function CandidateCard({
                       onEdit(candidate)
                       setShowMenu(false)
                     }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 w-full text-left"
                   >
                     <Edit2 className="w-4 h-4" />
                     Modifier
@@ -281,7 +284,7 @@ export default function CandidateCard({
                       onArchive(candidate)
                       setShowMenu(false)
                     }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left border-t border-gray-100"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 w-full text-left border-t border-gray-100 dark:border-gray-700"
                   >
                     <Archive className="w-4 h-4" />
                     Archiver

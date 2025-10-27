@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
+import { Users, Target, Workflow, TrendingUp, Settings, LogOut } from 'lucide-react'
 import Logohiring from '../../../public/logo-hiring.png'
 import NotificationBell from './NotificationBell'
 import ThemeToggle from './ThemeToggle'
@@ -25,12 +26,12 @@ export default function AdminHeader() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const navItems: Array<{ href: string; label: string; icon: string; badge?: string }> = [
-    { href: '/admin', label: 'Candidats Hub', icon: '👥', badge: 'CRM' },
-    { href: '/admin/processes', label: 'Processus', icon: '🎯' },
-    { href: '/admin/workflows', label: 'Workflows', icon: '🤖' },
-    { href: '/admin/analytics-enhanced', label: 'Analytics', icon: '📈' },
-    { href: '/admin/settings', label: 'Paramètres', icon: '⚙️' },
+  const navItems: Array<{ href: string; label: string; icon: React.ComponentType<{ className?: string }>; badge?: string }> = [
+    { href: '/admin', label: 'Candidats Hub', icon: Users, badge: 'CRM' },
+    { href: '/admin/processes', label: 'Processus', icon: Target },
+    { href: '/admin/workflows', label: 'Workflows', icon: Workflow },
+    { href: '/admin/analytics-enhanced', label: 'Analytics', icon: TrendingUp },
+    { href: '/admin/settings', label: 'Paramètres', icon: Settings },
   ]
 
   const handleLinkClick = () => {
@@ -74,31 +75,34 @@ export default function AdminHeader() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative group px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
-                  pathname === item.href
-                    ? 'text-[#3b5335ff] bg-[#ffaf50ff]/10 shadow-inner'
-                    : 'text-[#3b5335ff]/80 hover:text-[#3b5335ff] hover:bg-white/50'
-                }`}
-              >
-                <span>{item.icon}</span>
-                <span className="font-semibold text-sm">{item.label}</span>
-                {item.badge && (
-                  <span className="px-2 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] text-xs font-bold rounded-full">
-                    {item.badge}
-                  </span>
-                )}
+          <div className="hidden md:flex items-center space-x-2">
+            {navItems.map((item) => {
+              const Icon = item.icon
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative group px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ease-in-out flex items-center gap-2.5 ${
+                    pathname === item.href
+                      ? 'text-[#3b5335ff] bg-[#ffaf50ff]/10 shadow-sm dark:bg-[#ffaf50ff]/5'
+                      : 'text-[#3b5335ff]/80 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-800/50'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="font-semibold text-sm">{item.label}</span>
+                  {item.badge && (
+                    <span className="px-2 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] text-xs font-bold rounded-full shadow-sm">
+                      {item.badge}
+                    </span>
+                  )}
 
-                {/* Active indicator */}
-                {pathname === item.href && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-[#ffaf50ff] rounded-full" />
-                )}
-              </Link>
-            ))}
+                  {/* Active indicator */}
+                  {pathname === item.href && (
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-[#ffaf50ff] rounded-full" />
+                  )}
+                </Link>
+              )
+            })}
           </div>
 
           {/* Right side: Notifications + User Menu */}
@@ -110,21 +114,19 @@ export default function AdminHeader() {
             <NotificationBell />
 
             {/* User Menu */}
-            <div className="flex items-center gap-3 pl-4 border-l border-gray-300 dark:border-gray-600">
+            <div className="flex items-center gap-3 pl-4 border-l border-gray-300 dark:border-gray-700">
               <div className="text-right">
-                <div className="text-sm font-medium text-[#3b5335ff]">
+                <div className="text-sm font-medium text-[#3b5335ff] dark:text-gray-200">
                   {session?.user?.name || session?.user?.email || 'Admin'}
                 </div>
-                <div className="text-xs text-gray-500">Administrateur</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Administrateur</div>
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 text-[#3b5335ff] hover:bg-red-50 hover:text-red-600 rounded-lg transition-all"
+                className="p-2 text-[#3b5335ff] dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-all duration-300 ease-in-out"
                 title="Déconnexion"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+                <LogOut className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -171,42 +173,43 @@ export default function AdminHeader() {
                 <div className="text-xs text-gray-500">Administrateur</div>
               </div>
 
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={handleLinkClick}
-                  className={`block px-4 py-3 rounded-lg font-medium transition-all duration-300 group relative ${
-                    pathname === item.href
-                      ? 'bg-gradient-to-r from-[#ffaf50ff]/10 to-[#3b5335ff]/5 text-[#3b5335ff] border border-[#ffaf50ff]/20'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-[#3b5335ff]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span>{item.icon}</span>
-                      <span className="font-semibold">{item.label}</span>
-                      {item.badge && (
-                        <span className="px-2 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] text-xs font-bold rounded-full">
-                          {item.badge}
-                        </span>
+              {navItems.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className={`block px-4 py-3 rounded-lg font-medium transition-all duration-300 ease-in-out group relative ${
+                      pathname === item.href
+                        ? 'bg-gradient-to-r from-[#ffaf50ff]/10 to-[#3b5335ff]/5 text-[#3b5335ff] dark:text-white border border-[#ffaf50ff]/20 shadow-sm'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-[#3b5335ff] dark:hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <Icon className="w-4 h-4" />
+                        <span className="font-semibold">{item.label}</span>
+                        {item.badge && (
+                          <span className="px-2 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] text-xs font-bold rounded-full shadow-sm">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      {pathname === item.href && (
+                        <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full animate-pulse" />
                       )}
                     </div>
-                    {pathname === item.href && (
-                      <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full animate-pulse" />
-                    )}
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                )
+              })}
 
               {/* Logout Button Mobile */}
               <button
                 onClick={handleLogout}
-                className="w-full mt-4 px-4 py-3 bg-red-50 text-red-600 rounded-lg font-semibold hover:bg-red-100 transition-all flex items-center justify-center gap-2"
+                className="w-full mt-4 px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-semibold hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-300 ease-in-out flex items-center justify-center gap-2"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+                <LogOut className="w-5 h-5" />
                 Déconnexion
               </button>
             </div>
