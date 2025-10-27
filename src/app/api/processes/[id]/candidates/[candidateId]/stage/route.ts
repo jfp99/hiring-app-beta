@@ -21,10 +21,24 @@ export async function PUT(
     const { db } = await connectToDatabase()
 
     // Get the process to validate stage exists
-    const process = await db.collection('processes').findOne({
+    // Try custom id field first, then MongoDB _id
+    let process = await db.collection('processes').findOne({
       id: processId,
       isDeleted: { $ne: true }
     })
+
+    // If not found by custom id, try MongoDB _id
+    if (!process) {
+      try {
+        const { ObjectId } = await import('mongodb')
+        process = await db.collection('processes').findOne({
+          _id: new ObjectId(processId),
+          isDeleted: { $ne: true }
+        })
+      } catch (e) {
+        console.error('Invalid ObjectId:', e)
+      }
+    }
 
     if (!process) {
       return NextResponse.json({ error: 'Process not found' }, { status: 404 })
@@ -37,10 +51,24 @@ export async function PUT(
     }
 
     // Update candidate's process information
-    const candidate = await db.collection('candidates').findOne({
+    // Try custom id field first, then MongoDB _id
+    let candidate = await db.collection('candidates').findOne({
       id: candidateId,
       isDeleted: { $ne: true }
     })
+
+    // If not found by custom id, try MongoDB _id
+    if (!candidate) {
+      try {
+        const { ObjectId } = await import('mongodb')
+        candidate = await db.collection('candidates').findOne({
+          _id: new ObjectId(candidateId),
+          isDeleted: { $ne: true }
+        })
+      } catch (e) {
+        console.error('Invalid candidate ObjectId:', e)
+      }
+    }
 
     if (!candidate) {
       return NextResponse.json({ error: 'Candidate not found' }, { status: 404 })
@@ -103,9 +131,10 @@ export async function PUT(
       newStatus = 'on_hold'
     }
 
-    // Update the candidate
+    // Update the candidate using the identifier we found it with
+    const candidateQuery = candidate.id ? { id: candidate.id } : { _id: candidate._id }
     const result = await db.collection('candidates').updateOne(
-      { id: candidateId },
+      candidateQuery,
       {
         $set: {
           currentProcesses,

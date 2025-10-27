@@ -152,8 +152,8 @@ export default function Vision() {
       </section>
 
       {/* Navigation par onglets */}
-      <section className="py-3 sm:py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-3 sm:py-6 md:py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4">
             {[
               { id: 'equipe', label: 'Notre Équipe' },
@@ -163,7 +163,7 @@ export default function Vision() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:-translate-y-1 ${
+                className={`w-full sm:w-auto px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base md:text-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
                     : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-[#ffaf50ff] hover:bg-gray-50 dark:hover:bg-gray-700 shadow-md hover:shadow-lg'
@@ -250,21 +250,21 @@ export default function Vision() {
                       </div>
 
                       {/* Stats - Aligned at bottom */}
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors">
-                          <div className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                      <div className="grid grid-cols-3 gap-1.5 sm:gap-3 md:gap-4 text-center">
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 sm:p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors flex flex-col items-center justify-center min-h-[50px] sm:min-h-[60px]">
+                          <div className="text-sm sm:text-base md:text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] break-words">
                             {recruteur.stats.placements}+
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">Placements</div>
+                          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Placements</div>
                         </div>
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors">
-                          <div className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 sm:p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors flex flex-col items-center justify-center min-h-[50px] sm:min-h-[60px]">
+                          <div className="text-sm sm:text-base md:text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] break-words">
                             {recruteur.stats.satisfaction}%
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">Satisfaction</div>
+                          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Satisfaction</div>
                         </div>
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors">
-                          <div className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">
+                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 sm:p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors flex flex-col items-center justify-center min-h-[50px] sm:min-h-[60px]">
+                          <div className="text-xs sm:text-sm md:text-base lg:text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] break-words leading-tight">
                             {recruteur.stats.specialite}
                           </div>
                         </div>
