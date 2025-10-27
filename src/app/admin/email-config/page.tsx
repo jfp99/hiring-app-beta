@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { BarChart3, Check, AlertTriangle, X, Mail, User, TestTube, Send, FileText, Lightbulb } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -129,7 +130,7 @@ export default function EmailConfigPage() {
                 {/* Current Status Card */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-3">
-                    <span>📊</span>
+                    <BarChart3 className="w-6 h-6 text-accent-500" />
                     <span>Statut actuel</span>
                   </h2>
 
@@ -139,9 +140,9 @@ export default function EmailConfigPage() {
                       <div className="flex items-center gap-3">
                         <span className="text-gray-600 dark:text-gray-300 font-medium">Statut:</span>
                         <span className={`px-4 py-2 rounded-lg border-2 font-bold ${getStatusBadge(emailStatus.status)}`}>
-                          {emailStatus.status === 'configured' ? '✅ Configuré' :
-                           emailStatus.status === 'mock' ? '⚠️ Mode Test (Mock)' :
-                           '❌ Non configuré'}
+                          {emailStatus.status === 'configured' ? <><Check className="w-4 h-4 inline" /> Configuré</> :
+                           emailStatus.status === 'mock' ? <><AlertTriangle className="w-4 h-4 inline" /> Mode Test (Mock)</> :
+                           <><X className="w-4 h-4 inline" /> Non configuré</>}
                         </span>
                       </div>
 
@@ -157,9 +158,10 @@ export default function EmailConfigPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t">
                         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className={`text-2xl ${emailStatus.details.sendgrid ? '✅' : '❌'}`}>
-                              {emailStatus.details.sendgrid ? '✅' : '❌'}
-                            </span>
+                            {emailStatus.details.sendgrid ?
+                              <Check className="w-8 h-8 text-green-500" /> :
+                              <X className="w-8 h-8 text-red-500" />
+                            }
                             <span className="font-semibold text-gray-700 dark:text-gray-300">SendGrid</span>
                           </div>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -169,9 +171,10 @@ export default function EmailConfigPage() {
 
                         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className={`text-2xl ${emailStatus.details.smtp ? '✅' : '❌'}`}>
-                              {emailStatus.details.smtp ? '✅' : '❌'}
-                            </span>
+                            {emailStatus.details.smtp ?
+                              <Check className="w-8 h-8 text-green-500" /> :
+                              <X className="w-8 h-8 text-red-500" />
+                            }
                             <span className="font-semibold text-gray-700 dark:text-gray-300">SMTP</span>
                           </div>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -181,7 +184,7 @@ export default function EmailConfigPage() {
 
                         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xl">📧</span>
+                            <Mail className="w-6 h-6 text-primary-600 dark:text-accent-500" />
                             <span className="font-semibold text-gray-700 dark:text-gray-300">Email expéditeur</span>
                           </div>
                           <p className="text-sm text-gray-600 dark:text-gray-300 break-all">
@@ -191,7 +194,7 @@ export default function EmailConfigPage() {
 
                         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xl">👤</span>
+                            <User className="w-6 h-6 text-primary-600 dark:text-accent-500" />
                             <span className="font-semibold text-gray-700 dark:text-gray-300">Nom expéditeur</span>
                           </div>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -206,7 +209,7 @@ export default function EmailConfigPage() {
                 {/* Test Email Card */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-3">
-                    <span>🧪</span>
+                    <TestTube className="w-6 h-6 text-accent-500" />
                     <span>Tester l'envoi d'email</span>
                   </h2>
 
@@ -240,7 +243,7 @@ export default function EmailConfigPage() {
                         </>
                       ) : (
                         <>
-                          <span>📨</span>
+                          <Send className="w-5 h-5" />
                           <span>Envoyer un email de test</span>
                         </>
                       )}
@@ -256,7 +259,7 @@ export default function EmailConfigPage() {
                     }`}>
                       <div className="flex items-start gap-3">
                         <span className="text-2xl">
-                          {testResult.success ? '✅' : '❌'}
+                          {testResult.success ? <Check className="w-5 h-5 text-green-500 inline" /> : <X className="w-5 h-5 text-red-500 inline" />}
                         </span>
                         <div className="flex-1">
                           <p className={`font-bold ${
@@ -283,7 +286,7 @@ export default function EmailConfigPage() {
                 {/* Configuration Instructions */}
                 <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                   <h2 className="text-2xl font-bold text-[#3b5335ff] mb-6 flex items-center gap-3">
-                    <span>📝</span>
+                    <FileText className="w-6 h-6 text-accent-500" />
                     <span>Configuration</span>
                   </h2>
 
@@ -347,7 +350,7 @@ export default function EmailConfigPage() {
 
                     <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <p className="text-sm text-blue-800">
-                        <strong>💡 Note:</strong> Après avoir ajouté les variables d&apos;environnement, redémarrez le serveur de développement pour que les changements prennent effet.
+                        <strong className="flex items-center gap-2"><Lightbulb className="w-4 h-4" /> Note:</strong> Après avoir ajouté les variables d&apos;environnement, redémarrez le serveur de développement pour que les changements prennent effet.
                       </p>
                     </div>
                   </div>

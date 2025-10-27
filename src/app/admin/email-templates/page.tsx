@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { Mail, Edit, Trash2 } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -224,7 +225,9 @@ export default function EmailTemplatesPage() {
 
             {filteredTemplates.length === 0 ? (
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center">
-                <div className="text-6xl mb-4">📧</div>
+                <div className="flex justify-center mb-4">
+                  <Mail className="w-24 h-24 text-primary-500 dark:text-accent-500" />
+                </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Aucun template trouvé</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
                   {searchQuery || filterType !== 'all' || filterStatus !== 'all'
@@ -311,16 +314,17 @@ export default function EmailTemplatesPage() {
                       <div className="flex gap-2">
                         <Link
                           href={`/admin/email-templates/${template.id}`}
-                          className="flex-1 text-center px-4 py-2 bg-[#3b5335ff] text-white rounded-lg font-medium hover:bg-[#2a3d26ff] transition-all text-sm"
+                          className="flex-1 text-center px-4 py-2 bg-[#3b5335ff] text-white rounded-lg font-medium hover:bg-[#2a3d26ff] transition-all text-sm flex items-center justify-center gap-2"
                         >
-                          ✏️ Modifier
+                          <Edit className="w-4 h-4" />
+                          Modifier
                         </Link>
                         {!template.isDefault && (
                           <button
                             onClick={() => handleDelete(template.id)}
-                            className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-all text-sm"
+                            className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-all text-sm flex items-center gap-2"
                           >
-                            🗑️
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         )}
                       </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { Users, Mail, Edit, Rocket } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -280,34 +281,37 @@ export default function BulkEmailPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               {[
-                { num: 1, label: 'Sélectionner les candidats', icon: '👥' },
-                { num: 2, label: 'Choisir le template', icon: '📧' },
-                { num: 3, label: 'Personnaliser', icon: '✏️' },
-                { num: 4, label: 'Envoyer', icon: '🚀' }
-              ].map((s, idx) => (
+                { num: 1, label: 'Sélectionner les candidats', Icon: Users },
+                { num: 2, label: 'Choisir le template', Icon: Mail },
+                { num: 3, label: 'Personnaliser', Icon: Edit },
+                { num: 4, label: 'Envoyer', Icon: Rocket }
+              ].map((s, idx) => {
+                const Icon = s.Icon
+                return (
                 <div key={s.num} className="flex items-center flex-1">
                   <button
                     onClick={() => setStep(s.num)}
                     className={`flex items-center gap-3 ${
-                      step >= s.num ? 'text-[#3b5335ff]' : 'text-gray-400'
+                      step >= s.num ? 'text-[#3b5335ff] dark:text-accent-500' : 'text-gray-400 dark:text-gray-600'
                     }`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${
                       step >= s.num
                         ? 'bg-[#ffaf50ff] text-[#3b5335ff]'
-                        : 'bg-gray-200 text-gray-500 dark:text-gray-400'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                     }`}>
-                      {step > s.num ? '✓' : s.icon}
+                      {step > s.num ? <span className="text-xl">✓</span> : <Icon className="w-5 h-5" />}
                     </div>
                     <span className="font-medium hidden md:inline">{s.label}</span>
                   </button>
                   {idx < 3 && (
                     <div className={`flex-1 h-1 mx-4 ${
-                      step > s.num ? 'bg-[#ffaf50ff]' : 'bg-gray-200'
+                      step > s.num ? 'bg-[#ffaf50ff]' : 'bg-gray-200 dark:bg-gray-700'
                     }`} />
                   )}
                 </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </section>
@@ -643,7 +647,8 @@ export default function BulkEmailPage() {
                       </>
                     ) : (
                       <>
-                        🚀 Envoyer {selectedCandidates.size} emails
+                        <Rocket className="w-5 h-5" />
+                        Envoyer {selectedCandidates.size} emails
                       </>
                     )}
                   </button>
