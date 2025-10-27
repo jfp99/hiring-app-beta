@@ -48,6 +48,7 @@ export default function CandidatesPage() {
   const [statusFilter, setStatusFilter] = useState<CandidateStatus[]>([])
   const [experienceFilter, setExperienceFilter] = useState<ExperienceLevel[]>([])
   const [skillsFilter, setSkillsFilter] = useState('')
+  const [showArchived, setShowArchived] = useState(false)
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -68,7 +69,7 @@ export default function CandidatesPage() {
     fetchCandidates()
     // Clear selection when filters change
     setSelectedCandidates([])
-  }, [searchTerm, statusFilter, experienceFilter, skillsFilter, currentPage, viewMode])
+  }, [searchTerm, statusFilter, experienceFilter, skillsFilter, currentPage, viewMode, showArchived])
 
   const fetchCandidates = async () => {
     try {
@@ -91,7 +92,7 @@ export default function CandidatesPage() {
       }
 
       params.append('isActive', 'true')
-      params.append('isArchived', 'false')
+      params.append('isArchived', showArchived ? 'true' : 'false')
 
       const response = await fetch(`/api/candidates?${params.toString()}`)
       const data = await response.json()
@@ -493,10 +494,64 @@ export default function CandidatesPage() {
           </div>
         </section>
 
+        {/* Sticky Toolbar */}
+        <section className="sticky top-16 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between gap-4">
+              {/* Search Bar */}
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher un candidat..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value)
+                      setCurrentPage(1)
+                    }}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Toolbar Actions */}
+              <div className="flex items-center gap-2">
+                {/* Filter Toggle */}
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="relative px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  <span className="hidden sm:inline">Filtres</span>
+                  {(statusFilter.length + experienceFilter.length + (searchTerm ? 1 : 0) + (showArchived ? 1 : 0)) > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {statusFilter.length + experienceFilter.length + (searchTerm ? 1 : 0) + (showArchived ? 1 : 0)}
+                    </span>
+                  )}
+                </button>
+
+                {/* Refresh */}
+                <button
+                  onClick={fetchCandidates}
+                  disabled={loading}
+                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  title="Actualiser"
+                >
+                  <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span className="hidden sm:inline">Actualiser</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Main Content with Sidebar */}
         <div className="flex">
           {/* Sidebar - Filters */}
-          <aside className={`fixed lg:sticky top-16 left-0 h-[calc(100vh-4rem)] w-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-30 transition-transform duration-300 ${
+          <aside className={`fixed lg:sticky top-32 left-0 h-[calc(100vh-8rem)] w-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-30 transition-transform duration-300 ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}>
             <div className="p-3 space-y-4">
@@ -513,23 +568,6 @@ export default function CandidatesPage() {
                 >
                   <X className="w-4 h-4" />
                 </button>
-              </div>
-
-              {/* Search */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                  Recherche
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Nom..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                    setCurrentPage(1)
-                  }}
-                  leftIcon={<Search className="w-4 h-4" />}
-                />
               </div>
 
               {/* Status Filters */}
@@ -578,13 +616,32 @@ export default function CandidatesPage() {
                 </div>
               </div>
 
+              {/* Archive Toggle */}
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showArchived}
+                    onChange={(e) => {
+                      setShowArchived(e.target.checked)
+                      setCurrentPage(1)
+                    }}
+                    className="w-4 h-4 text-accent-500 border-gray-300 rounded focus:ring-accent-500"
+                  />
+                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                    Afficher archivés
+                  </span>
+                </label>
+              </div>
+
               {/* Clear Filters */}
-              {(statusFilter.length > 0 || experienceFilter.length > 0 || searchTerm) && (
+              {(statusFilter.length > 0 || experienceFilter.length > 0 || searchTerm || showArchived) && (
                 <button
                   onClick={() => {
                     setStatusFilter([])
                     setExperienceFilter([])
                     setSearchTerm('')
+                    setShowArchived(false)
                     setCurrentPage(1)
                   }}
                   className="w-full px-2.5 py-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg text-xs font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800 cursor-pointer"
@@ -606,16 +663,16 @@ export default function CandidatesPage() {
           {/* Main Content Area */}
           <main className="flex-1 min-w-0">
             {/* Mobile Filter Toggle */}
-            <div className="lg:hidden sticky top-16 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+            <div className="lg:hidden sticky top-32 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-primary-600 dark:bg-accent-500 text-white dark:text-primary-900 rounded-lg font-medium hover:bg-primary-700 dark:hover:bg-accent-600 transition-colors cursor-pointer"
               >
                 <Filter className="w-5 h-5" />
                 Filtres
-                {(statusFilter.length + experienceFilter.length) > 0 && (
+                {(statusFilter.length + experienceFilter.length + (searchTerm ? 1 : 0) + (showArchived ? 1 : 0)) > 0 && (
                   <span className="ml-2 px-2 py-0.5 bg-white dark:bg-primary-900 text-primary-700 dark:text-accent-500 rounded-full text-xs font-bold">
-                    {statusFilter.length + experienceFilter.length}
+                    {statusFilter.length + experienceFilter.length + (searchTerm ? 1 : 0) + (showArchived ? 1 : 0)}
                   </span>
                 )}
               </button>
