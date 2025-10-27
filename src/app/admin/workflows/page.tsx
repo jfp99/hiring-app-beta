@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { Workflow as WorkflowIcon, Check, Zap, ClipboardList, TestTube, Pause, Play, Trash2 } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -159,7 +160,7 @@ export default function WorkflowsPage() {
                 <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-600 transition-all hover:shadow-lg cursor-default">
                   <div className="flex items-start justify-between mb-3">
                     <div className="p-3 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl">
-                      <span className="text-2xl">🤖</span>
+                      <WorkflowIcon className="w-8 h-8 text-primary-600 dark:text-accent-500" />
                     </div>
                     <div className="text-right">
                       <div className="text-3xl font-bold text-primary-700 dark:text-accent-500 mb-1">{workflows.length}</div>
@@ -176,7 +177,7 @@ export default function WorkflowsPage() {
                 <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-700 transition-all hover:shadow-lg cursor-default">
                   <div className="flex items-start justify-between mb-3">
                     <div className="p-3 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 rounded-xl">
-                      <span className="text-2xl">✓</span>
+                      <Check className="w-8 h-8 text-green-600 dark:text-green-400" />
                     </div>
                     <div className="text-right">
                       <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">
@@ -195,7 +196,7 @@ export default function WorkflowsPage() {
                 <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:shadow-lg cursor-default">
                   <div className="flex items-start justify-between mb-3">
                     <div className="p-3 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 rounded-xl">
-                      <span className="text-2xl">⚡</span>
+                      <Zap className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="text-right">
                       <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
@@ -214,7 +215,7 @@ export default function WorkflowsPage() {
                 <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:shadow-lg cursor-default">
                   <div className="flex items-start justify-between mb-3">
                     <div className="p-3 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30 rounded-xl">
-                      <span className="text-2xl">📋</span>
+                      <ClipboardList className="w-8 h-8 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="text-right">
                       <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">{templates.length}</div>
@@ -233,7 +234,9 @@ export default function WorkflowsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {workflows.length === 0 ? (
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center">
-                <div className="text-6xl mb-4">🤖</div>
+                <div className="flex justify-center mb-4">
+                  <WorkflowIcon className="w-24 h-24 text-primary-500 dark:text-accent-500" />
+                </div>
                 <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-accent-500 mb-2">
                   Aucun workflow configuré
                 </h2>
@@ -261,8 +264,8 @@ export default function WorkflowsPage() {
                             {workflow.name}
                           </h3>
                           {workflow.isActive ? (
-                            <span className="px-3 py-1 bg-green-100 text-green-800 dark:text-green-300 text-xs font-bold rounded-full">
-                              ✓ Actif
+                            <span className="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 text-xs font-bold rounded-full flex items-center gap-1">
+                              <Check className="w-3 h-3" /> Actif
                             </span>
                           ) : (
                             <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-full">
@@ -270,8 +273,8 @@ export default function WorkflowsPage() {
                             </span>
                           )}
                           {workflow.testMode && (
-                            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">
-                              🧪 Test
+                            <span className="px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 text-xs font-bold rounded-full flex items-center gap-1">
+                              <TestTube className="w-3 h-3" /> Test
                             </span>
                           )}
                         </div>
@@ -330,21 +333,21 @@ export default function WorkflowsPage() {
                       <div className="flex gap-2 ml-4">
                         <button
                           onClick={() => toggleWorkflow(workflow.id, workflow.isActive)}
-                          className={`px-4 py-2 rounded-lg font-medium transition-all cursor-pointer ${
+                          className={`px-4 py-2 rounded-lg font-medium transition-all cursor-pointer flex items-center gap-2 ${
                             workflow.isActive
                               ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                              : 'bg-green-100 text-green-700 hover:bg-green-200'
+                              : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/40'
                           }`}
                           title={workflow.isActive ? 'Désactiver' : 'Activer'}
                         >
-                          {workflow.isActive ? '⏸️ Pause' : '▶️ Activer'}
+                          {workflow.isActive ? <><Pause className="w-4 h-4" /> Pause</> : <><Play className="w-4 h-4" /> Activer</>}
                         </button>
                         <button
                           onClick={() => deleteWorkflow(workflow.id)}
-                          className="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200 transition-all cursor-pointer"
+                          className="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg font-medium hover:bg-red-200 dark:hover:bg-red-900/40 transition-all cursor-pointer flex items-center gap-2"
                           title="Supprimer"
                         >
-                          🗑️
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

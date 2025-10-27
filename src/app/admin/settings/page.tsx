@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Settings as SettingsIcon, Wrench, ChevronRight } from 'lucide-react'
+import { Settings as SettingsIcon, Wrench, ChevronRight, Link2, Workflow as WorkflowIcon, Mail } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -94,10 +94,10 @@ export default function SettingsPage() {
               </div>
 
               {/* Quick Links Section */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-2xl font-bold text-[#3b5335ff] flex items-center gap-3">
-                    <span>🔗</span>
+                  <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-gray-100 flex items-center gap-3">
+                    <Link2 className="w-7 h-7 text-accent-500" />
                     <span>Liens Rapides</span>
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
@@ -107,46 +107,46 @@ export default function SettingsPage() {
 
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <a
+                    <Link
                       href="/admin/workflows"
-                      className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-purple-400 hover:shadow-lg transition-all duration-300"
+                      className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-purple-400 dark:hover:border-purple-400 hover:shadow-lg transition-all duration-300"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl">
-                          🤖
+                        <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                          <WorkflowIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-[#3b5335ff] group-hover:text-purple-600">Workflows</h4>
+                          <h4 className="font-bold text-[#3b5335ff] dark:text-gray-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">Workflows</h4>
                           <p className="text-xs text-gray-600 dark:text-gray-300">Automatisation</p>
                         </div>
                       </div>
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                       href="/admin/email-config"
-                      className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 hover:shadow-lg transition-all duration-300"
+                      className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-400 dark:hover:border-blue-400 hover:shadow-lg transition-all duration-300"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">
-                          🔧
+                        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                          <SettingsIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-[#3b5335ff] group-hover:text-blue-600">Configuration Email</h4>
+                          <h4 className="font-bold text-[#3b5335ff] dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400">Configuration Email</h4>
                           <p className="text-xs text-gray-600 dark:text-gray-300">Paramètres d&apos;envoi</p>
                         </div>
                       </div>
-                    </a>
+                    </Link>
 
                     <Link
                       href="/admin/email-templates"
-                      className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-400 hover:shadow-lg transition-all duration-300"
+                      className="group p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-400 dark:hover:border-green-400 hover:shadow-lg transition-all duration-300"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-xl">
-                          📧
+                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                          <Mail className="w-5 h-5 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-[#3b5335ff] group-hover:text-green-600">Templates Email</h4>
+                          <h4 className="font-bold text-[#3b5335ff] dark:text-gray-100 group-hover:text-green-600 dark:group-hover:text-green-400">Templates Email</h4>
                           <p className="text-xs text-gray-600 dark:text-gray-300">Modèles d&apos;emails</p>
                         </div>
                       </div>
