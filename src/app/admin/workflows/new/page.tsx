@@ -118,7 +118,7 @@ export default function NewWorkflowPage() {
   const addAction = () => {
     setActions([...actions, {
       type: WorkflowActionType.SEND_EMAIL,
-      config: {}
+      emailTo: 'candidate'
     }])
   }
 
@@ -500,12 +500,8 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Template ID ou sujet de l'email"
-                                  value={action.config.templateId || action.config.subject || ''}
-                                  onChange={(e) => updateAction(index, 'config', {
-                                    ...action.config,
-                                    templateId: e.target.value,
-                                    subject: e.target.value
-                                  })}
+                                  value={action.emailTemplateId || action.emailSubject || ''}
+                                  onChange={(e) => updateAction(index, 'emailTemplateId', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -516,8 +512,8 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Nom du tag à ajouter"
-                                  value={action.config.tag || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, tag: e.target.value })}
+                                  value={action.tagName || ''}
+                                  onChange={(e) => updateAction(index, 'tagName', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -528,8 +524,8 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Nom du tag à retirer"
-                                  value={action.config.tag || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, tag: e.target.value })}
+                                  value={action.tagName || ''}
+                                  onChange={(e) => updateAction(index, 'tagName', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -540,8 +536,8 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Nouveau statut"
-                                  value={action.config.status || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, status: e.target.value })}
+                                  value={action.newStatus || ''}
+                                  onChange={(e) => updateAction(index, 'newStatus', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -551,8 +547,8 @@ export default function NewWorkflowPage() {
                               <div className="pl-11">
                                 <textarea
                                   placeholder="Contenu de la note"
-                                  value={action.config.note || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, note: e.target.value })}
+                                  value={action.noteContent || ''}
+                                  onChange={(e) => updateAction(index, 'noteContent', e.target.value)}
                                   rows={2}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
@@ -564,8 +560,8 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Email de l'utilisateur"
-                                  value={action.config.userId || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, userId: e.target.value })}
+                                  value={action.assignToUserId || ''}
+                                  onChange={(e) => updateAction(index, 'assignToUserId', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -576,14 +572,14 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Titre de la tâche"
-                                  value={action.config.title || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, title: e.target.value })}
+                                  value={action.taskTitle || ''}
+                                  onChange={(e) => updateAction(index, 'taskTitle', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                                 <textarea
                                   placeholder="Description de la tâche"
-                                  value={action.config.description || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, description: e.target.value })}
+                                  value={action.taskDescription || ''}
+                                  onChange={(e) => updateAction(index, 'taskDescription', e.target.value)}
                                   rows={2}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
@@ -595,8 +591,8 @@ export default function NewWorkflowPage() {
                                 <input
                                   type="url"
                                   placeholder="URL du webhook"
-                                  value={action.config.url || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, url: e.target.value })}
+                                  value={action.webhookUrl || ''}
+                                  onChange={(e) => updateAction(index, 'webhookUrl', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
