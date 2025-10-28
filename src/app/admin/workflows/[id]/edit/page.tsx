@@ -508,12 +508,8 @@ export default function EditWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Template ID ou sujet de l'email"
-                                  value={action.config.templateId || action.config.subject || ''}
-                                  onChange={(e) => updateAction(index, 'config', {
-                                    ...action.config,
-                                    templateId: e.target.value,
-                                    subject: e.target.value
-                                  })}
+                                  value={action.emailTemplateId || action.emailSubject || ''}
+                                  onChange={(e) => updateAction(index, 'emailTemplateId', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -524,8 +520,8 @@ export default function EditWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Nom du tag"
-                                  value={action.config.tag || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, tag: e.target.value })}
+                                  value={action.tagName || ''}
+                                  onChange={(e) => updateAction(index, 'tagName', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -536,8 +532,8 @@ export default function EditWorkflowPage() {
                                 <input
                                   type="text"
                                   placeholder="Nouveau statut"
-                                  value={action.config.status || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, status: e.target.value })}
+                                  value={action.newStatus || ''}
+                                  onChange={(e) => updateAction(index, 'newStatus', e.target.value)}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
                               </div>
@@ -547,8 +543,8 @@ export default function EditWorkflowPage() {
                               <div className="pl-11">
                                 <textarea
                                   placeholder="Contenu de la note"
-                                  value={action.config.note || ''}
-                                  onChange={(e) => updateAction(index, 'config', { ...action.config, note: e.target.value })}
+                                  value={action.noteContent || ''}
+                                  onChange={(e) => updateAction(index, 'noteContent', e.target.value)}
                                   rows={2}
                                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                 />
