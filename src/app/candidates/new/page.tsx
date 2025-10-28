@@ -293,32 +293,6 @@ export default function NewCandidatePage() {
                   </div>
                 )}
 
-                {/* Quick Tips */}
-                <div className="mt-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-xl p-6 shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">💡</span>
-                    <h4 className="font-bold text-blue-900 dark:text-blue-300">Conseils Rapides</h4>
-                  </div>
-                  <ul className="space-y-2 text-sm text-blue-800 dark:text-blue-200">
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-600 dark:text-green-400 font-bold">✓</span>
-                      <span>Importez un CV pour pré-remplir automatiquement</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-orange-600 dark:text-orange-400 font-bold">*</span>
-                      <span>Les champs marqués * sont obligatoires</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-blue-600 dark:text-blue-400 font-bold">✎</span>
-                      <span>Toutes les informations sont modifiables</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-600 dark:text-purple-400 font-bold">🖼️</span>
-                      <span>Accepte PDF, DOCX, TXT, RTF, ODT, et images (WEBP, JPG, PNG)</span>
-                    </li>
-                  </ul>
-                </div>
-
                 {/* Stats Card */}
                 <div className="mt-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-xl p-6 shadow-sm">
                   <h4 className="font-bold text-green-900 dark:text-green-300 mb-3 flex items-center gap-2">

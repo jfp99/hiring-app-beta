@@ -1,7 +1,10 @@
 // src/app/components/ResumeUploader.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import ParsingProgress, { ParsingStage } from './ParsingProgress'
+import ApiUsageBanner from './ApiUsageBanner'
+import { FileText, Image, CheckCircle, AlertCircle } from 'lucide-react'
 
 interface ParsedData {
   firstName?: string
@@ -38,10 +41,31 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
   const [error, setError] = useState('')
   const [parsedData, setParsedData] = useState<ParsedData | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [parsingStage, setParsingStage] = useState<ParsingStage>('upload')
+  const [parsingProgress, setParsingProgress] = useState(0)
+  const [filePreview, setFilePreview] = useState<string | null>(null)
+
+  // Generate file preview for images
+  useEffect(() => {
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setFilePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    } else {
+      setFilePreview(null)
+    }
+  }, [file])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
     if (selectedFile) {
+      // Validate file size (max 10MB)
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        setError('File size must be less than 10MB')
+        return
+      }
       setFile(selectedFile)
       setError('')
       setParsedData(null)
@@ -64,10 +88,49 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
 
     const droppedFile = e.dataTransfer.files[0]
     if (droppedFile) {
+      // Validate file size (max 10MB)
+      if (droppedFile.size > 10 * 1024 * 1024) {
+        setError('File size must be less than 10MB')
+        return
+      }
       setFile(droppedFile)
       setError('')
       setParsedData(null)
     }
+  }
+
+  const simulateProgressStages = () => {
+    // Stage 1: Upload (0-20%)
+    setParsingStage('upload')
+    setParsingProgress(0)
+
+    setTimeout(() => {
+      setParsingProgress(20)
+      setParsingStage('extraction')
+    }, 500)
+
+    // Stage 2: Text Extraction (20-40%)
+    setTimeout(() => {
+      setParsingProgress(40)
+      setParsingStage('parsing')
+    }, 1500)
+
+    // Stage 3: Data Parsing (40-70%)
+    setTimeout(() => {
+      setParsingProgress(70)
+      setParsingStage('ai-analysis')
+    }, 3000)
+
+    // Stage 4: AI Analysis (70-90%)
+    setTimeout(() => {
+      setParsingProgress(90)
+      setParsingStage('validation')
+    }, 5000)
+
+    // Stage 5: Validation (90-100%)
+    setTimeout(() => {
+      setParsingProgress(100)
+    }, 6000)
   }
 
   const handleParse = async () => {
@@ -78,6 +141,11 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
 
     setParsing(true)
     setError('')
+    setParsingProgress(0)
+    setParsingStage('upload')
+
+    // Start progress simulation
+    simulateProgressStages()
 
     try {
       const formData = new FormData()
@@ -94,8 +162,14 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
         throw new Error(result.error || 'Erreur lors de l\'analyse du CV')
       }
 
-      setParsedData(result.data)
-      onParsed(result.data)
+      // Ensure we're at 100% before showing results
+      setParsingProgress(100)
+
+      // Small delay to show completion
+      setTimeout(() => {
+        setParsedData(result.data)
+        onParsed(result.data)
+      }, 500)
     } catch (err: any) {
       console.error('Parse error:', err)
       setError(err.message)
@@ -110,14 +184,24 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
     setError('')
   }
 
-  return (
-    <div className={`bg-white rounded-lg border-2 border-gray-200 p-6 ${className}`}>
-      <h3 className="text-xl font-bold text-[#3b5335ff] mb-4">
-        Importer un CV
-      </h3>
+  const getFileIcon = () => {
+    if (!file) return null
+    if (file.type.startsWith('image/')) return <Image className="w-5 h-5" />
+    return <FileText className="w-5 h-5" />
+  }
 
-      {!parsedData ? (
-        <>
+  return (
+    <div className={`${className}`}>
+      {/* API Usage Banner */}
+      <ApiUsageBanner />
+
+      <div className="bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-xl font-bold text-primary-600 dark:text-accent-500 mb-4">
+          Importer un CV
+        </h3>
+
+        {!parsedData ? (
+          <>
           {/* File Upload Area */}
           <div
             onDragOver={handleDragOver}
@@ -125,8 +209,8 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
             onDrop={handleDrop}
             className={`border-2 border-dashed rounded-lg p-8 text-center transition-all ${
               isDragging
-                ? 'border-[#ffaf50ff] bg-orange-50'
-                : 'border-gray-300 hover:border-[#ffaf50ff] hover:bg-gray-50'
+                ? 'border-accent-500 bg-orange-50 dark:bg-orange-950'
+                : 'border-gray-300 dark:border-gray-600 hover:border-accent-500 hover:bg-gray-50 dark:hover:bg-gray-700'
             }`}
           >
             <div className="mb-4">
@@ -147,17 +231,42 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
 
             {file ? (
               <div className="mb-4">
-                <p className="text-sm font-medium text-[#3b5335ff] mb-2">
+                <p className="text-sm font-medium text-primary-600 dark:text-accent-500 mb-3">
                   Fichier sélectionné:
                 </p>
-                <p className="text-sm text-gray-600">{file.name}</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {(file.size / 1024).toFixed(2)} KB
-                </p>
+
+                {/* File Preview */}
+                {filePreview && (
+                  <div className="mb-4">
+                    <img
+                      src={filePreview}
+                      alt="Preview"
+                      className="max-w-xs max-h-48 mx-auto rounded-lg border-2 border-gray-200 dark:border-gray-600 shadow-md"
+                    />
+                  </div>
+                )}
+
+                {/* File Info Card */}
+                <div className="inline-flex items-center gap-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-4 py-3 text-left">
+                  <div className="text-primary-600 dark:text-accent-500">
+                    {getFileIcon()}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {(file.size / 1024).toFixed(2)} KB • {file.type || 'Unknown type'}
+                    </p>
+                  </div>
+                  <div className="ml-2">
+                    <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="mb-4">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Glissez-déposez votre CV ici ou
                 </p>
               </div>
@@ -170,17 +279,17 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <span className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-[#3b5335ff] text-white rounded-lg hover:bg-[#2a3d26ff] transition-all shadow-md hover:shadow-lg">
+              <span className="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-primary-600 dark:bg-accent-500 text-white dark:text-gray-900 rounded-lg hover:bg-primary-700 dark:hover:bg-accent-600 transition-all shadow-md hover:shadow-lg">
                 <span className="text-xl">{file ? '🔄' : '📤'}</span>
                 <span className="font-medium">{file ? 'Changer de fichier' : 'Sélectionner un fichier'}</span>
               </span>
             </label>
 
-            <div className="text-xs text-gray-600 mt-4 space-y-1">
+            <div className="text-xs text-gray-600 dark:text-gray-400 mt-4 space-y-2">
               <p className="font-semibold text-center">Formats acceptés (max 10 MB):</p>
               <div className="flex justify-center gap-4 flex-wrap">
-                <span className="bg-blue-50 px-2 py-1 rounded">📄 PDF, DOC, DOCX, TXT, RTF, ODT</span>
-                <span className="bg-purple-50 px-2 py-1 rounded">🖼️ WEBP, JPG, PNG, GIF, BMP</span>
+                <span className="bg-blue-50 dark:bg-blue-950 px-2 py-1 rounded">📄 PDF, DOC, DOCX, TXT, RTF, ODT</span>
+                <span className="bg-purple-50 dark:bg-purple-950 px-2 py-1 rounded">🖼️ WEBP, JPG, PNG, GIF, BMP</span>
               </div>
             </div>
           </div>
@@ -190,55 +299,52 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
             <div className="mt-4 flex gap-3">
               <button
                 onClick={handleParse}
-                className="flex-1 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+                className="flex-1 bg-accent-500 text-gray-900 px-6 py-3 rounded-lg font-bold hover:bg-accent-600 hover:shadow-lg transition-all"
               >
                 Analyser le CV
               </button>
               <button
                 onClick={handleReset}
-                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-all"
+                className="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
               >
                 Annuler
               </button>
             </div>
           )}
 
-          {/* Loading State */}
+          {/* Parsing Progress */}
           {parsing && (
-            <div className="mt-4 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ffaf50ff] mx-auto mb-2"></div>
-              <p className="text-sm text-gray-600">Analyse du CV en cours...</p>
+            <div className="mt-4">
+              <ParsingProgress
+                currentStage={parsingStage}
+                progress={parsingProgress}
+                estimatedTimeRemaining={Math.max(0, 7 - Math.floor(parsingProgress / 15))}
+              />
             </div>
           )}
 
           {/* Error Display */}
           {error && (
-            <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mt-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
+                  Error parsing CV
+                </p>
+                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+              </div>
             </div>
           )}
         </>
       ) : (
         <>
           {/* Parsed Data Preview */}
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <svg
-                className="h-5 w-5 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <span className="font-bold text-green-800">CV analysé avec succès!</span>
+              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <span className="font-bold text-green-800 dark:text-green-200">CV analysé avec succès!</span>
             </div>
-            <p className="text-sm text-green-700">
+            <p className="text-sm text-green-700 dark:text-green-300">
               Les informations extraites ont été pré-remplies dans le formulaire ci-dessous.
             </p>
           </div>
@@ -247,9 +353,9 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {/* Personal Info */}
             {(parsedData.firstName || parsedData.lastName || parsedData.email) && (
-              <div className="border-l-4 border-[#ffaf50ff] pl-4">
-                <h4 className="font-bold text-[#3b5335ff] mb-2">Informations personnelles</h4>
-                <div className="space-y-1 text-sm">
+              <div className="border-l-4 border-accent-500 pl-4">
+                <h4 className="font-bold text-primary-600 dark:text-accent-500 mb-2">Informations personnelles</h4>
+                <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                   {parsedData.firstName && (
                     <p>
                       <span className="font-medium">Prénom:</span> {parsedData.firstName}
@@ -289,15 +395,15 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
 
             {/* Skills */}
             {parsedData.primarySkills && parsedData.primarySkills.length > 0 && (
-              <div className="border-l-4 border-[#3b5335ff] pl-4">
-                <h4 className="font-bold text-[#3b5335ff] mb-2">
+              <div className="border-l-4 border-primary-600 dark:border-accent-500 pl-4">
+                <h4 className="font-bold text-primary-600 dark:text-accent-500 mb-2">
                   Compétences ({parsedData.primarySkills.length})
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {parsedData.primarySkills.map((skill, idx) => (
                     <span
                       key={idx}
-                      className="inline-block px-3 py-1 bg-[#3b5335ff] text-white text-xs rounded-full"
+                      className="inline-block px-3 py-1 bg-primary-600 dark:bg-accent-500 text-white dark:text-gray-900 text-xs rounded-full"
                     >
                       {skill}
                     </span>
@@ -308,17 +414,17 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
 
             {/* Work Experience */}
             {parsedData.workExperience && parsedData.workExperience.length > 0 && (
-              <div className="border-l-4 border-purple-500 pl-4">
-                <h4 className="font-bold text-[#3b5335ff] mb-2">
+              <div className="border-l-4 border-purple-500 dark:border-purple-400 pl-4">
+                <h4 className="font-bold text-primary-600 dark:text-accent-500 mb-2">
                   Expérience professionnelle ({parsedData.workExperience.length})
                 </h4>
                 <div className="space-y-3">
                   {parsedData.workExperience.map((exp, idx) => (
                     <div key={idx} className="text-sm">
-                      <p className="font-medium">{exp.position || 'Poste non spécifié'}</p>
-                      <p className="text-gray-600">{exp.company || 'Entreprise non spécifiée'}</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">{exp.position || 'Poste non spécifié'}</p>
+                      <p className="text-gray-600 dark:text-gray-400">{exp.company || 'Entreprise non spécifiée'}</p>
                       {(exp.startDate || exp.endDate) && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-500">
                           {exp.startDate} - {exp.endDate || 'Présent'}
                         </p>
                       )}
@@ -330,19 +436,19 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
 
             {/* Education */}
             {parsedData.education && parsedData.education.length > 0 && (
-              <div className="border-l-4 border-blue-500 pl-4">
-                <h4 className="font-bold text-[#3b5335ff] mb-2">
+              <div className="border-l-4 border-blue-500 dark:border-blue-400 pl-4">
+                <h4 className="font-bold text-primary-600 dark:text-accent-500 mb-2">
                   Formation ({parsedData.education.length})
                 </h4>
                 <div className="space-y-3">
                   {parsedData.education.map((edu, idx) => (
                     <div key={idx} className="text-sm">
-                      <p className="font-medium">{edu.degree || 'Diplôme non spécifié'}</p>
-                      <p className="text-gray-600">
+                      <p className="font-medium text-gray-800 dark:text-gray-200">{edu.degree || 'Diplôme non spécifié'}</p>
+                      <p className="text-gray-600 dark:text-gray-400">
                         {edu.institution || 'Institution non spécifiée'}
                       </p>
                       {edu.graduationYear && (
-                        <p className="text-xs text-gray-500">{edu.graduationYear}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-500">{edu.graduationYear}</p>
                       )}
                     </div>
                   ))}
@@ -355,13 +461,14 @@ export default function ResumeUploader({ onParsed, className = '' }: ResumeUploa
           <div className="mt-6 flex gap-3">
             <button
               onClick={handleReset}
-              className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all"
+              className="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
             >
               Importer un autre CV
             </button>
           </div>
         </>
       )}
+      </div>
     </div>
   )
 }
