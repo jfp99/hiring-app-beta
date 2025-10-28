@@ -172,7 +172,7 @@ export default function EditWorkflowPage() {
   const addAction = () => {
     setActions([...actions, {
       type: WorkflowActionType.SEND_EMAIL,
-      config: {}
+      emailTo: 'candidate'
     }])
   }
 
