@@ -28,7 +28,10 @@ import {
   Building2,
   MessageSquare,
   Send,
-  Paperclip
+  Paperclip,
+  Circle,
+  Laptop,
+  UserCircle
 } from 'lucide-react'
 import {
   Candidate,
@@ -533,24 +536,25 @@ export default function CandidateProfilePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-4">
               {[
-                { id: 'overview' as const, label: 'Vue d\'ensemble', icon: '👤' },
-                { id: 'experience' as const, label: 'Expérience', icon: '💼' },
-                { id: 'scores' as const, label: 'Évaluations', icon: '⭐' },
-                { id: 'documents' as const, label: 'Documents', icon: '📄' },
-                { id: 'interviews' as const, label: 'Entretiens', icon: '📅' },
-                { id: 'comments' as const, label: 'Commentaires', icon: '💬' },
-                { id: 'activity' as const, label: 'Activité', icon: '📊' }
+                { id: 'overview' as const, label: 'Vue d\'ensemble', Icon: User },
+                { id: 'experience' as const, label: 'Expérience', Icon: Briefcase },
+                { id: 'scores' as const, label: 'Évaluations', Icon: Star },
+                { id: 'documents' as const, label: 'Documents', Icon: FileText },
+                { id: 'interviews' as const, label: 'Entretiens', Icon: Calendar },
+                { id: 'comments' as const, label: 'Commentaires', Icon: MessageSquare },
+                { id: 'activity' as const, label: 'Activité', Icon: BarChart3 }
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-4 font-semibold transition-all border-b-2 cursor-pointer ${
+                  className={`px-6 py-4 font-semibold transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
                     activeTab === tab.id
                       ? 'border-[#ffaf50ff] text-[#3b5335ff] dark:border-accent-500 dark:text-accent-500'
                       : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-accent-500'
                   }`}
                 >
-                  {tab.icon} {tab.label}
+                  <tab.Icon className="w-5 h-5" />
+                  {tab.label}
                 </button>
               ))}
             </div>
@@ -881,8 +885,15 @@ export default function CandidateProfilePage() {
                                     <h3 className="text-lg font-bold">
                                       {INTERVIEW_TYPE_LABELS[interview.type]} - {interview.jobTitle || 'Position'}
                                     </h3>
-                                    <p className="text-sm opacity-90">
-                                      📅 {formatDateTime(interview.scheduledDate)} • ⏱️ {interview.duration} min
+                                    <p className="text-sm opacity-90 flex items-center gap-3">
+                                      <span className="flex items-center gap-1">
+                                        <Calendar className="w-4 h-4" />
+                                        {formatDateTime(interview.scheduledDate)}
+                                      </span>
+                                      <span className="flex items-center gap-1">
+                                        <Clock className="w-4 h-4" />
+                                        {interview.duration} min
+                                      </span>
                                     </p>
                                   </div>
                                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -898,16 +909,20 @@ export default function CandidateProfilePage() {
                                   </span>
                                 </div>
                                 {interview.location && (
-                                  <p className="text-sm opacity-90">📍 {interview.location}</p>
+                                  <p className="text-sm opacity-90 flex items-center gap-1">
+                                    <MapPin className="w-4 h-4" />
+                                    {interview.location}
+                                  </p>
                                 )}
                                 {interview.meetingLink && (
                                   <a
                                     href={interview.meetingLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sm opacity-90 hover:underline"
+                                    className="text-sm opacity-90 hover:underline flex items-center gap-1"
                                   >
-                                    🔗 Lien de visioconférence
+                                    <LinkIcon className="w-4 h-4" />
+                                    Lien de visioconférence
                                   </a>
                                 )}
                               </div>
@@ -932,9 +947,10 @@ export default function CandidateProfilePage() {
                                         setSelectedInterview(interview)
                                         setShowFeedbackForm(true)
                                       }}
-                                      className="px-4 py-2 bg-[#3b5335ff] dark:bg-accent-500 text-white dark:text-primary-900 rounded-lg font-medium hover:bg-[#2a3d26ff] dark:hover:bg-accent-600 transition-all text-sm cursor-pointer"
+                                      className="px-4 py-2 bg-[#3b5335ff] dark:bg-accent-500 text-white dark:text-primary-900 rounded-lg font-medium hover:bg-[#2a3d26ff] dark:hover:bg-accent-600 transition-all text-sm cursor-pointer flex items-center gap-2"
                                     >
-                                      ✍️ Soumettre Feedback
+                                      <Edit className="w-4 h-4" />
+                                      Soumettre Feedback
                                     </button>
                                   )}
                                 </div>
@@ -946,13 +962,14 @@ export default function CandidateProfilePage() {
                         </div>
                       ) : (
                         <div className="text-center py-12">
-                          <div className="text-6xl mb-4">📅</div>
+                          <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-400 dark:text-gray-500" />
                           <p className="text-gray-500 dark:text-gray-400 mb-4">Aucun entretien planifié pour ce candidat</p>
                           <button
                             onClick={() => setShowInterviewScheduler(true)}
-                            className="px-6 py-3 bg-[#3b5335ff] dark:bg-accent-500 text-white dark:text-primary-900 rounded-lg font-bold hover:bg-[#2a3d26ff] dark:hover:bg-accent-600 transition-all cursor-pointer"
+                            className="px-6 py-3 bg-[#3b5335ff] dark:bg-accent-500 text-white dark:text-primary-900 rounded-lg font-bold hover:bg-[#2a3d26ff] dark:hover:bg-accent-600 transition-all cursor-pointer flex items-center gap-2 mx-auto"
                           >
-                            📅 Planifier un Entretien
+                            <Calendar className="w-5 h-5" />
+                            Planifier un Entretien
                           </button>
                         </div>
                       )}
@@ -1013,19 +1030,23 @@ export default function CandidateProfilePage() {
                     <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-accent-500 mb-6">Historique d'Activité</h2>
                     {candidate.activities && candidate.activities.length > 0 ? (
                       <div className="space-y-4">
-                        {[...candidate.activities].reverse().map((activity) => (
+                        {[...candidate.activities].reverse().map((activity) => {
+                          const ActivityIcon =
+                            activity.type === 'status_change' ? RefreshCw :
+                            activity.type === 'note_added' ? StickyNote :
+                            activity.type === 'profile_updated' ? Edit :
+                            activity.type === 'document_uploaded' ? FileText :
+                            activity.type === 'email_sent' ? Mail :
+                            activity.type === 'call_made' ? Phone :
+                            activity.type === 'interview_scheduled' ? Calendar :
+                            activity.type === 'application_submitted' ? Send :
+                            activity.type === 'quick_score_added' ? Star :
+                            Circle
+
+                          return (
                           <div key={activity.id} className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
                             <div className="flex-shrink-0 w-10 h-10 bg-[#3b5335ff] dark:bg-accent-500 rounded-full flex items-center justify-center text-white dark:text-primary-900">
-                              {activity.type === 'status_change' && '🔄'}
-                              {activity.type === 'note_added' && '📝'}
-                              {activity.type === 'profile_updated' && '✏️'}
-                              {activity.type === 'document_uploaded' && '📄'}
-                              {activity.type === 'email_sent' && '📧'}
-                              {activity.type === 'call_made' && '📞'}
-                              {activity.type === 'interview_scheduled' && '📅'}
-                              {activity.type === 'application_submitted' && '📨'}
-                              {activity.type === 'quick_score_added' && '⭐'}
-                              {!['status_change', 'note_added', 'profile_updated', 'document_uploaded', 'email_sent', 'call_made', 'interview_scheduled', 'application_submitted', 'quick_score_added'].includes(activity.type) && '•'}
+                              <ActivityIcon className="w-5 h-5" />
                             </div>
                             <div className="flex-1">
                               <p className="font-medium text-gray-900 dark:text-gray-100">{activity.description}</p>
@@ -1034,7 +1055,8 @@ export default function CandidateProfilePage() {
                               </p>
                             </div>
                           </div>
-                        ))}
+                          )
+                        })}
                       </div>
                     ) : (
                       <p className="text-gray-500 dark:text-gray-400">Aucune activité enregistrée</p>
@@ -1159,30 +1181,32 @@ export default function CandidateProfilePage() {
                         .map((interview) => (
                           <div key={interview.id} className="p-4 bg-gradient-to-r from-[#3b5335ff]/10 to-[#ffaf50ff]/10 dark:from-accent-500/10 dark:to-primary-900/10 rounded-lg border-l-4 border-[#ffaf50ff] dark:border-accent-500">
                             <div className="flex items-start justify-between mb-2">
-                              <span className="font-medium text-[#3b5335ff] dark:text-accent-500">
-                                {interview.type === 'phone' && '📞'}
-                                {interview.type === 'video' && '🎥'}
-                                {interview.type === 'in_person' && '🏢'}
-                                {interview.type === 'technical' && '💻'}
-                                {interview.type === 'hr' && '👔'}
-                                {' '}
+                              <span className="font-medium text-[#3b5335ff] dark:text-accent-500 flex items-center gap-2">
+                                {interview.type === 'phone' && <Phone className="w-4 h-4" />}
+                                {interview.type === 'video' && <Video className="w-4 h-4" />}
+                                {interview.type === 'in_person' && <Building2 className="w-4 h-4" />}
+                                {interview.type === 'technical' && <Laptop className="w-4 h-4" />}
+                                {interview.type === 'hr' && <UserCircle className="w-4 h-4" />}
                                 {interview.jobTitle || 'Entretien'}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-700 dark:text-gray-200 mb-1">
-                              📅 {formatDateTime(interview.scheduledDate)}
+                            <p className="text-sm text-gray-700 dark:text-gray-200 mb-1 flex items-center gap-1">
+                              <Calendar className="w-4 h-4" />
+                              {formatDateTime(interview.scheduledDate)}
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              ⏱️ {interview.duration} minutes
+                            <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                              <Clock className="w-4 h-4" />
+                              {interview.duration} minutes
                             </p>
                             {interview.meetingLink && (
                               <a
                                 href={interview.meetingLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline cursor-pointer mt-2 inline-block"
+                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline cursor-pointer mt-2 inline-flex items-center gap-1"
                               >
-                                🔗 Lien de visioconférence
+                                <LinkIcon className="w-3.5 h-3.5" />
+                                Lien de visioconférence
                               </a>
                             )}
                           </div>
