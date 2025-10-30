@@ -7,6 +7,30 @@ import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
 import {
+  Mail,
+  Phone,
+  Calendar,
+  Edit,
+  Check,
+  User,
+  Briefcase,
+  Star,
+  FileText,
+  BarChart3,
+  Clock,
+  MapPin,
+  Link as LinkIcon,
+  RefreshCw,
+  StickyNote,
+  Zap,
+  Save,
+  Video,
+  Building2,
+  MessageSquare,
+  Send,
+  Paperclip
+} from 'lucide-react'
+import {
   Candidate,
   CandidateStatus,
   CANDIDATE_STATUS_LABELS,
@@ -403,12 +427,14 @@ export default function CandidateProfilePage() {
                   <span className={`px-4 py-2 rounded-full text-sm font-medium border-2 ${getStatusColor(candidate.status)}`}>
                     {CANDIDATE_STATUS_LABELS[candidate.status]}
                   </span>
-                  <span className="text-white/70 dark:text-gray-300">
-                    📧 {candidate.email}
+                  <span className="text-white/70 dark:text-gray-300 flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    {candidate.email}
                   </span>
                   {candidate.phone && (
-                    <span className="text-white/70 dark:text-gray-300">
-                      📞 {candidate.phone}
+                    <span className="text-white/70 dark:text-gray-300 flex items-center gap-2">
+                      <Phone className="w-4 h-4" />
+                      {candidate.phone}
                     </span>
                   )}
                 </div>
@@ -419,19 +445,22 @@ export default function CandidateProfilePage() {
                   onClick={() => setShowQuickScoreForm(true)}
                   className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer dark:bg-accent-500 dark:text-primary-900"
                 >
-                  ⚡ Évaluation Rapide
+                  <Zap className="w-5 h-5" />
+                  Évaluation Rapide
                 </button>
                 <button
                   onClick={() => setShowInterviewScheduler(true)}
                   className="bg-white text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer dark:bg-gray-700 dark:text-accent-500"
                 >
-                  📅 Planifier Entretien
+                  <Calendar className="w-5 h-5" />
+                  Planifier Entretien
                 </button>
                 <button
                   onClick={() => setShowEmailComposer(true)}
                   className="bg-white text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer dark:bg-gray-700 dark:text-accent-500"
                 >
-                  📧 Envoyer Email
+                  <Mail className="w-5 h-5" />
+                  Envoyer Email
                 </button>
                 {!isEditing ? (
                   <button
@@ -448,7 +477,8 @@ export default function CandidateProfilePage() {
                     }}
                     className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all cursor-pointer dark:bg-accent-500 dark:text-primary-900"
                   >
-                    ✏️ Modifier
+                    <Edit className="w-5 h-5 inline mr-2" />
+                    Modifier
                   </button>
                 ) : (
                   <>
@@ -456,7 +486,8 @@ export default function CandidateProfilePage() {
                       onClick={handleUpdate}
                       className="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all cursor-pointer dark:bg-green-600 dark:hover:bg-green-700"
                     >
-                      ✓ Sauvegarder
+                      <Save className="w-5 h-5 inline mr-2" />
+                      Sauvegarder
                     </button>
                     <button
                       onClick={() => {
