@@ -135,7 +135,7 @@ export default function EditWorkflowPage() {
         testMode,
         trigger: {
           type: triggerType,
-          config: triggerConfig
+          ...triggerConfig
         },
         actions,
         schedule: hasSchedule ? {

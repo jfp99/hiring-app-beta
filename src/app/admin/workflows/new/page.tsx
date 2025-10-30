@@ -79,7 +79,7 @@ export default function NewWorkflowPage() {
         testMode,
         trigger: {
           type: triggerType,
-          config: triggerConfig
+          ...triggerConfig
         },
         actions,
         schedule: hasSchedule ? {
