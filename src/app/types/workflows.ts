@@ -351,7 +351,7 @@ export const DEFAULT_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     name: 'Email de Bienvenue',
     description: 'Envoyer automatiquement un email de bienvenue quand un candidat est contacté',
     category: 'onboarding',
-    icon: '👋',
+    icon: 'HandWaving',
     trigger: {
       type: WorkflowTriggerType.STATUS_CHANGED,
       toStatus: CandidateStatus.CONTACTED
@@ -371,7 +371,7 @@ export const DEFAULT_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     name: 'Rappel d\'Entretien',
     description: 'Envoyer un rappel 24h avant un entretien',
     category: 'interview',
-    icon: '🔔',
+    icon: 'Bell',
     trigger: {
       type: WorkflowTriggerType.INTERVIEW_SCHEDULED
     },
@@ -390,7 +390,7 @@ export const DEFAULT_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     name: 'Alerte Candidat Inactif',
     description: 'Notifier le recruteur si aucune activité depuis 7 jours',
     category: 'follow_up',
-    icon: '⏰',
+    icon: 'Clock',
     trigger: {
       type: WorkflowTriggerType.NO_ACTIVITY,
       daysElapsed: 7
@@ -412,7 +412,7 @@ export const DEFAULT_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     name: 'Candidat Haute Priorité',
     description: 'Marquer comme prioritaire les candidats avec score > 4.5',
     category: 'engagement',
-    icon: '⭐',
+    icon: 'Star',
     trigger: {
       type: WorkflowTriggerType.SCORE_THRESHOLD,
       minScore: 4.5
@@ -434,7 +434,7 @@ export const DEFAULT_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     name: 'Alerte SLA',
     description: 'Notifier si un candidat reste trop longtemps dans une étape',
     category: 'follow_up',
-    icon: '⚠️',
+    icon: 'AlertTriangle',
     trigger: {
       type: WorkflowTriggerType.DAYS_IN_STAGE,
       daysInStage: 7

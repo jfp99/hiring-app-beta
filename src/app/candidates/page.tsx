@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Search, UserPlus, Filter, X } from 'lucide-react'
+import { Search, UserPlus, Filter, X, LayoutGrid, List, CheckCircle2, Check } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   Candidate,
@@ -364,7 +364,7 @@ export default function CandidatesPage() {
   }
 
   const handleBulkDelete = () => {
-    if (confirm(`⚠️ ATTENTION: Supprimer définitivement ${selectedCandidates.length} candidat(s)? Cette action est irréversible!`)) {
+    if (confirm(`ATTENTION: Supprimer définitivement ${selectedCandidates.length} candidat(s)? Cette action est irréversible!`)) {
       if (confirm('Êtes-vous vraiment sûr? Cette action ne peut pas être annulée.')) {
         handleBulkAction('delete')
       }
@@ -410,7 +410,7 @@ export default function CandidatesPage() {
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <span>📊</span>
+                      <LayoutGrid className="w-5 h-5" />
                       <span className="hidden sm:inline">Kanban</span>
                     </span>
                   </button>
@@ -423,7 +423,7 @@ export default function CandidatesPage() {
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <span>📋</span>
+                      <List className="w-5 h-5" />
                       <span className="hidden sm:inline">Liste</span>
                     </span>
                   </button>
@@ -487,7 +487,7 @@ export default function CandidatesPage() {
                       {candidates.filter(c => c.status === CandidateStatus.HIRED).length}
                     </p>
                   </div>
-                  <span className="text-2xl">✅</span>
+                  <CheckCircle2 className="w-8 h-8 text-white" />
                 </div>
               </div>
             </div>
@@ -586,7 +586,7 @@ export default function CandidatesPage() {
                     >
                       <span className="truncate">{CANDIDATE_STATUS_LABELS[status]}</span>
                       {statusFilter.includes(status) && (
-                        <span className="text-xs ml-1">✓</span>
+                        <Check className="w-3.5 h-3.5 ml-1" />
                       )}
                     </button>
                   ))}
@@ -609,7 +609,7 @@ export default function CandidatesPage() {
                     >
                       <span className="truncate">{EXPERIENCE_LEVEL_LABELS[level]}</span>
                       {experienceFilter.includes(level) && (
-                        <span className="text-xs ml-1">✓</span>
+                        <Check className="w-3.5 h-3.5 ml-1" />
                       )}
                     </button>
                   ))}

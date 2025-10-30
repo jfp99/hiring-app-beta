@@ -30,13 +30,13 @@ import {
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
+import { WorkflowActionIcon } from '@/app/components/WorkflowActionIcon'
 import {
   Workflow,
   WorkflowTemplate,
   DEFAULT_WORKFLOW_TEMPLATES,
   getWorkflowTriggerLabel,
-  getWorkflowActionLabel,
-  getWorkflowActionIcon
+  getWorkflowActionLabel
 } from '@/app/types/workflows'
 
 interface FilterState {
@@ -540,7 +540,7 @@ export default function WorkflowsPage() {
                                     key={idx}
                                     className="px-3 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs flex items-center gap-1"
                                   >
-                                    <span>{getWorkflowActionIcon(action.type)}</span>
+                                    <WorkflowActionIcon type={action.type} className="w-3.5 h-3.5" />
                                     <span>{getWorkflowActionLabel(action.type)}</span>
                                   </span>
                                 ))}

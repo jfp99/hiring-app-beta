@@ -24,8 +24,7 @@ import {
   WorkflowActionType,
   WorkflowAction,
   getWorkflowTriggerLabel,
-  getWorkflowActionLabel,
-  getWorkflowActionIcon
+  getWorkflowActionLabel
 } from '@/app/types/workflows'
 
 export default function EditWorkflowPage() {
