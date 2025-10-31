@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { AlertTriangle, Save, Search, BarChart3, Briefcase, Wrench, Tag } from 'lucide-react'
 import { SavedFilter, SavedFiltersManager } from '@/app/types/savedFilters'
 
 interface SaveFilterModalProps {
@@ -57,7 +58,7 @@ export default function SaveFilterModal({
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
         <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
           <div className="text-center">
-            <span className="text-4xl">⚠️</span>
+            <AlertTriangle className="w-16 h-16 mx-auto text-orange-500" />
             <h2 className="text-xl font-bold text-[#3b5335ff] mt-4 mb-2">
               Aucun Filtre Actif
             </h2>
@@ -83,7 +84,10 @@ export default function SaveFilterModal({
         <div className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-2xl font-bold mb-2">💾 Sauvegarder le Filtre</h2>
+              <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+                <Save className="w-6 h-6" />
+                Sauvegarder le Filtre
+              </h2>
               <p className="text-white/90 text-sm">
                 Donnez un nom à cette combinaison de filtres pour y accéder rapidement plus tard
               </p>
@@ -132,7 +136,7 @@ export default function SaveFilterModal({
             <div className="space-y-2 text-sm">
               {filterData.searchTerm && (
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-600">🔍</span>
+                  <Search className="w-4 h-4 text-gray-600 mt-0.5" />
                   <div>
                     <span className="font-medium text-gray-700">Recherche:</span>{' '}
                     <span className="text-gray-600">{filterData.searchTerm}</span>
@@ -142,7 +146,7 @@ export default function SaveFilterModal({
 
               {filterData.statusFilter && filterData.statusFilter.length > 0 && (
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-600">📊</span>
+                  <BarChart3 className="w-4 h-4 text-gray-600 mt-0.5" />
                   <div>
                     <span className="font-medium text-gray-700">Statuts:</span>{' '}
                     <span className="text-gray-600">{filterData.statusFilter.length} sélectionné(s)</span>
@@ -152,7 +156,7 @@ export default function SaveFilterModal({
 
               {filterData.experienceFilter && filterData.experienceFilter.length > 0 && (
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-600">💼</span>
+                  <Briefcase className="w-4 h-4 text-gray-600 mt-0.5" />
                   <div>
                     <span className="font-medium text-gray-700">Niveaux d'expérience:</span>{' '}
                     <span className="text-gray-600">{filterData.experienceFilter.length} sélectionné(s)</span>
@@ -162,7 +166,7 @@ export default function SaveFilterModal({
 
               {filterData.skillsFilter && (
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-600">🔧</span>
+                  <Wrench className="w-4 h-4 text-gray-600 mt-0.5" />
                   <div>
                     <span className="font-medium text-gray-700">Compétences:</span>{' '}
                     <span className="text-gray-600">{filterData.skillsFilter}</span>
@@ -172,7 +176,7 @@ export default function SaveFilterModal({
 
               {filterData.selectedTags && filterData.selectedTags.length > 0 && (
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-600">🏷️</span>
+                  <Tag className="w-4 h-4 text-gray-600 mt-0.5" />
                   <div>
                     <span className="font-medium text-gray-700">Tags:</span>{' '}
                     <span className="text-gray-600">{filterData.selectedTags.join(', ')}</span>
@@ -195,9 +199,16 @@ export default function SaveFilterModal({
             <button
               type="submit"
               disabled={saving || !filterName.trim()}
-              className="flex-1 px-6 py-3 bg-[#3b5335ff] text-white rounded-lg font-bold hover:bg-[#2a3d26ff] transition-all disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-[#3b5335ff] text-white rounded-lg font-bold hover:bg-[#2a3d26ff] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+              {saving ? (
+                'Sauvegarde...'
+              ) : (
+                <>
+                  <Save className="w-5 h-5" />
+                  Sauvegarder
+                </>
+              )}
             </button>
           </div>
         </form>

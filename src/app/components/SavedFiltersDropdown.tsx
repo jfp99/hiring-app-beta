@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import { Save, Inbox, Search, BarChart3, Briefcase, Wrench, Tag } from 'lucide-react'
 import { SavedFilter, SavedFiltersManager } from '@/app/types/savedFilters'
 
 interface SavedFiltersDropdownProps {
@@ -121,7 +122,7 @@ export default function SavedFiltersDropdown({
               }}
               className="w-full px-4 py-2.5 bg-[#ffaf50ff] text-[#3b5335ff] rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
             >
-              <span>💾</span>
+              <Save className="w-5 h-5" />
               <span>Sauvegarder les Filtres Actuels</span>
             </button>
           </div>
@@ -130,7 +131,7 @@ export default function SavedFiltersDropdown({
           <div className="max-h-96 overflow-y-auto">
             {savedFilters.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
-                <div className="text-4xl mb-2">📭</div>
+                <Inbox className="w-16 h-16 mx-auto mb-2" />
                 <p className="font-medium mb-1">Aucun filtre sauvegardé</p>
                 <p className="text-sm">
                   Appliquez des filtres puis cliquez sur "Sauvegarder" pour les retrouver rapidement
@@ -156,27 +157,32 @@ export default function SavedFiltersDropdown({
                         <div className="flex flex-wrap gap-2 text-xs text-gray-600 mb-2">
                           {filter.searchTerm && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
-                              🔍 Recherche
+                              <Search className="w-3 h-3" />
+                              Recherche
                             </span>
                           )}
                           {filter.statusFilter && filter.statusFilter.length > 0 && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded">
-                              📊 {filter.statusFilter.length} statut(s)
+                              <BarChart3 className="w-3 h-3" />
+                              {filter.statusFilter.length} statut(s)
                             </span>
                           )}
                           {filter.experienceFilter && filter.experienceFilter.length > 0 && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded">
-                              💼 {filter.experienceFilter.length} niveau(x)
+                              <Briefcase className="w-3 h-3" />
+                              {filter.experienceFilter.length} niveau(x)
                             </span>
                           )}
                           {filter.skillsFilter && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded">
-                              🔧 Compétences
+                              <Wrench className="w-3 h-3" />
+                              Compétences
                             </span>
                           )}
                           {filter.selectedTags && filter.selectedTags.length > 0 && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-pink-100 text-pink-700 rounded">
-                              🏷️ {filter.selectedTags.length} tag(s)
+                              <Tag className="w-3 h-3" />
+                              {filter.selectedTags.length} tag(s)
                             </span>
                           )}
                         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { CheckCircle, BarChart3, Tag, Archive, Trash2 } from 'lucide-react'
 import { CandidateStatus, CANDIDATE_STATUS_LABELS } from '@/app/types/candidates'
 import { PREDEFINED_TAGS } from '@/app/types/tags'
 
@@ -55,7 +56,7 @@ export default function BulkActionsToolbar({
           {/* Selection Info */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">✓</span>
+              <CheckCircle className="w-8 h-8" />
               <div>
                 <p className="font-bold text-lg">
                   {selectedCount} candidat{selectedCount > 1 ? 's' : ''} sélectionné{selectedCount > 1 ? 's' : ''}
@@ -82,7 +83,7 @@ export default function BulkActionsToolbar({
                 }}
                 className="px-4 py-2.5 bg-[#ffaf50ff] text-[#3b5335ff] rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
               >
-                <span>📊</span>
+                <BarChart3 className="w-5 h-5" />
                 <span>Changer le Statut</span>
                 <svg className={`w-4 h-4 transition-transform ${showStatusMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -118,7 +119,7 @@ export default function BulkActionsToolbar({
                 }}
                 className="px-4 py-2.5 bg-[#ffaf50ff] text-[#3b5335ff] rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2"
               >
-                <span>🏷️</span>
+                <Tag className="w-5 h-5" />
                 <span>Ajouter des Tags</span>
                 <svg className={`w-4 h-4 transition-transform ${showTagsMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -173,7 +174,7 @@ export default function BulkActionsToolbar({
               className="px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-bold transition-all flex items-center gap-2"
               title="Archiver les candidats sélectionnés"
             >
-              <span>📦</span>
+              <Archive className="w-5 h-5" />
               <span>Archiver</span>
             </button>
 
@@ -183,7 +184,7 @@ export default function BulkActionsToolbar({
               className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all flex items-center gap-2"
               title="Supprimer définitivement les candidats sélectionnés"
             >
-              <span>🗑️</span>
+              <Trash2 className="w-5 h-5" />
               <span>Supprimer</span>
             </button>
           </div>

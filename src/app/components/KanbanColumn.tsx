@@ -2,6 +2,7 @@
 'use client'
 
 import React from 'react'
+import { ClipboardList } from 'lucide-react'
 import { Candidate, CandidateStatus, CANDIDATE_STATUS_LABELS } from '@/app/types/candidates'
 import CandidateCard from './CandidateCard'
 
@@ -113,7 +114,7 @@ export default function KanbanColumn({
 
         {candidates.length === 0 ? (
           <div className="text-center text-gray-400 py-12 border-2 border-dashed border-gray-300 rounded-lg bg-white/50">
-            <div className="text-3xl mb-2">📋</div>
+            <ClipboardList className="w-12 h-12 mx-auto mb-2" />
             <p className="text-sm font-medium">Aucun candidat</p>
             <p className="text-xs mt-1">Glissez-déposez un candidat ici</p>
           </div>
