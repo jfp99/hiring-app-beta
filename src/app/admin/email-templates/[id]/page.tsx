@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { Eye, EyeOff, Check, Lightbulb } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -287,9 +288,19 @@ export default function EditEmailTemplatePage() {
                       <button
                         type="button"
                         onClick={() => setShowPreview(!showPreview)}
-                        className="text-sm text-blue-600 hover:text-blue-700"
+                        className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
                       >
-                        {showPreview ? '👁️ Masquer' : '👁️ Prévisualiser'}
+                        {showPreview ? (
+                          <>
+                            <EyeOff className="w-4 h-4" />
+                            Masquer
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="w-4 h-4" />
+                            Prévisualiser
+                          </>
+                        )}
                       </button>
                     </div>
                     <input
@@ -352,9 +363,16 @@ export default function EditEmailTemplatePage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="flex-1 bg-[#3b5335ff] text-white py-3 rounded-lg font-bold hover:bg-[#2a3d26ff] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 bg-[#3b5335ff] text-white py-3 rounded-lg font-bold hover:bg-[#2a3d26ff] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                      {saving ? 'Sauvegarde en cours...' : '✓ Sauvegarder les Modifications'}
+                      {saving ? (
+                        'Sauvegarde en cours...'
+                      ) : (
+                        <>
+                          <Check className="w-5 h-5" />
+                          Sauvegarder les Modifications
+                        </>
+                      )}
                     </button>
                     <Link
                       href="/admin/email-templates"
@@ -397,7 +415,10 @@ export default function EditEmailTemplatePage() {
                 </div>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-900 mb-2">💡 Astuce</h4>
+                  <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5" />
+                    Astuce
+                  </h4>
                   <p className="text-sm text-blue-800">
                     Les variables sont automatiquement remplacées par les données réelles lors de l'envoi de l&apos;email.
                   </p>

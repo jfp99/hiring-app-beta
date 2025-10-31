@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Target, Calendar, Clock, TrendingUp, Users, PartyPopper } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -241,7 +242,7 @@ export default function AnalyticsPage() {
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Candidats</h3>
-                  <span className="text-2xl">👥</span>
+                  <Users className="w-8 h-8 text-blue-500" />
                 </div>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white">{totalCandidates}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Dans la période sélectionnée</p>
@@ -251,7 +252,7 @@ export default function AnalyticsPage() {
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Candidats Actifs</h3>
-                  <span className="text-2xl">🎯</span>
+                  <Target className="w-8 h-8 text-green-500" />
                 </div>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white">{activeCandidates}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">En cours de traitement</p>
@@ -261,7 +262,7 @@ export default function AnalyticsPage() {
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Entretiens</h3>
-                  <span className="text-2xl">📅</span>
+                  <Calendar className="w-8 h-8 text-yellow-500" />
                 </div>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white">{interviewsScheduled}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Candidats avec entretiens</p>
@@ -271,7 +272,7 @@ export default function AnalyticsPage() {
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Embauchés</h3>
-                  <span className="text-2xl">🎉</span>
+                  <PartyPopper className="w-8 h-8 text-purple-500" />
                 </div>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white">{hiredCount}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -418,8 +419,8 @@ export default function AnalyticsPage() {
               {/* Average Time to Hire */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-2xl">
-                    ⏱️
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Temps Moyen d&apos;Embauche</h3>
@@ -434,8 +435,8 @@ export default function AnalyticsPage() {
               {/* Success Rate */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center text-2xl">
-                    📈
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Taux de Réussite</h3>
@@ -450,8 +451,8 @@ export default function AnalyticsPage() {
               {/* Interview-to-Hire Ratio */}
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-2xl">
-                    🎯
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                    <Target className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Taux Entretien → Embauche</h3>

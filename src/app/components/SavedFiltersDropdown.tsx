@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-import { Save, Inbox, Search, BarChart3, Briefcase, Wrench, Tag } from 'lucide-react'
+import { Save, Inbox, Search, BarChart3, Briefcase, Wrench, Tag, Bookmark } from 'lucide-react'
 import { SavedFilter, SavedFiltersManager } from '@/app/types/savedFilters'
 
 interface SavedFiltersDropdownProps {
@@ -82,7 +82,7 @@ export default function SavedFiltersDropdown({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 border-[#3b5335ff] text-[#3b5335ff] rounded-lg font-semibold hover:bg-[#3b5335ff] hover:text-white transition-all"
       >
-        <span>🔖</span>
+        <Bookmark className="w-5 h-5" />
         <span>Filtres Sauvegardés</span>
         {savedFilters.length > 0 && (
           <span className="px-2 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] rounded-full text-xs font-bold">
@@ -105,7 +105,7 @@ export default function SavedFiltersDropdown({
           {/* Header */}
           <div className="bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] text-white p-4">
             <h3 className="font-bold text-lg flex items-center gap-2">
-              <span>🔖</span>
+              <Bookmark className="w-5 h-5" />
               Mes Filtres Sauvegardés
             </h3>
             <p className="text-sm text-white/80 mt-1">

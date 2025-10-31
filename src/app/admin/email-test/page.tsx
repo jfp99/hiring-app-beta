@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { Check, AlertTriangle, X, Mail, CheckCircle, XCircle } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
@@ -143,8 +144,19 @@ export default function EmailTestPage() {
                       ? 'bg-yellow-100 text-yellow-800'
                       : 'bg-red-100 text-red-800 dark:text-red-300'
                   }`}>
-                    {emailStatus.status === 'configured' ? '✓ Configuré' :
-                     emailStatus.status === 'mock' ? '⚠️ Mode Test' : '✗ Non Configuré'}
+                    {emailStatus.status === 'configured' ? (
+                      <span className="flex items-center gap-1">
+                        <Check className="w-4 h-4" /> Configuré
+                      </span>
+                    ) : emailStatus.status === 'mock' ? (
+                      <span className="flex items-center gap-1">
+                        <AlertTriangle className="w-4 h-4" /> Mode Test
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1">
+                        <X className="w-4 h-4" /> Non Configuré
+                      </span>
+                    )}
                   </span>
                 </div>
 
@@ -161,7 +173,7 @@ export default function EmailTestPage() {
                       ? 'bg-green-100 text-green-800 dark:text-green-300'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                   }`}>
-                    {emailStatus.details.sendgrid ? '✓' : '—'}
+                    {emailStatus.details.sendgrid ? <Check className="w-4 h-4" /> : '—'}
                   </span>
                 </div>
 
@@ -178,7 +190,7 @@ export default function EmailTestPage() {
                       ? 'bg-green-100 text-green-800 dark:text-green-300'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                   }`}>
-                    {emailStatus.details.smtp ? '✓' : '—'}
+                    {emailStatus.details.smtp ? <Check className="w-4 h-4" /> : '—'}
                   </span>
                 </div>
 
@@ -198,7 +210,7 @@ export default function EmailTestPage() {
               {emailStatus.status === 'mock' && (
                 <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl">⚠️</span>
+                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
                     <div>
                       <p className="font-semibold text-yellow-800 mb-1">Mode Test Actif</p>
                       <p className="text-sm text-yellow-700">
@@ -245,7 +257,8 @@ export default function EmailTestPage() {
                     </>
                   ) : (
                     <>
-                      📧 Envoyer Email de Test
+                      <Mail className="w-5 h-5" />
+                      Envoyer Email de Test
                     </>
                   )}
                 </button>
@@ -259,7 +272,11 @@ export default function EmailTestPage() {
                     : 'bg-red-50 border-red-200 dark:border-red-800'
                 }`}>
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl">{result.success ? '✅' : '❌'}</span>
+                    {result.success ? (
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    ) : (
+                      <XCircle className="w-6 h-6 text-red-600" />
+                    )}
                     <div className="flex-1">
                       <p className={`font-semibold mb-1 ${
                         result.success ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'

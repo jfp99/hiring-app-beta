@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Search, UserPlus, Filter, X, LayoutGrid, List, CheckCircle2, Check } from 'lucide-react'
+import { Search, UserPlus, Filter, X, LayoutGrid, List, CheckCircle2, Check, Sparkles, Clock } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   Candidate,
@@ -461,7 +461,7 @@ export default function CandidatesPage() {
                       {candidates.filter(c => c.status === CandidateStatus.NEW).length}
                     </p>
                   </div>
-                  <span className="text-2xl">🆕</span>
+                  <Sparkles className="w-8 h-8 text-yellow-300" />
                 </div>
               </div>
 
@@ -475,7 +475,7 @@ export default function CandidatesPage() {
                       ).length}
                     </p>
                   </div>
-                  <span className="text-2xl">⏳</span>
+                  <Clock className="w-8 h-8 text-blue-300" />
                 </div>
               </div>
 
