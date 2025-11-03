@@ -99,3 +99,5 @@ browser-extension/
 *.docx
 *.pdf
 !public/**/*.pdf
+
+.vercel

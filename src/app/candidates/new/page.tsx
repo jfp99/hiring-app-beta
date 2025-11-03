@@ -4,16 +4,18 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { User, Mail, Phone, Briefcase, Building2, Linkedin } from 'lucide-react'
+import { User, Mail, Phone, Briefcase, Building2, Linkedin, AlertCircle } from 'lucide-react'
 import AdminHeader from '@/app/components/AdminHeader'
 import Footer from '@/app/components/Footer'
 import AdminGuard from '@/app/components/AdminGuard'
 import ResumeUploader from '@/app/components/ResumeUploader'
+import LinkedInImporter from '@/app/components/LinkedInImporter'
 import CustomFieldInput from '@/app/components/CustomFieldInput'
 import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
 import { CandidateStatus, ExperienceLevel } from '@/app/types/candidates'
 import { CustomFieldDefinition, validateFieldValue } from '@/app/types/customFields'
+import { FormDataFromLinkedIn } from '@/app/lib/linkedin-helpers'
 
 interface FormData {
   firstName: string
@@ -48,6 +50,7 @@ export default function NewCandidatePage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showResumeUploader, setShowResumeUploader] = useState(true)
+  const [linkedInWarnings, setLinkedInWarnings] = useState<string[]>([])
   const [newSkill, setNewSkill] = useState('')
 
   // Custom fields
@@ -109,6 +112,21 @@ export default function NewCandidatePage() {
     setShowResumeUploader(false)
   }
 
+  const handleLinkedInImport = (data: FormDataFromLinkedIn, warnings: string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      firstName: data.firstName || prev.firstName,
+      lastName: data.lastName || prev.lastName,
+      currentPosition: data.currentPosition || prev.currentPosition,
+      currentCompany: data.currentCompany || prev.currentCompany,
+      linkedIn: data.linkedinUrl || prev.linkedIn,
+      summary: data.summary || prev.summary,
+      source: data.source
+    }))
+    setLinkedInWarnings(warnings)
+    setShowResumeUploader(false)
+  }
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -153,6 +171,7 @@ export default function NewCandidatePage() {
       })
       setCustomFieldValues({})
       setShowResumeUploader(true)
+      setLinkedInWarnings([])
       setError('')
     }
   }
@@ -322,6 +341,11 @@ export default function NewCandidatePage() {
                     </div>
                   </div>
                 </div>
+
+                {/* LinkedIn Importer */}
+                <div className="mt-6">
+                  <LinkedInImporter onImported={handleLinkedInImport} />
+                </div>
               </div>
 
               {/* Form - Right Column */}
@@ -353,6 +377,25 @@ export default function NewCandidatePage() {
                       <div className="flex-1">
                         <p className="font-semibold text-red-800 dark:text-red-300 mb-1">Erreur</p>
                         <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* LinkedIn Import Warnings */}
+                  {linkedInWarnings.length > 0 && (
+                    <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="font-semibold text-amber-800 dark:text-amber-300 mb-2">
+                            Données LinkedIn incomplètes
+                          </p>
+                          <ul className="text-sm text-amber-700 dark:text-amber-300 space-y-1">
+                            {linkedInWarnings.map((warning, idx) => (
+                              <li key={idx}>• {warning}</li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   )}

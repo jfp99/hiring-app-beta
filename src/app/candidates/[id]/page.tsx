@@ -1,7 +1,7 @@
 // src/app/candidates/[id]/page.tsx
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
@@ -60,6 +60,8 @@ import CommentThread from '@/app/components/CommentThread'
 import CustomFieldDisplay from '@/app/components/CustomFieldDisplay'
 import { Comment } from '@/app/types/comments'
 import { CustomFieldDefinition } from '@/app/types/customFields'
+import { LinkedInData } from '@/app/types/linkedin'
+import LinkedInSection from '@/app/components/candidates/LinkedInSection'
 
 export default function CandidateProfilePage() {
   const params = useParams()
@@ -105,6 +107,11 @@ export default function CandidateProfilePage() {
   // Quick Score
   const [showQuickScoreForm, setShowQuickScoreForm] = useState(false)
 
+  // Delete confirmation
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const deleteDialogRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     fetchCandidate()
   }, [candidateId])
@@ -130,6 +137,39 @@ export default function CandidateProfilePage() {
     }
     fetchCustomFields()
   }, [])
+
+  // Focus management and keyboard trap for delete dialog
+  useEffect(() => {
+    if (showDeleteConfirm && deleteDialogRef.current) {
+      // Focus the first button when dialog opens
+      const firstFocusable = deleteDialogRef.current.querySelector('button:not([disabled])')
+      if (firstFocusable instanceof HTMLElement) {
+        firstFocusable.focus()
+      }
+
+      // Trap focus inside dialog
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Tab') {
+          const focusableElements = deleteDialogRef.current?.querySelectorAll(
+            'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+          const firstElement = focusableElements?.[0] as HTMLElement
+          const lastElement = focusableElements?.[focusableElements.length - 1] as HTMLElement
+
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement?.focus()
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement?.focus()
+          }
+        }
+      }
+
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [showDeleteConfirm])
 
   const fetchCandidate = async () => {
     try {
@@ -256,6 +296,57 @@ export default function CandidateProfilePage() {
       toast.error('Erreur lors de la mise à jour du profil', {
         description: err.message
       })
+    }
+  }
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/candidates/${candidateId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        // Handle specific error codes
+        if (response.status === 401) {
+          throw new Error('Session expirée. Veuillez vous reconnecter.')
+        }
+        if (response.status === 403) {
+          throw new Error('Vous n\'avez pas la permission de supprimer ce candidat.')
+        }
+        if (response.status === 404) {
+          throw new Error('Candidat introuvable.')
+        }
+        throw new Error(data.error || 'Erreur lors de la suppression du candidat')
+      }
+
+      toast.success('Candidat supprimé', {
+        description: 'Le candidat a été archivé avec succès'
+      })
+
+      // Redirect to candidates list after successful deletion
+      router.push('/candidates')
+    } catch (err: any) {
+      console.error('Delete error:', err)
+
+      // Handle network errors
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        toast.error('Erreur de connexion', {
+          description: 'Vérifiez votre connexion internet et réessayez.'
+        })
+      } else {
+        toast.error('Erreur lors de la suppression', {
+          description: err.message || 'Une erreur inattendue s\'est produite'
+        })
+      }
+      setIsDeleting(false)
+      // Keep dialog open to allow retry
     }
   }
 
@@ -465,6 +556,16 @@ export default function CandidateProfilePage() {
                   <Mail className="w-5 h-5" />
                   Envoyer Email
                 </button>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="bg-red-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-600 hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer dark:bg-red-600 dark:hover:bg-red-700"
+                  aria-label="Supprimer le candidat"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Supprimer
+                </button>
                 {!isEditing ? (
                   <button
                     onClick={() => {
@@ -662,6 +763,37 @@ export default function CandidateProfilePage() {
                         </div>
                       )}
                     </div>
+
+                    {/* LinkedIn Profile */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+                      <LinkedInSection
+                        candidateId={candidateId}
+                        candidateName={`${candidate.firstName} ${candidate.lastName}`}
+                        linkedinData={candidate.linkedinData}
+                        onUpdate={async (data) => {
+                          try {
+                            const response = await fetch(`/api/candidates/${candidateId}`, {
+                              method: 'PUT',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                linkedinData: { ...candidate.linkedinData, ...data }
+                              })
+                            })
+
+                            if (!response.ok) {
+                              throw new Error('Failed to update LinkedIn data')
+                            }
+
+                            await fetchCandidate()
+                            toast.success('LinkedIn profile updated successfully')
+                          } catch (error) {
+                            console.error('Error updating LinkedIn data:', error)
+                            toast.error('Failed to update LinkedIn profile')
+                          }
+                        }}
+                      />
+                    </div>
+
 
                     {/* Skills */}
                     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
@@ -1275,6 +1407,84 @@ export default function CandidateProfilePage() {
             onSubmit={handleQuickScoreSubmit}
             onClose={() => setShowQuickScoreForm(false)}
           />
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        {showDeleteConfirm && (
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+            aria-describedby="delete-dialog-description"
+            onClick={(e) => {
+              // Close on backdrop click
+              if (e.target === e.currentTarget && !isDeleting) {
+                setShowDeleteConfirm(false)
+              }
+            }}
+            onKeyDown={(e) => {
+              // Close on ESC key
+              if (e.key === 'Escape' && !isDeleting) {
+                setShowDeleteConfirm(false)
+              }
+            }}
+          >
+            <div ref={deleteDialogRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center"
+                  aria-hidden="true"
+                >
+                  <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 id="delete-dialog-title" className="text-xl font-bold text-gray-900 dark:text-white">
+                  Confirmer la suppression
+                </h3>
+              </div>
+
+              <p id="delete-dialog-description" className="text-gray-600 dark:text-gray-300 mb-6">
+                Êtes-vous sûr de vouloir supprimer le candidat <strong>{candidate.firstName} {candidate.lastName}</strong> ?
+                Cette action archivera le candidat. Le profil sera marqué comme inactif et pourra être restauré par un administrateur si nécessaire.
+              </p>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  className="px-6 py-3 rounded-lg font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                  aria-label="Annuler la suppression"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="px-6 py-3 rounded-lg font-medium text-white bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  aria-label={isDeleting ? 'Suppression en cours' : 'Confirmer la suppression'}
+                >
+                  {isDeleting ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                      </svg>
+                      Suppression...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Supprimer
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </AdminGuard>
