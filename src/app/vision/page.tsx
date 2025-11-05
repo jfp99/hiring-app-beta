@@ -60,7 +60,7 @@ export default function Vision() {
       <Header />
 
       {/* Spacer between header and hero */}
-      <div className="h-8 bg-cream-100 dark:bg-gray-800"></div>
+      <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
@@ -722,7 +722,7 @@ export default function Vision() {
       </div>
 
       {/* Spacer between last section and footer */}
-      <div className="h-8 bg-cream-100 dark:bg-gray-800"></div>
+      <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>
 
       <Footer />
     </div>
