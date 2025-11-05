@@ -4,7 +4,7 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SectionHeaderBadge, CheckCircleIcon, UsersIcon, TargetIcon, StarIcon, ChatIcon, BuildingIcon, BriefcaseIcon } from '../components/ui/SectionHeaderBadge'
 
 const recruteurs = [
@@ -35,10 +35,18 @@ const recruteurs = [
 export default function Vision() {
   const [activeTab, setActiveTab] = useState('approche')
   const [isVisible, setIsVisible] = useState(false)
+  const tabsRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
+
+  const scrollToTabs = (tabId: string) => {
+    setActiveTab(tabId)
+    setTimeout(() => {
+      tabsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
 
   const tabs = [
     { id: 'approche', label: 'Notre Approche' },
@@ -87,7 +95,7 @@ export default function Vision() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => setActiveTab('approche')}
+                  onClick={() => scrollToTabs('approche')}
                   className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
@@ -100,7 +108,7 @@ export default function Vision() {
                 </button>
 
                 <button
-                  onClick={() => setActiveTab('equipe')}
+                  onClick={() => scrollToTabs('equipe')}
                   className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="flex items-center justify-center gap-2">
@@ -149,7 +157,7 @@ export default function Vision() {
       </section>
 
       {/* Modern Underline Tab Navigation */}
-      <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
+      <section ref={tabsRef} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-2 sm:gap-4 md:gap-8 min-w-max sm:min-w-0 sm:justify-center py-4">
