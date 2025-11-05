@@ -165,7 +165,7 @@ export default function Vision() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative px-4 py-3 font-bold text-sm sm:text-base whitespace-nowrap transition-all duration-300 ${
+                  className={`relative px-4 py-3 font-bold text-sm sm:text-base whitespace-nowrap transition-all duration-300 cursor-pointer ${
                     activeTab === tab.id
                       ? 'text-primary-700 dark:text-accent-500'
                       : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-accent-400'
