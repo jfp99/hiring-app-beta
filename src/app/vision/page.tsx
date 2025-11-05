@@ -470,13 +470,13 @@ export default function Vision() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <SectionHeaderBadge variant="accent" icon={<UsersIcon />}>
-                  Équipe Experte
+                  Team Hi-ring
                 </SectionHeaderBadge>
                 <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
-                  Notre Équipe de Choc
+                  Nos profils
                 </h2>
                 <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                  Des spécialistes passionnés qui mettent leur énergie au service de votre succès
+                  Des spécialistes passionnés qui mettent leur énergie au service de votre recrutement
                 </p>
               </div>
 
