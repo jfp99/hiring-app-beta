@@ -123,108 +123,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Section avec Images */}
-      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
-              Nos Services
-            </SectionHeaderBadge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
-              Notre Accompagnement
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Une collaboration flexible et sur mesure, conçue pour s'adapter à vos objectifs et à vos priorités
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            {[
-              {
-                title: 'Recrutements en CDI',
-                description: 'Pour renforcer durablement vos équipes avec des talents qualifiés et alignés sur vos valeurs',
-                features: ['Profils qualifiés', 'Approche personnalisée', 'Suivi post-placement', 'Garantie période d\'essai'],
-                image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=400&fit=crop',
-                color: 'from-primary-500 to-primary-600',
-                slug: 'cdi'
-              },
-              {
-                title: 'Missions Freelance',
-                description: 'Pour répondre à vos besoins ponctuels avec des profils spécialistes disponibles rapidement',
-                features: ['Disponibilité rapide', 'Spécialistes qualifiés', 'Flexibilité', 'Gestion administrative'],
-                image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
-                color: 'from-accent-500 to-accent-600',
-                slug: 'freelance'
-              },
-              {
-                title: 'Portage Salarial',
-                description: 'Solutions flexibles grâce à notre partenariat avec une société de portage salarial',
-                features: ['Partenariat exclusif', 'Solution souple', 'Sécurité juridique', 'Simplicité administrative'],
-                image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
-                color: 'from-primary-600 to-accent-500',
-                slug: 'portage'
-              },
-              {
-                title: 'Recrutement RPO',
-                description: 'Bénéficiez d\'une expertise dédiée, d\'une agilité renforcée et d\'une optimisation des coûts pour atteindre vos objectifs plus efficacement',
-                features: ['Expertise dédiée', 'Agilité renforcée', 'Optimisation coûts', 'Objectifs atteints'],
-                image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop',
-                color: 'from-primary-500 to-accent-600',
-                slug: 'rpo'
-              }
-            ].map((service, index) => (
-              <div
-                key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden flex flex-col h-full"
-              >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden flex-shrink-0">
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    width={600}
-                    height={400}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    loading="lazy"
-                    quality={80}
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-60`}></div>
-                </div>
-
-                {/* Content */}
-                <div className="p-8 flex flex-col flex-grow">
-                  <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                    {service.description}
-                  </p>
-                  <ul className="space-y-3 mb-6 flex-grow">
-                    {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
-                        <svg className="w-5 h-5 text-accent-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={`/services/${service.slug}`}
-                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mt-auto cursor-pointer"
-                  >
-                    En savoir plus →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* How It Works avec Timeline */}
-      <section className="py-24 bg-white dark:bg-gray-900">
+      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<RefreshIcon />}>
@@ -334,88 +234,99 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Expertise Domains Section - NEW */}
-      <section className="py-16 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      {/* Services Section avec Images */}
+      <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
-              Nos Domaines d'Expertise
+          <div className="text-center mb-16">
+            <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
+              Nos Services
             </SectionHeaderBadge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-700 dark:text-accent-500 mb-3">
-              Notre Savoir-Faire
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
+              Notre Accompagnement
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Du recrutement IT aux métiers du conseil, nous accompagnons une grande diversité de clients
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Une collaboration flexible et sur mesure, conçue pour s'adapter à vos objectifs et à vos priorités
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {[
               {
-                title: 'Métiers de l\'IT',
-                description: 'Une véritable expertise où nous disposons d\'un savoir-faire reconnu',
-                specialties: ['Développement', 'Infrastructure', 'Data', 'Cybersécurité', 'DevOps', 'Cloud'],
-                icon: (
-                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                ),
-                category: 'IT & Tech'
+                title: 'Recrutements en CDI',
+                description: 'Pour renforcer durablement vos équipes avec des talents qualifiés et alignés sur vos valeurs',
+                features: ['Profils qualifiés', 'Approche personnalisée', 'Suivi post-placement', 'Garantie période d\'essai'],
+                image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=400&fit=crop',
+                color: 'from-primary-500 to-primary-600',
+                slug: 'cdi'
               },
               {
-                title: 'Digital & Finance',
-                description: 'Postes technico-fonctionnels dans le Digital et la Finance',
-                specialties: ['Product Management', 'UX/UI Design', 'Finance', 'Contrôle de gestion', 'Analyse financière'],
-                icon: (
-                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                ),
-                category: 'Digital & Finance'
+                title: 'Missions Freelance',
+                description: 'Pour répondre à vos besoins ponctuels avec des profils spécialistes disponibles rapidement',
+                features: ['Disponibilité rapide', 'Spécialistes qualifiés', 'Flexibilité', 'Gestion administrative'],
+                image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
+                color: 'from-accent-500 to-accent-600',
+                slug: 'freelance'
               },
               {
-                title: 'Conseil & Expertise',
-                description: 'Métiers du Conseil, de l\'Audit et de l\'Expertise Comptable',
-                specialties: ['Conseil en stratégie', 'Audit', 'Expertise comptable', 'Conseil fiscal', 'Transformation'],
-                icon: (
-                  <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                ),
-                category: 'Conseil & Audit'
+                title: 'Portage Salarial',
+                description: 'Solutions flexibles grâce à notre partenariat avec une société de portage salarial',
+                features: ['Partenariat exclusif', 'Solution souple', 'Sécurité juridique', 'Simplicité administrative'],
+                image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
+                color: 'from-primary-600 to-accent-500',
+                slug: 'portage'
+              },
+              {
+                title: 'Recrutement RPO',
+                description: 'Bénéficiez d\'une expertise dédiée, d\'une agilité renforcée et d\'une optimisation des coûts pour atteindre vos objectifs plus efficacement',
+                features: ['Expertise dédiée', 'Agilité renforcée', 'Optimisation coûts', 'Objectifs atteints'],
+                image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop',
+                color: 'from-primary-500 to-accent-600',
+                slug: 'rpo'
               }
-            ].map((domain, index) => (
+            ].map((service, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100 dark:border-gray-700"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden flex flex-col h-full"
               >
-                <div className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex-shrink-0 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-accent-500 transition-colors">
-                      {domain.icon}
-                    </div>
-                    <div className="flex-1">
-                      <span className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-3 py-1 rounded-full text-xs font-bold text-primary-700 dark:text-accent-500 mb-2">
-                        {domain.category}
-                      </span>
-                      <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500">
-                        {domain.title}
-                      </h3>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
-                    {domain.description}
+                {/* Image */}
+                <div className="relative h-48 overflow-hidden flex-shrink-0">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    width={600}
+                    height={400}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    loading="lazy"
+                    quality={80}
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-60`}></div>
+                </div>
+
+                {/* Content */}
+                <div className="p-8 flex flex-col flex-grow">
+                  <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                    {service.description}
                   </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {domain.specialties.map((specialty, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs font-medium"
-                      >
-                        {specialty}
-                      </span>
+                  <ul className="space-y-3 mb-6 flex-grow">
+                    {service.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
+                        <svg className="w-5 h-5 text-accent-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        {feature}
+                      </li>
                     ))}
-                  </div>
+                  </ul>
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mt-auto cursor-pointer"
+                  >
+                    En savoir plus →
+                  </Link>
                 </div>
               </div>
             ))}

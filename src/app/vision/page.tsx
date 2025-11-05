@@ -5,7 +5,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { SectionHeaderBadge, CheckCircleIcon, UsersIcon, TargetIcon, StarIcon, ChatIcon, BuildingIcon } from '../components/ui/SectionHeaderBadge'
+import { SectionHeaderBadge, CheckCircleIcon, UsersIcon, TargetIcon, StarIcon, ChatIcon, BuildingIcon, BriefcaseIcon } from '../components/ui/SectionHeaderBadge'
 
 const recruteurs = [
   {
@@ -33,17 +33,24 @@ const recruteurs = [
 ]
 
 export default function Vision() {
-  const [activeTab, setActiveTab] = useState('equipe')
+  const [activeTab, setActiveTab] = useState('approche')
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
 
+  const tabs = [
+    { id: 'approche', label: 'Notre Approche' },
+    { id: 'savoir-faire', label: 'Notre Savoir-Faire' },
+    { id: 'equipe', label: 'Notre Équipe' },
+    { id: 'clients', label: 'Nos Clients & Mission' }
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
         {/* Background Pattern */}
@@ -79,32 +86,30 @@ export default function Vision() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href="#equipe"
-                  onClick={() => setActiveTab('equipe')}
+                <button
+                  onClick={() => setActiveTab('approche')}
                   className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
-                    Découvrir l'équipe
+                    Notre Approche
                     <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </span>
                   <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                </a>
+                </button>
 
-                <a
-                  href="#valeurs"
-                  onClick={() => setActiveTab('valeurs')}
+                <button
+                  onClick={() => setActiveTab('equipe')}
                   className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="flex items-center justify-center gap-2">
-                    Nos Valeurs
+                    Découvrir l'équipe
                     <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </span>
-                </a>
+                </button>
               </div>
             </div>
 
@@ -143,33 +148,315 @@ export default function Vision() {
         </div>
       </section>
 
-      {/* Navigation par onglets */}
-      <section className="py-3 sm:py-6 md:py-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4">
-            {[
-              { id: 'equipe', label: 'Notre Équipe' },
-              { id: 'valeurs', label: 'Nos Valeurs' },
-              { id: 'mission', label: 'Notre Mission' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full sm:w-auto px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base md:text-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] shadow-lg'
-                    : 'bg-white dark:bg-gray-800 text-[#3b5335ff] dark:text-[#ffaf50ff] hover:bg-gray-50 dark:hover:bg-gray-700 shadow-md hover:shadow-lg'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+      {/* Modern Underline Tab Navigation */}
+      <section className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-2 sm:gap-4 md:gap-8 min-w-max sm:min-w-0 sm:justify-center py-4">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative px-4 py-3 font-bold text-sm sm:text-base whitespace-nowrap transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? 'text-primary-700 dark:text-accent-500'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-accent-400'
+                  }`}
+                >
+                  {tab.label}
+                  {activeTab === tab.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 animate-slide-in"></div>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contenu des onglets */}
-      <div className="py-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+      {/* Tab Content */}
+      <div className="py-20">
+        {/* Tab 1: Notre Approche */}
+        {activeTab === 'approche' && (
+          <section className="py-24 bg-white dark:bg-gray-900">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
+                  Notre Stratégie d'Accompagnement
+                </SectionHeaderBadge>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
+                  Une Approche Personnalisée et Exigeante
+                </h2>
+                <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                  Pour connecter les bons talents aux bons projets, nous vous accompagnons à chaque étape avec rigueur et proximité
+                </p>
+              </div>
+
+              <div className="relative">
+                {/* Timeline line */}
+                <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-primary-500 to-accent-500"></div>
+
+                <div className="space-y-12">
+                  {[
+                    {
+                      step: '01',
+                      title: 'Comprendre Votre Besoin',
+                      description: 'Échange approfondi avec les différents décideurs pour cerner le contexte du recrutement et vos enjeux stratégiques. Nous identifions vos attentes, votre culture d\'entreprise et votre projet pour définir ensemble un processus de recrutement sur mesure.',
+                      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop',
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      )
+                    },
+                    {
+                      step: '02',
+                      title: 'L\'Approche',
+                      description: 'Élaboration d\'une stratégie de sourcing construite selon votre besoin : sélection de talents issus de notre vivier interne et de canaux spécialisés, entretiens approfondis pour évaluer compétences techniques et soft skills, validation de l\'alignement entre aspirations des candidats et votre entreprise. Constitution d\'une short-list de talents qualifiés et motivés.',
+                      image: 'https://images.unsplash.com/photo-1556155092-490a1ba16284?w=600&h=400&fit=crop',
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                      )
+                    },
+                    {
+                      step: '03',
+                      title: 'L\'Accompagnement',
+                      description: 'Planification et coordination des différentes étapes du recrutement. Débriefs réguliers avec vos interlocuteurs clés, prise de références si nécessaire et aide à la décision. Conseil sur la formulation de l\'offre pour maximiser son attractivité et son acceptation.',
+                      image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop',
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      )
+                    },
+                    {
+                      step: '04',
+                      title: 'L\'Engagement',
+                      description: 'Notre implication se poursuit après la signature. Points de suivi réguliers tout au long de la période d\'essai. Conseils sur vos enjeux de rétention, incluant une phase d\'audit et la définition de leviers d\'action adaptés à votre organisation.',
+                      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      )
+                    }
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      className={`relative flex flex-col md:flex-row items-center gap-8 ${
+                        index % 2 === 1 ? 'md:flex-row-reverse' : ''
+                      }`}
+                    >
+                      {/* Content Card */}
+                      <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="text-gray-900 dark:text-white">
+                            {item.icon}
+                          </div>
+                          <div>
+                            <div className="text-sm font-bold text-accent-500 mb-1">ÉTAPE {item.step}</div>
+                            <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500">{item.title}</h3>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.description}</p>
+                      </div>
+
+                      {/* Image */}
+                      <div className="flex-1">
+                        <div className="relative rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            width={600}
+                            height={400}
+                            className="w-full h-64 object-cover"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-primary-500/60 to-transparent"></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Tab 2: Notre Savoir-Faire */}
+        {activeTab === 'savoir-faire' && (
+          <>
+            <section className="py-16 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-12">
+                  <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
+                    Nos Domaines d'Expertise
+                  </SectionHeaderBadge>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-700 dark:text-accent-500 mb-3">
+                    Notre Savoir-Faire
+                  </h2>
+                  <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    Du recrutement IT aux métiers du conseil, nous accompagnons une grande diversité de clients
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    {
+                      title: 'Métiers de l\'IT',
+                      description: 'Une véritable expertise où nous disposons d\'un savoir-faire reconnu',
+                      specialties: ['Développement', 'Infrastructure', 'Data', 'Cybersécurité', 'DevOps', 'Cloud'],
+                      icon: (
+                        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      ),
+                      category: 'IT & Tech'
+                    },
+                    {
+                      title: 'Digital & Finance',
+                      description: 'Postes technico-fonctionnels dans le Digital et la Finance',
+                      specialties: ['Product Management', 'UX/UI Design', 'Finance', 'Contrôle de gestion', 'Analyse financière'],
+                      icon: (
+                        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      ),
+                      category: 'Digital & Finance'
+                    },
+                    {
+                      title: 'Conseil & Expertise',
+                      description: 'Métiers du Conseil, de l\'Audit et de l\'Expertise Comptable',
+                      specialties: ['Conseil en stratégie', 'Audit', 'Expertise comptable', 'Conseil fiscal', 'Transformation'],
+                      icon: (
+                        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      ),
+                      category: 'Conseil & Audit'
+                    }
+                  ].map((domain, index) => (
+                    <div
+                      key={index}
+                      className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100 dark:border-gray-700"
+                    >
+                      <div className="p-6">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="flex-shrink-0 text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-accent-500 transition-colors">
+                            {domain.icon}
+                          </div>
+                          <div className="flex-1">
+                            <span className="inline-block bg-primary-500/10 dark:bg-accent-500/20 px-3 py-1 rounded-full text-xs font-bold text-primary-700 dark:text-accent-500 mb-2">
+                              {domain.category}
+                            </span>
+                            <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500">
+                              {domain.title}
+                            </h3>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
+                          {domain.description}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {domain.specialties.map((specialty, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs font-medium"
+                            >
+                              {specialty}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Nos Clients Section */}
+            <section className="py-16 bg-white dark:bg-gray-900">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                  <SectionHeaderBadge variant="accent" icon={<BuildingIcon />}>
+                    Nos Clients
+                  </SectionHeaderBadge>
+                  <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
+                    Une Diversité de Clients
+                  </h2>
+                  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                    Qu'il s'agisse de <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">petites structures ou de grands groupes</strong>, nous accompagnons une grande diversité de clients dans des <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">environnements multiples et exigeants</strong> sur la France entière mais également à l'étranger.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                        </svg>
+                      ),
+                      title: 'Start-ups',
+                      description: 'Entreprises innovantes en croissance',
+                      color: 'from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700'
+                    },
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      ),
+                      title: 'PME/ETI',
+                      description: 'Structures en développement',
+                      color: 'from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700'
+                    },
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                        </svg>
+                      ),
+                      title: 'Grands Groupes',
+                      description: 'Organisations internationales',
+                      color: 'from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700'
+                    },
+                    {
+                      icon: (
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      ),
+                      title: 'International',
+                      description: 'France et étranger',
+                      color: 'from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700'
+                    }
+                  ].map((client, index) => (
+                    <div
+                      key={index}
+                      className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden"
+                    >
+                      <div className={`h-2 bg-gradient-to-r ${client.color}`}></div>
+                      <div className="p-6 text-center">
+                        <div className="text-gray-600 dark:text-gray-400 mb-4 flex justify-center group-hover:text-primary-600 dark:group-hover:text-accent-500 transition-colors duration-300">{client.icon}</div>
+                        <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500 mb-2 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors duration-300">
+                          {client.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          {client.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {/* Tab 3: Notre Équipe */}
         {activeTab === 'equipe' && (
           <section>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -269,7 +556,7 @@ export default function Vision() {
                 ))}
               </div>
 
-              {/* Office/Team Culture Images Section - NEW */}
+              {/* Office/Team Culture Images Section */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="group relative h-64 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
                   <img
@@ -315,136 +602,8 @@ export default function Vision() {
           </section>
         )}
 
-        {activeTab === 'valeurs' && (
-          <section>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16">
-                <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
-                  Nos Principes
-                </SectionHeaderBadge>
-                <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
-                  Nos Valeurs
-                </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                  Les principes qui guident chacune de nos actions et décisions
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                {[
-                  {
-                    title: 'Confiance',
-                    icon: (
-                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
-                      </svg>
-                    ),
-                    description: 'Nous bâtissons des relations durables basées sur la transparence et la confiance mutuelle.',
-                    features: ['Transparence totale', 'Engagement mutuel', 'Respect des engagements'],
-                    color: 'from-[#3b5335ff] to-[#2a3d26ff]',
-                    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&h=400&fit=crop'
-                  },
-                  {
-                    title: 'Innovation',
-                    icon: (
-                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
-                    ),
-                    description: 'Nous repoussons les limites du recrutement traditionnel avec des approches créatives.',
-                    features: ['Solutions innovantes', 'Adaptabilité', 'Veille technologique'],
-                    color: 'from-[#ffaf50ff] to-[#ff9500ff]',
-                    image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop'
-                  },
-                  {
-                    title: 'Excellence',
-                    icon: (
-                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                      </svg>
-                    ),
-                    description: 'Chaque recrutement est minutieusement préparé pour garantir la parfaite adéquation.',
-                    features: ['Rigueur méthodologique', 'Attention aux détails', 'Qualité constante'],
-                    color: 'from-[#3b5335ff] to-[#ffaf50ff]',
-                    image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop'
-                  }
-                ].map((valeur, index) => (
-                  <div
-                    key={index}
-                    className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden"
-                  >
-                    {/* Image Header */}
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={valeur.image}
-                        alt={valeur.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                      <div className="absolute bottom-4 left-4 right-4 text-white flex items-center gap-3">
-                        <div className="text-white">{valeur.icon}</div>
-                        <h3 className="text-2xl font-bold">{valeur.title}</h3>
-                      </div>
-                    </div>
-
-                    <div className="p-8">
-                      <p className="text-gray-600 dark:text-gray-300 text-center mb-6 leading-relaxed">
-                        {valeur.description}
-                      </p>
-                      <ul className="space-y-3">
-                        {valeur.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
-                            <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full mr-3 group-hover:scale-125 transition-transform duration-300"></span>
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Barre colorée en bas avec effet hover */}
-                    <div className={`h-2 bg-gradient-to-r ${valeur.color} transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
-
-                    {/* Overlay coloré au hover */}
-                    <div className={`absolute inset-0 bg-gradient-to-r ${valeur.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl`}></div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Values in Action - Image Showcase */}
-              <div className="bg-gradient-to-br from-[#f8f7f3ff] dark:from-gray-700 to-white dark:to-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
-                <div className="text-center mb-8">
-                  <h3 className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
-                    Nos Valeurs en Action
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Au quotidien, dans chaque interaction
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    { img: 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=300&h=300&fit=crop', label: 'Transparence' },
-                    { img: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=300&h=300&fit=crop', label: 'Collaboration' },
-                    { img: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=300&h=300&fit=crop', label: 'Créativité' },
-                    { img: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?w=300&h=300&fit=crop', label: 'Performance' }
-                  ].map((item, idx) => (
-                    <div key={idx} className="group relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
-                      <img
-                        src={item.img}
-                        alt={item.label}
-                        className="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
-                        <span className="text-white font-semibold">{item.label}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeTab === 'mission' && (
+        {/* Tab 4: Nos Clients & Mission */}
+        {activeTab === 'clients' && (
           <section>
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
@@ -455,7 +614,7 @@ export default function Vision() {
                   Notre Mission
                 </h2>
                 <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                  Transformer l&#39;expérience du recrutement pour tous les acteurs
+                  Transformer l'expérience du recrutement pour tous les acteurs
                 </p>
               </div>
 
@@ -545,82 +704,6 @@ export default function Vision() {
 
                 {/* Barre colorée en bas avec effet hover */}
                 <div className="h-2 bg-gradient-to-r from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              </div>
-
-              {/* Nos Clients Section */}
-              <div className="mt-24">
-                <div className="text-center mb-16">
-                  <SectionHeaderBadge variant="accent" icon={<BuildingIcon />}>
-                    Nos Clients
-                  </SectionHeaderBadge>
-                  <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
-                    Une Diversité de Clients
-                  </h2>
-                  <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                    Qu'il s'agisse de <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">petites structures ou de grands groupes</strong>, nous accompagnons une grande diversité de clients dans des <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">environnements multiples et exigeants</strong> sur la France entière mais également à l'étranger.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                    {
-                      icon: (
-                        <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                        </svg>
-                      ),
-                      title: 'Start-ups',
-                      description: 'Entreprises innovantes en croissance',
-                      color: 'from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700'
-                    },
-                    {
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                      ),
-                      title: 'PME/ETI',
-                      description: 'Structures en développement',
-                      color: 'from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700'
-                    },
-                    {
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-                        </svg>
-                      ),
-                      title: 'Grands Groupes',
-                      description: 'Organisations internationales',
-                      color: 'from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700'
-                    },
-                    {
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      ),
-                      title: 'International',
-                      description: 'France et étranger',
-                      color: 'from-accent-500 to-accent-600 dark:from-accent-600 dark:to-accent-700'
-                    }
-                  ].map((client, index) => (
-                    <div
-                      key={index}
-                      className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden"
-                    >
-                      <div className={`h-2 bg-gradient-to-r ${client.color}`}></div>
-                      <div className="p-6 text-center">
-                        <div className="text-gray-600 dark:text-gray-400 mb-4 flex justify-center group-hover:text-primary-600 dark:group-hover:text-accent-500 transition-colors duration-300">{client.icon}</div>
-                        <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500 mb-2 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors duration-300">
-                          {client.title}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          {client.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </section>
