@@ -186,7 +186,7 @@ export default function Vision() {
       <div className="py-20">
         {/* Tab 1: Notre Approche */}
         {activeTab === 'approche' && (
-          <section className="py-24 bg-white dark:bg-gray-900">
+          <section className="py-24">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
@@ -296,7 +296,7 @@ export default function Vision() {
         {/* Tab 2: Notre Savoir-Faire */}
         {activeTab === 'savoir-faire' && (
           <>
-            <section className="py-16 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+            <section className="py-16">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                   <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
@@ -385,7 +385,7 @@ export default function Vision() {
             </section>
 
             {/* Nos Clients Section */}
-            <section className="py-16 bg-white dark:bg-gray-900">
+            <section className="py-16">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                   <SectionHeaderBadge variant="accent" icon={<BuildingIcon />}>
