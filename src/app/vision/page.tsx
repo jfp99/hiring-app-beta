@@ -273,7 +273,7 @@ export default function Vision() {
 
                       {/* Image */}
                       <div className="flex-1">
-                        <div className="relative rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
+                        <div className="group relative rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
                           <Image
                             src={item.image}
                             alt={item.title}
@@ -282,7 +282,7 @@ export default function Vision() {
                             className="w-full h-64 object-cover"
                             sizes="(max-width: 768px) 100vw, 50vw"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-primary-500/60 to-transparent"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-primary-500/60 to-transparent group-hover:from-primary-500/80 transition-all duration-300"></div>
                         </div>
                       </div>
                     </div>
