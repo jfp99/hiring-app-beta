@@ -229,7 +229,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
             <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="group relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500">
                 <Image
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&auto=format&q=80"
                   alt="Notre réseau de talents"
@@ -240,9 +240,9 @@ export default function Home() {
                   loading="lazy"
                   quality={85}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent group-hover:from-primary-500/90 transition-all duration-500"></div>
               </div>
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20"></div>
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
             </div>
 
             {/* Content */}
@@ -266,7 +266,7 @@ export default function Home() {
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4">
+                <div className="bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="mb-2">
                     <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -275,7 +275,7 @@ export default function Home() {
                   <div className="font-semibold text-primary-700 dark:text-accent-500">Sourcing Ciblé</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Profils qualifiés et motivés</div>
                 </div>
-                <div className="bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4">
+                <div className="bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="mb-2">
                     <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
