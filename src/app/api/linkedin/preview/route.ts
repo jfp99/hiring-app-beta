@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/app/lib/auth-helpers'
 import ogs from 'open-graph-scraper'
 import { connectToDatabase } from '@/app/lib/mongodb'
+import { ObjectId } from 'mongodb'
 import {
   LinkedInPreviewRequest,
   LinkedInPreviewResponse,
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
     if (candidateId) {
       const { db } = await connectToDatabase()
       const candidate = await db.collection('candidates').findOne({
-        _id: candidateId
+        _id: new ObjectId(candidateId)
       })
 
       if (candidate?.linkedinData?.previewData?.lastFetched) {
@@ -70,10 +71,7 @@ export async function POST(request: NextRequest) {
     try {
       const { error, html, result } = await ogs({
         url: linkedinUrl,
-        timeout: 10000, // 10 second timeout
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        }
+        timeout: 10000 // 10 second timeout
       })
 
       if (error) {
@@ -88,10 +86,13 @@ export async function POST(request: NextRequest) {
       }
 
       // Extract preview data from OpenGraph results
+      const ogImage = Array.isArray(result.ogImage) ? result.ogImage[0] : result.ogImage
+      const twitterImage = Array.isArray(result.twitterImage) ? result.twitterImage[0] : result.twitterImage
+
       const previewData: LinkedInPreviewData = {
         name: result.ogTitle || result.twitterTitle || '',
         headline: result.ogDescription || result.twitterDescription || '',
-        imageUrl: result.ogImage?.url || result.twitterImage?.url || '',
+        imageUrl: ogImage?.url || twitterImage?.url || '',
         location: '', // LinkedIn doesn't always expose this in OG tags
         position: '', // Will be extracted from headline if possible
         company: '', // Will be extracted from headline if possible
@@ -122,7 +123,7 @@ export async function POST(request: NextRequest) {
       if (candidateId) {
         const { db } = await connectToDatabase()
         await db.collection('candidates').updateOne(
-          { _id: candidateId },
+          { _id: new ObjectId(candidateId) },
           {
             $set: {
               'linkedinData.url': linkedinUrl,

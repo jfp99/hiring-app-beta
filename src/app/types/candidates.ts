@@ -1,5 +1,7 @@
 // src/app/types/candidates.ts
 
+import { LinkedInData } from './linkedin'
+
 export enum CandidateStatus {
   NEW = 'new',
   CONTACTED = 'contacted',
@@ -305,6 +307,9 @@ export interface Candidate {
   githubUrl?: string
   websiteUrl?: string
 
+  // LinkedIn Integration
+  linkedinData?: LinkedInData
+
   // Interviews & Applications
   interviews: InterviewSchedule[]
   applicationIds: string[] // Reference to applications
@@ -406,6 +411,7 @@ export interface UpdateCandidateDTO {
   linkedinUrl?: string
   githubUrl?: string
   websiteUrl?: string
+  linkedinData?: LinkedInData
   tags?: string[]
   overallRating?: number
   technicalRating?: number

@@ -3,6 +3,7 @@
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useApi } from '../hooks/useApi'
@@ -162,31 +163,23 @@ export default function OffresEmploi() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
 
-                {/* Floating Stats Cards */}
-                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-4">
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">{offres.length}+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Offres</div>
-                  </div>
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#ffaf50ff]">50+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Entreprises</div>
-                  </div>
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">95%</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Match</div>
+                {/* Logo */}
+                <div className="absolute bottom-6 right-6">
+                  <div className="bg-white/95 dark:bg-white/90 backdrop-blur-sm rounded-xl p-2">
+                    <Image
+                      src="/logohiringsansfond.png"
+                      alt="Hi-Ring Logo"
+                      width={200}
+                      height={200}
+                      className="w-16 h-auto sm:w-20 md:w-24 lg:w-28"
+                      style={{
+                        filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+                      }}
+                      quality={100}
+                      priority
+                    />
                   </div>
                 </div>
-              </div>
-
-              {/* Decorative Badge */}
-              <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                  </svg>
-                  Nouveautés
-                </span>
               </div>
             </div>
           </div>
@@ -304,7 +297,11 @@ export default function OffresEmploi() {
           {!loading && offres.length === 0 ? (
             <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
               <div className="p-12 text-center">
-                <div className="text-6xl mb-4">🔍</div>
+                <div className="flex justify-center mb-4">
+                  <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
                 <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
                   Aucune offre ne correspond à vos critères
                 </h3>

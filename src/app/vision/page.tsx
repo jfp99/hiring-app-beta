@@ -67,7 +67,7 @@ export default function Vision() {
                 Notre Vision
               </SectionHeaderBadge>
 
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
                 Révolutionner le
                 <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-pulse">
                   Recrutement
@@ -120,31 +120,23 @@ export default function Vision() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
 
-                {/* Floating Stats Cards */}
-                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-4">
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">5+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Années</div>
-                  </div>
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#ffaf50ff]">50+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Placements</div>
-                  </div>
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">95%</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Succès</div>
+                {/* Logo */}
+                <div className="absolute bottom-6 right-6">
+                  <div className="bg-white/95 dark:bg-white/90 backdrop-blur-sm rounded-xl p-2">
+                    <Image
+                      src="/logohiringsansfond.png"
+                      alt="Hi-Ring Logo"
+                      width={200}
+                      height={200}
+                      className="w-16 h-auto sm:w-20 md:w-24 lg:w-28"
+                      style={{
+                        filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+                      }}
+                      quality={100}
+                      priority
+                    />
                   </div>
                 </div>
-              </div>
-
-              {/* Decorative Badge */}
-              <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  Excellence
-                </span>
               </div>
             </div>
           </div>
@@ -189,11 +181,11 @@ export default function Vision() {
                   Notre Équipe de Choc
                 </h2>
                 <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                  Des experts passionnés qui mettent leur énergie au service de votre succès
+                  Des spécialistes passionnés qui mettent leur énergie au service de votre succès
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-16">
                 {recruteurs.map((recruteur, index) => (
                   <div
                     key={index}
@@ -467,7 +459,7 @@ export default function Vision() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 {/* Pour les Candidats */}
                 <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
                   <div className="p-8">

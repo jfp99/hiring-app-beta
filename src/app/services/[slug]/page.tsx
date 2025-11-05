@@ -94,7 +94,6 @@ const getIconSVG = (iconText: string) => {
 
 export default function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<'benefits' | 'pricing'>('benefits')
 
   const resolvedParams = use(params)
   const service = servicesData[resolvedParams.slug as keyof typeof servicesData]
@@ -164,42 +163,8 @@ export default function ServicePage({ params }: { params: Promise<{ slug: string
         </div>
       </section>
 
-      {/* Navigation Tabs */}
-      <section id="details" className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex overflow-x-auto">
-            {[
-              { id: 'benefits', label: 'Avantages', icon: (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              ) },
-              { id: 'pricing', label: 'Tarification', icon: (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              ) }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={`flex-1 min-w-fit px-6 py-4 font-semibold text-center border-b-4 transition-all duration-300 flex items-center justify-center gap-2 ${
-                  activeTab === tab.id
-                    ? 'border-accent-500 text-accent-500 dark:text-accent-400 bg-accent-500/5'
-                    : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-accent-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                }`}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </section>
-
       {/* Main Benefits */}
-      {activeTab === 'benefits' && (
-        <section className="py-16 lg:py-24">
+      <section id="details" className="py-16 lg:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
@@ -359,116 +324,9 @@ export default function ServicePage({ params }: { params: Promise<{ slug: string
             )}
           </div>
         </section>
-      )}
-
-      {/* Pricing */}
-      {activeTab === 'pricing' && (
-        <section className="py-16 lg:py-24">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <SectionHeaderBadge variant="accent" icon={(
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              )}>
-                Tarification
-              </SectionHeaderBadge>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-700 dark:text-accent-500 mb-4">
-                Une tarification transparente
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300">
-                Adaptée à vos besoins et votre budget
-              </p>
-            </div>
-
-            <div className="bg-gradient-to-br from-primary-50 to-accent-50 dark:from-gray-800 dark:to-gray-700 rounded-3xl p-12 shadow-2xl">
-              <div className="text-center mb-8">
-                <h3 className="text-3xl font-bold text-primary-700 dark:text-accent-500 mb-2">
-                  {service.pricing.model}
-                </h3>
-                <div className="text-6xl font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent mb-4">
-                  {service.pricing.percentage}
-                </div>
-                <p className="text-lg text-gray-600 dark:text-gray-300">
-                  {service.pricing.details}
-                </p>
-              </div>
-
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 mb-8">
-                <div className="flex items-start gap-4">
-                  <div className="text-gray-700 dark:text-gray-300">
-                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-primary-700 dark:text-accent-500 mb-2">
-                      Garantie
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {service.pricing.guarantee}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center">
-                  <div className="text-gray-700 dark:text-gray-300 flex justify-center mb-3">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h4 className="font-bold text-primary-700 dark:text-accent-500 mb-2">
-                    Transparent
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Pas de frais cachés
-                  </p>
-                </div>
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center">
-                  <div className="text-gray-700 dark:text-gray-300 flex justify-center mb-3">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-bold text-primary-700 dark:text-accent-500 mb-2">
-                    Flexible
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Adapté à vos besoins
-                  </p>
-                </div>
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center">
-                  <div className="text-gray-700 dark:text-gray-300 flex justify-center mb-3">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-bold text-primary-700 dark:text-accent-500 mb-2">
-                    Performance
-                  </h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Payez uniquement au résultat
-                  </p>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <Link
-                  href="/contact"
-                  className="inline-block px-10 py-4 bg-gradient-to-r from-primary-500 to-accent-500 text-white rounded-xl font-bold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
-                >
-                  Demander un devis personnalisé
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Testimonials */}
-      <section className="py-16 lg:py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section hidden className="py-16 lg:py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<StarIcon />}>

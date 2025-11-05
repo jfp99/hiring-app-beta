@@ -70,7 +70,7 @@ export const servicesData = {
       'Commerciaux et business developers',
       'Fonctions supports (RH, Finance, Marketing)',
       'Profils IT et Data',
-      'Experts métiers sectoriels'
+      'Spécialistes métiers sectoriels'
     ],
 
     sectors: [
@@ -107,7 +107,7 @@ export const servicesData = {
 
   'freelance': {
     title: 'Missions Freelance',
-    subtitle: 'Répondez à vos besoins ponctuels avec des experts disponibles rapidement',
+    subtitle: 'Répondez à vos besoins ponctuels avec des spécialistes disponibles rapidement',
     description: 'Notre réseau de freelances qualifiés vous permet d\'intervenir rapidement sur des projets spécifiques, de renforcer temporairement vos équipes ou d\'apporter une expertise pointue sur des missions à durée déterminée.',
     heroImage: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&h=600&fit=crop',
     icon: '⚡',
@@ -120,7 +120,7 @@ export const servicesData = {
         icon: '⚡'
       },
       {
-        title: 'Experts qualifiés',
+        title: 'Spécialistes qualifiés',
         description: 'Tous nos freelances sont rigoureusement sélectionnés, avec vérification de leurs références, portfolio et compétences techniques.',
         icon: '🎓'
       },
@@ -175,7 +175,7 @@ export const servicesData = {
       'Chefs de projet & Product Owners',
       'Consultants métiers',
       'Designers & UX/UI',
-      'Experts Marketing Digital'
+      'Spécialistes Marketing Digital'
     ],
 
     missionTypes: [

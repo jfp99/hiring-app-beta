@@ -1,5 +1,11 @@
+'use client'
+
 // LINKEDIN INTEGRATION FOR CANDIDATE PROFILE PAGE
 // This file contains the code to integrate into the main candidate profile page
+
+import { LinkedInData } from '@/app/types/linkedin'
+import LinkedInSection from '@/app/components/candidates/LinkedInSection'
+import { toast } from 'sonner'
 
 // =============================================================================
 // STEP 1: Add these imports to the top of your page.tsx file

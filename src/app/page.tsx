@@ -39,7 +39,7 @@ export default function Home() {
               isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
             }`}>
               <SectionHeaderBadge variant="hero" icon={<SparklesIcon />}>
-                Votre succès commence ici
+                Specialiste conseil en recrutement
               </SectionHeaderBadge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
@@ -53,7 +53,7 @@ export default function Home() {
                 Cabinet de conseil en recrutement fondé par Hugo et Izia. Spécialistes du recrutement IT, Digital, Finance, et Conseil avec une approche personnalisée et exigeante.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
                 <Link
                   href="/offres-emploi"
                   className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
@@ -99,32 +99,24 @@ export default function Home() {
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB//2Q=="
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent"></div>
-
-                {/* Floating Stats Cards */}
-                <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-4">
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">50+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Placements</div>
-                  </div>
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#ffaf50ff]">95%</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Satisfaction</div>
-                  </div>
-                  <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg p-3 text-center transform hover:scale-110 transition-transform">
-                    <div className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">20j</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">Délai Moyen</div>
-                  </div>
-                </div>
               </div>
 
-              {/* Decorative Badge */}
-              <div className="absolute -top-4 -right-4 bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-3 rounded-full shadow-lg font-bold transform rotate-12 animate-bounce">
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  Expert Recrutement
-                </span>
+              {/* Logo */}
+              <div className="absolute bottom-6 right-6">
+                <div className="bg-white/95 dark:bg-white/90 backdrop-blur-sm rounded-xl p-2">
+                  <Image
+                    src="/logohiringsansfond.png"
+                    alt="Hi-Ring Logo"
+                    width={200}
+                    height={200}
+                    className="w-16 h-auto sm:w-20 md:w-24 lg:w-28"
+                    style={{
+                      filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
+                    }}
+                    quality={100}
+                    priority
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -146,7 +138,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {[
               {
                 title: 'Recrutements en CDI',
@@ -158,8 +150,8 @@ export default function Home() {
               },
               {
                 title: 'Missions Freelance',
-                description: 'Pour répondre à vos besoins ponctuels avec des profils experts disponibles rapidement',
-                features: ['Disponibilité rapide', 'Experts qualifiés', 'Flexibilité', 'Gestion administrative'],
+                description: 'Pour répondre à vos besoins ponctuels avec des profils spécialistes disponibles rapidement',
+                features: ['Disponibilité rapide', 'Spécialistes qualifiés', 'Flexibilité', 'Gestion administrative'],
                 image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop',
                 color: 'from-accent-500 to-accent-600',
                 slug: 'freelance'
@@ -499,7 +491,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section hidden className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
@@ -590,7 +582,7 @@ export default function Home() {
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl mb-12 text-gray-200 max-w-3xl mx-auto leading-relaxed">
-            Que vous cherchiez le talent idéal ou l'opportunité de vos rêves, notre équipe d&apos;experts est là pour vous accompagner vers le succès.
+            Que vous cherchiez le talent idéal ou l'opportunité de vos rêves, notre équipe de spécialistes est là pour vous accompagner vers le succès.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
