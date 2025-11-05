@@ -19,6 +19,9 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200 dark:from-gray-900 dark:to-gray-800">
       <Header />
 
+      {/* Spacer between header and hero */}
+      <div className="h-8 bg-cream-100 dark:bg-gray-800"></div>
+
       {/* Hero Section avec Image de fond */}
       <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-16 sm:py-24 md:py-32 overflow-hidden">
         {/* Background Pattern */}
@@ -429,6 +432,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Spacer between last section and footer */}
+      <div className="h-8 bg-cream-100 dark:bg-gray-800"></div>
 
       <Footer />
     </div>
