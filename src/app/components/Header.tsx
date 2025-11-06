@@ -42,28 +42,27 @@ export default function Header() {
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${
       isScrolled
-        ? 'bg-primary-600/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-primary-700/50 dark:border-gray-700/50 py-1 sm:py-0'
-        : 'bg-gradient-to-r from-primary-600 to-primary-700 dark:from-gray-900 dark:to-gray-950 shadow-sm'
+        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 py-1 sm:py-0'
+        : 'bg-cream-100 dark:bg-gray-900 shadow-sm'
     }`}>
       <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-12 sm:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="group flex items-center"
               onClick={handleLinkClick}
             >
-              <div className="relative">
+              <div className="relative bg-cream-100 dark:bg-gray-900 rounded-xl px-4 py-2.5 transition-all duration-300">
                 <Image
                   src={Logohiring}
                   alt="Hi-ring Logo"
                   width={180}
                   height={80}
-                  className="h-7 sm:h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                  className="h-8 sm:h-14 w-auto object-contain transition-all duration-300 group-hover:scale-105"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-accent-500 to-transparent opacity-0 group-hover:opacity-10 rounded-lg transition-opacity duration-300" />
               </div>
             </Link>
           </div>
@@ -76,8 +75,8 @@ export default function Header() {
                 href={item.href}
                 className={`relative group px-6 py-3 rounded-xl font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                   pathname === item.href
-                    ? 'text-white dark:text-accent-500 bg-white/10 dark:bg-accent-500/20 shadow-inner'
-                    : 'text-white/90 dark:text-gray-200 hover:text-white dark:hover:text-accent-400 hover:bg-white/10 dark:hover:bg-gray-800/50'
+                    ? 'text-primary-700 dark:text-accent-500 bg-accent-500/10 dark:bg-accent-500/20 shadow-inner'
+                    : 'text-primary-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-accent-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
               >
                 <span className="font-semibold uppercase text-sm">{item.label}</span>
@@ -128,7 +127,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-primary-600/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-primary-700/50 dark:border-gray-700/50">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50">
             <div className="px-3 pt-1.5 pb-3 space-y-1.5">
               {navItems.map((item) => (
                 <Link
@@ -137,8 +136,8 @@ export default function Header() {
                   onClick={handleLinkClick}
                   className={`block px-3 py-2.5 rounded-lg font-medium transition-all duration-300 group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                     pathname === item.href
-                      ? 'bg-white/10 dark:from-accent-500/20 dark:to-accent-500/5 text-white dark:text-accent-500 border border-white/20 dark:border-accent-500/30'
-                      : 'text-white/90 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-gray-800 hover:text-white dark:hover:text-accent-400'
+                      ? 'bg-gradient-to-r from-accent-500/10 to-primary-500/5 dark:from-accent-500/20 dark:to-accent-500/5 text-primary-700 dark:text-accent-500 border border-accent-500/20 dark:border-accent-500/30'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-accent-400'
                   }`}
                 >
                   <div className="flex items-center justify-between">
