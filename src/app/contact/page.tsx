@@ -20,18 +20,53 @@ export default function Contact() {
   })
 
   const [isVisible, setIsVisible] = useState(false)
-  
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
+  const [touched, setTouched] = useState<{[key: string]: boolean}>({})
+
   const { loading, error, callApi } = useApi()
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
 
+  const validateField = (name: string, value: string): string => {
+    switch(name) {
+      case 'nom':
+        return value.trim().length < 2 ? 'Le nom doit contenir au moins 2 caractères' : ''
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return !emailRegex.test(value) ? 'Email invalide' : ''
+      case 'telephone':
+        if (value && !/^[\d\s+()-]+$/.test(value)) return 'Numéro de téléphone invalide'
+        return ''
+      case 'sujet':
+        return value.trim().length < 5 ? 'Le sujet doit contenir au moins 5 caractères' : ''
+      case 'message':
+        return value.trim().length < 20 ? 'Le message doit contenir au moins 20 caractères' : ''
+      default:
+        return ''
+    }
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     })
+
+    // Real-time validation if field has been touched
+    if (touched[name]) {
+      const error = validateField(name, value)
+      setErrors(prev => ({...prev, [name]: error}))
+    }
+  }
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setTouched(prev => ({...prev, [name]: true}))
+    const error = validateField(name, value)
+    setErrors(prev => ({...prev, [name]: error}))
   }
 
   // Dans app/contact/page.tsx - modifiez la fonction handleSubmit
@@ -386,19 +421,36 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
-                        Nom complet *
+                        Nom complet * {touched.nom && !errors.nom && (
+                          <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                        )}
                       </label>
                       <input
                         type="text"
                         name="nom"
                         value={formData.nom}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                        onBlur={handleBlur}
+                        className={`w-full px-4 py-3 bg-white dark:bg-gray-700 border text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                          errors.nom && touched.nom
+                            ? 'border-red-500 focus:ring-red-500'
+                            : 'border-gray-300 dark:border-gray-600 focus:ring-[#ffaf50ff]'
+                        }`}
                         required
                         disabled={loading}
                         placeholder="Votre nom et prénom"
                         autoComplete="name"
+                        aria-invalid={!!(errors.nom && touched.nom)}
+                        aria-describedby={errors.nom && touched.nom ? 'nom-error' : undefined}
                       />
+                      {errors.nom && touched.nom && (
+                        <p id="nom-error" className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          {errors.nom}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">

@@ -46,7 +46,7 @@ export default function Home() {
                 Specialiste conseil en recrutement
               </SectionHeaderBadge>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
+              <h1 className="text-fluid-5xl font-bold mb-4 sm:mb-6 leading-tight">
                 Connectons les
                 <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent bg-[length:200%_100%] animate-gradient-x">
                   Talents & Entreprises
