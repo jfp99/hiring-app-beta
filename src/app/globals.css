@@ -825,6 +825,52 @@ body {
   display: none;
 }
 
+/* Standardized responsive gap utilities - 8px base unit system */
+.gap-responsive-sm {
+  @apply gap-3 sm:gap-4 lg:gap-6;
+}
+
+.gap-responsive-md {
+  @apply gap-4 sm:gap-6 lg:gap-8;
+}
+
+.gap-responsive-lg {
+  @apply gap-6 sm:gap-8 lg:gap-12;
+}
+
+/* Shimmer loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+.dark .animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    #1e293b 0%,
+    #334155 20%,
+    #1e293b 40%,
+    #1e293b 100%
+  );
+  background-size: 1000px 100%;
+}
+
 /* Reduced motion support for all animations */
 @media (prefers-reduced-motion: reduce) {
   html {

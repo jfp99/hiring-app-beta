@@ -48,7 +48,7 @@ export default function Home() {
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
                 Connectons les
-                <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent animate-pulse">
+                <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent bg-[length:200%_100%] animate-gradient-x">
                   Talents & Entreprises
                 </span>
               </h1>
@@ -257,7 +257,7 @@ export default function Home() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-700 dark:text-accent-500 mb-6">
                 Notre Vivier de Talents
               </h2>
-              <div className="space-y-4 text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              <div className="space-y-4 text-gray-600 dark:text-gray-300 text-lg leading-relaxed max-w-prose">
                 <p>
                   Nous échangeons chaque jour avec un <strong className="text-primary-700 dark:text-accent-500">réseau exclusif de professionnels qualifiés</strong>, certains en recherche active, d'autres à l'écoute d'opportunités ciblées.
                 </p>
