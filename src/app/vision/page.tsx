@@ -62,6 +62,7 @@ export default function Vision() {
       {/* Spacer between header and hero */}
       <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>
 
+      <main id="main-content">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
         {/* Background Pattern */}
@@ -163,7 +164,7 @@ export default function Vision() {
       <section ref={tabsRef} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-2 sm:gap-4 md:gap-8 min-w-max sm:min-w-0 sm:justify-center py-4">
+            <div className="flex gap-3 md:gap-6 min-w-max sm:min-w-0 sm:justify-center py-4">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -720,6 +721,7 @@ export default function Vision() {
           </section>
         )}
       </div>
+      </main>
 
       {/* Spacer between last section and footer */}
       <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>

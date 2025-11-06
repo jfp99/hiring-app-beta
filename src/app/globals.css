@@ -50,7 +50,7 @@
 
   --dark-text-primary: #f1f5f9;     /* slate-100 - High contrast text (15.8:1) */
   --dark-text-secondary: #cbd5e1;   /* slate-300 - Medium contrast text (9.2:1) */
-  --dark-text-tertiary: #94a3b8;    /* slate-400 - Low contrast text (4.8:1) */
+  --dark-text-tertiary: #a8b9cf;    /* Custom - WCAG AA compliant text (6.2:1) */
 
   --dark-border-primary: #334155;   /* slate-700 - Strong borders */
   --dark-border-secondary: #1e293b; /* slate-800 - Subtle borders */

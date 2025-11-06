@@ -45,6 +45,13 @@ export default function Header() {
         ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 py-1 sm:py-0'
         : 'bg-cream-100 dark:bg-gray-900 shadow-sm'
     }`}>
+      {/* Skip to content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-accent-500 text-primary-700 dark:text-white px-4 py-2 rounded-lg z-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white font-semibold"
+      >
+        Aller au contenu principal
+      </a>
       <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-12 sm:h-20">
           {/* Logo */}

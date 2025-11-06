@@ -22,6 +22,7 @@ export default function Home() {
       {/* Spacer between header and hero */}
       <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>
 
+      <main id="main-content">
       {/* Hero Section avec Image de fond */}
       <section className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-primary-600 text-white py-16 sm:py-24 md:py-32 overflow-hidden">
         {/* Background Pattern */}
@@ -32,8 +33,8 @@ export default function Home() {
         </div>
 
         {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
+        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse will-change-transform"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 will-change-transform" style={{animation: 'bounce-soft 3s ease-in-out infinite'}}></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -59,7 +60,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
                 <Link
                   href="/offres-emploi"
-                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
+                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-8 py-4 min-h-[44px] rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Découvrir nos offres
@@ -72,7 +73,7 @@ export default function Home() {
 
                 <Link
                   href="/contact"
-                  className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base cursor-pointer"
+                  className="group border-2 border-white text-white px-8 py-4 min-h-[44px] rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base cursor-pointer"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Nous contacter
@@ -269,7 +270,7 @@ export default function Home() {
               </div>
 
               <div className="mt-8 grid grid-cols-2 gap-4">
-                <div className="bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                <button className="w-full text-left bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2">
                   <div className="mb-2">
                     <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -277,8 +278,8 @@ export default function Home() {
                   </div>
                   <div className="font-semibold text-primary-700 dark:text-accent-500">Sourcing Ciblé</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Profils qualifiés et motivés</div>
-                </div>
-                <div className="bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
+                </button>
+                <button className="w-full text-left bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2">
                   <div className="mb-2">
                     <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -286,7 +287,7 @@ export default function Home() {
                   </div>
                   <div className="font-semibold text-primary-700 dark:text-accent-500">Accompagnement</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Suivi personnalisé</div>
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -432,6 +433,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Spacer between last section and footer */}
       <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>

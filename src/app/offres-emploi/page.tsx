@@ -81,6 +81,7 @@ export default function OffresEmploi() {
       {/* Spacer between header and hero */}
       <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>
 
+      <main id="main-content">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
         {/* Background Pattern */}
@@ -443,6 +444,7 @@ export default function OffresEmploi() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Spacer between last section and footer */}
       <div className="h-4 bg-cream-100 dark:bg-gray-800"></div>
