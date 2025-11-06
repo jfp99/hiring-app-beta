@@ -301,27 +301,37 @@ export default function OffresEmploi() {
           {!loading && offres.length === 0 ? (
             <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
               <div className="p-12 text-center">
-                <div className="flex justify-center mb-4">
-                  <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+                <div className="flex justify-center mb-6">
+                  <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center">
+                    <svg className="w-16 h-16 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
                 </div>
                 <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
                   Aucune offre ne correspond à vos critères
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-8">
-                  Essayez de modifier vos filtres ou votre recherche
+                <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
+                  Essayez d'élargir vos critères de recherche ou consultez toutes nos opportunités disponibles
                 </p>
-                <button
-                  onClick={() => {
-                    setFilters({categorie: 'toutes', lieu: 'tous', typeContrat: 'tous'})
-                    setSearchTerm('')
-                  }}
-                  className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
-                  suppressHydrationWarning
-                >
-                  Voir toutes les offres
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button
+                    onClick={() => {
+                      setFilters({categorie: 'toutes', lieu: 'tous', typeContrat: 'tous'})
+                      setSearchTerm('')
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] rounded-lg font-bold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
+                    suppressHydrationWarning
+                  >
+                    Voir toutes les offres
+                  </button>
+                  <a
+                    href="/contact"
+                    className="px-6 py-3 border-2 border-[#3b5335ff] dark:border-[#ffaf50ff] text-[#3b5335ff] dark:text-[#ffaf50ff] rounded-lg font-bold hover:bg-[#3b5335ff] hover:text-white dark:hover:bg-[#ffaf50ff] dark:hover:text-[#3b5335ff] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2"
+                  >
+                    Candidature spontanée
+                  </a>
+                </div>
               </div>
               <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
             </div>

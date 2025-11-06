@@ -134,8 +134,8 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50">
-            <div className="px-3 pt-1.5 pb-3 space-y-1.5">
+          <div className="md:hidden fixed inset-0 top-[72px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50 overflow-y-auto z-50">
+            <div className="px-3 pt-4 pb-safe space-y-1.5 max-h-[calc(100vh-72px)]">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
@@ -150,14 +150,16 @@ export default function Header() {
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-sm uppercase">{item.label}</span>
                     {pathname === item.href && (
-                      <span className="w-1.5 h-1.5 bg-accent-500 rounded-full animate-pulse" />
+                      <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
                     )}
                   </div>
                 </Link>
               ))}
               
               {/* Section info mobile */}
-              <div className="pt-2 mt-2 border-t border-gray-200/50 dark:border-gray-700/50">
+              <div className="pt-6 mt-6 border-t border-gray-200/50 dark:border-gray-700/50">
                 <div className="space-y-1.5">
                   {/* Contact Hugo */}
                   <a
