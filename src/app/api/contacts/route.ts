@@ -1,23 +1,30 @@
 // app/api/contacts/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
 import { ObjectId } from 'mongodb';
+import { logger } from '@/app/lib/logger';
+import { RateLimiters, isValidObjectId } from '@/app/lib/security';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for contacts GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('🔍 Fetching contacts from database...');
+    logger.debug('Fetching contacts from database');
 
     const { db } = await connectToDatabase();
-    console.log('✅ Database connected:', db.databaseName);
 
     // Récupérer les contacts depuis les collections candidats et entreprises
     const [candidats, entreprises] = await Promise.all([
       db.collection('candidats').find({}).sort({ date: -1 }).toArray(),
       db.collection('entreprises').find({}).sort({ date: -1 }).toArray()
     ]);
-
-    console.log(`👤 Found ${candidats.length} candidats`);
-    console.log(`🏢 Found ${entreprises.length} entreprises`);
 
     // Combiner et formater les données
     const contacts = [
@@ -41,12 +48,18 @@ export async function GET() {
       }))
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    console.log(`📨 Total contacts: ${contacts.length}`);
+    logger.info('Contacts fetched successfully', {
+      candidats: candidats.length,
+      entreprises: entreprises.length,
+      total: contacts.length
+    });
 
     return NextResponse.json({ contacts });
 
   } catch (error: unknown) {
-    console.error('❌ Error fetching contacts:', error);
+    logger.error('Failed to fetch contacts', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       { error: 'Failed to fetch contacts', details: (error instanceof Error ? error.message : 'Erreur inconnue') },
       { status: 500 }
@@ -54,19 +67,39 @@ export async function GET() {
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    console.log('🗑️ [CONTACTS] Deleting contact...');
+export async function DELETE(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for contacts DELETE', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
 
+  try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     const type = searchParams.get('type');
 
     if (!id || !type) {
+      logger.warn('Contact deletion failed: missing ID or type');
       return NextResponse.json(
         {
           success: false,
           error: 'ID and type are required'
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate ObjectId
+    if (!isValidObjectId(id)) {
+      logger.warn('Contact deletion failed: invalid ObjectId', { id });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid contact ID format'
         },
         { status: 400 }
       );
@@ -77,13 +110,14 @@ export async function DELETE(request: Request) {
     // Déterminer la collection en fonction du type
     const collection = type === 'candidat' ? 'candidats' : 'entreprises';
 
-    console.log(`🗑️ [CONTACTS] Deleting from collection: ${collection}, ID: ${id}`);
+    logger.debug('Deleting contact', { collection, id });
 
     const result = await db.collection(collection).deleteOne({
       _id: new ObjectId(id)
     });
 
     if (result.deletedCount === 0) {
+      logger.warn('Contact not found for deletion', { id, collection });
       return NextResponse.json(
         {
           success: false,
@@ -93,7 +127,7 @@ export async function DELETE(request: Request) {
       );
     }
 
-    console.log(`✅ [CONTACTS] Contact deleted successfully`);
+    logger.info('Contact deleted successfully', { id, collection, type });
 
     return NextResponse.json({
       success: true,
@@ -101,7 +135,9 @@ export async function DELETE(request: Request) {
     });
 
   } catch (error: unknown) {
-    console.error('❌ [CONTACTS] Error deleting contact:', error);
+    logger.error('Failed to delete contact', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       {
         success: false,

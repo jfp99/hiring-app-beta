@@ -1,81 +1,113 @@
 // app/api/entreprises/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { logger } from '@/app/lib/logger';
+import { RateLimiters } from '@/app/lib/security';
+import { z } from 'zod';
 
-export async function POST(request: Request) {
+// Validation schema
+const entrepriseSchema = z.object({
+  nom: z.string().min(1, 'Le nom est requis'),
+  email: z.string().email('Email invalide'),
+  telephone: z.string().optional(),
+  sujet: z.string().min(1, 'Le sujet est requis'),
+  message: z.string().min(1, 'Le message est requis')
+});
+
+export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for entreprises POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('🏢 [ENTREPRISES] Creating new company contact...');
-    
+    logger.info('Creating new company contact');
+
     const body = await request.json();
-    console.log('📦 [ENTREPRISES] Request body:', body);
-    
-    // Validation des champs requis pour les entreprises
-    const requiredFields = ['nom', 'email', 'sujet', 'message'];
-    const missingFields = requiredFields.filter(field => !body[field] || body[field].trim() === '');
-    
-    if (missingFields.length > 0) {
-      console.log('❌ [ENTREPRISES] Missing required fields:', missingFields);
+
+    // Validate input
+    const validation = entrepriseSchema.safeParse(body);
+    if (!validation.success) {
+      logger.warn('Company validation failed', { errors: validation.error.errors });
       return NextResponse.json(
-        { 
+        {
           success: false,
-          error: 'Tous les champs obligatoires doivent être remplis',
-          missingFields 
-        }, 
+          error: 'Données invalides',
+          details: validation.error.errors
+        },
         { status: 400 }
       );
     }
-    
+
+    const validatedData = validation.data;
+
     const { db } = await connectToDatabase();
-    
+
     const nouvelleEntreprise = {
-      nom: body.nom.trim(),
-      email: body.email.trim(),
-      telephone: body.telephone?.trim() || '',
-      sujet: body.sujet.trim(),
-      message: body.message.trim(),
+      nom: validatedData.nom.trim(),
+      email: validatedData.email.toLowerCase().trim(),
+      telephone: validatedData.telephone?.trim() || '',
+      sujet: validatedData.sujet.trim(),
+      message: validatedData.message.trim(),
       type: 'entreprise',
       date: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       statut: 'nouveau'
     };
-    
-    console.log('💾 [ENTREPRISES] Saving company to database:', nouvelleEntreprise);
-    
+
     const result = await db.collection('entreprises').insertOne(nouvelleEntreprise);
-    
-    console.log('✅ [ENTREPRISES] Company created with id:', result.insertedId);
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    logger.info('Company contact created successfully', {
+      id: result.insertedId.toString(),
+      email: validatedData.email
+    });
+
+    return NextResponse.json({
+      success: true,
       message: 'Votre demande a été envoyée avec succès ! Nous vous recontacterons dans les plus brefs délais.',
       id: result.insertedId.toString()
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [ENTREPRISES] Error creating company:', error);
+    logger.error('Failed to create company contact', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: 'Erreur lors de l\'envoi de votre demande' 
-      }, 
+        error: 'Erreur lors de l\'envoi de votre demande'
+      },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for entreprises GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('🔍 [ENTREPRISES] Fetching companies...');
-    
+    logger.debug('Fetching companies');
+
     const { db } = await connectToDatabase();
-    
+
     const entreprises = await db.collection('entreprises')
       .find({})
       .sort({ date: -1 })
       .toArray();
-    
-    console.log(`📋 [ENTREPRISES] Found ${entreprises.length} companies`);
-    
+
+    logger.info('Companies fetched successfully', { count: entreprises.length });
+
     const formattedEntreprises = entreprises.map(entreprise => ({
       id: entreprise._id.toString(),
       nom: entreprise.nom,
@@ -86,16 +118,18 @@ export async function GET() {
       date: entreprise.date,
       statut: entreprise.statut
     }));
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       success: true,
-      entreprises: formattedEntreprises 
+      entreprises: formattedEntreprises
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [ENTREPRISES] Error fetching companies:', error);
+    logger.error('Failed to fetch companies', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to fetch companies' 
       }, 
