@@ -4,6 +4,8 @@ import { connectToDatabase } from '@/app/lib/mongodb'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { z } from 'zod'
+import { getCorsHeaders } from '@/app/lib/cors'
+import { logger } from '@/app/lib/logger'
 
 // Validation schema
 const loginSchema = z.object({
@@ -11,27 +13,23 @@ const loginSchema = z.object({
   password: z.string().min(6)
 })
 
-// CORS headers for browser extension
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Max-Age': '86400',
-}
-
 // OPTIONS: Handle CORS preflight
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request)
   return NextResponse.json({}, { headers: corsHeaders })
 }
 
 // POST: Authenticate extension user
 export async function POST(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request)
+
   try {
     const body = await request.json()
 
     // Validate input
     const validation = loginSchema.safeParse(body)
     if (!validation.success) {
+      logger.warn('Extension login validation failed', { errors: validation.error.errors })
       return NextResponse.json(
         { error: 'Invalid email or password format' },
         { status: 400, headers: corsHeaders }
@@ -107,6 +105,8 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    logger.info('Extension login successful', { userId: user._id.toString(), email: user.email, role: user.role })
+
     // Return success response
     return NextResponse.json({
       success: true,
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     }, { headers: corsHeaders })
 
   } catch (error) {
-    console.error('Extension authentication error:', error)
+    logger.error('Extension authentication failed', {}, error as Error)
     return NextResponse.json(
       { error: 'Authentication failed' },
       { status: 500, headers: corsHeaders }
@@ -134,6 +134,8 @@ export async function POST(request: NextRequest) {
 
 // GET: Verify extension token
 export async function GET(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request)
+
   try {
     const authHeader = request.headers.get('authorization')
 
@@ -187,13 +189,14 @@ export async function GET(request: NextRequest) {
     }
 
     if (error instanceof jwt.TokenExpiredError) {
+      logger.warn('Extension token expired')
       return NextResponse.json(
         { error: 'Token expired' },
         { status: 401, headers: corsHeaders }
       )
     }
 
-    console.error('Token verification error:', error)
+    logger.error('Token verification failed', {}, error as Error)
     return NextResponse.json(
       { error: 'Token verification failed' },
       { status: 500, headers: corsHeaders }

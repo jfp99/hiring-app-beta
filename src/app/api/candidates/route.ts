@@ -14,6 +14,9 @@ import {
 import { toMongoStatus } from '@/app/lib/status-mapper'
 import { MongoQuery, getErrorMessage } from '@/app/types/api'
 import { z } from 'zod'
+import { getCorsHeaders } from '@/app/lib/cors'
+import { logger } from '@/app/lib/logger'
+import { RateLimiters, createSafeRegex } from '@/app/lib/security'
 
 // Validation schema
 const createCandidateSchema = z.object({
@@ -45,21 +48,23 @@ const createCandidateSchema = z.object({
   profilePictureUrl: z.string().optional()
 })
 
-// CORS headers for browser extension
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Max-Age': '86400',
-}
-
 // OPTIONS: Handle CORS preflight
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request)
   return NextResponse.json({}, { headers: corsHeaders })
 }
 
 // GET: List/Search candidates with filters
 export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request)
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for candidates GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    })
+    return rateLimitResponse
+  }
+
   try {
     const session = await auth()
     if (!session || !session.user) {
@@ -105,14 +110,15 @@ export async function GET(request: NextRequest) {
     // Build query
     const query: MongoQuery = {}
 
-    // Text search
+    // Text search (using safe regex to prevent injection)
     if (filters.search) {
+      const safeSearchRegex = createSafeRegex(filters.search)
       query.$or = [
-        { firstName: { $regex: filters.search, $options: 'i' } },
-        { lastName: { $regex: filters.search, $options: 'i' } },
-        { email: { $regex: filters.search, $options: 'i' } },
-        { currentPosition: { $regex: filters.search, $options: 'i' } },
-        { currentCompany: { $regex: filters.search, $options: 'i' } }
+        { firstName: safeSearchRegex },
+        { lastName: safeSearchRegex },
+        { email: safeSearchRegex },
+        { currentPosition: safeSearchRegex },
+        { currentCompany: safeSearchRegex }
       ]
     }
 
@@ -130,7 +136,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (filters.skills && filters.skills.length > 0) {
-      query['skills.name'] = { $in: filters.skills.map(s => new RegExp(s, 'i')) }
+      query['skills.name'] = { $in: filters.skills.map(s => createSafeRegex(s)) }
     }
 
     if (filters.availability && filters.availability.length > 0) {
@@ -138,9 +144,10 @@ export async function GET(request: NextRequest) {
     }
 
     if (filters.location) {
+      const safeLocationRegex = createSafeRegex(filters.location)
       query.$or = [
-        { 'address.city': { $regex: filters.location, $options: 'i' } },
-        { 'address.country': { $regex: filters.location, $options: 'i' } }
+        { 'address.city': safeLocationRegex },
+        { 'address.country': safeLocationRegex }
       ]
     }
 
@@ -209,7 +216,7 @@ export async function GET(request: NextRequest) {
       quickScores: candidate.quickScores || []
     }))
 
-    console.log(`✅ [CANDIDATES] Found ${total} candidates`)
+    logger.info('Candidates fetched successfully', { total, page: filters.page, limit: filters.limit })
 
     return NextResponse.json({
       success: true,
@@ -221,7 +228,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error: unknown) {
-    console.error('❌ [CANDIDATES] Error fetching candidates:', error)
+    logger.error('Failed to fetch candidates', { error: getErrorMessage(error) }, error as Error)
     return NextResponse.json(
       { error: 'Failed to fetch candidates', details: getErrorMessage(error) },
       { status: 500 }
@@ -231,6 +238,17 @@ export async function GET(request: NextRequest) {
 
 // POST: Create a new candidate
 export async function POST(request: NextRequest) {
+  const corsHeaders = getCorsHeaders(request)
+
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request)
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for candidates POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    })
+    return rateLimitResponse
+  }
+
   try {
     const session = await authWithToken(request)
     if (!session || !session.user) {
@@ -367,7 +385,7 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    console.log('✅ [CANDIDATES] Candidate created:', result.insertedId)
+    logger.info('Candidate created successfully', { candidateId: result.insertedId.toString(), email: validatedData.email })
 
     return NextResponse.json({
       success: true,
@@ -377,13 +395,14 @@ export async function POST(request: NextRequest) {
 
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
+      logger.warn('Candidate validation failed', { errors: (error as any).errors })
       return NextResponse.json(
         { error: 'Données de validation invalides', details: (error as any).errors },
         { status: 400, headers: corsHeaders }
       )
     }
 
-    console.error('❌ [CANDIDATES] Error creating candidate:', error)
+    logger.error('Failed to create candidate', { error: getErrorMessage(error) }, error as Error)
     return NextResponse.json(
       { error: 'Failed to create candidate', details: getErrorMessage(error) },
       { status: 500, headers: corsHeaders }
