@@ -1,125 +1,22 @@
 // src/app/lib/security.ts
 import { NextRequest, NextResponse } from 'next/server'
+// Import new Redis-based rate limiter
+import { RateLimiters as RedisRateLimiters, createRateLimit } from './rateLimiter'
 
 // =============================================================================
-// RATE LIMITING
+// RATE LIMITING (Re-exported from rateLimiter.ts)
 // =============================================================================
+// Note: Rate limiting now uses Redis when available, with automatic fallback
+// to in-memory storage for development or when Redis is unavailable.
 
-interface RateLimitConfig {
-  windowMs: number // Time window in milliseconds
-  maxRequests: number // Maximum requests per window
-  message?: string // Custom error message
-  skipSuccessfulRequests?: boolean // Don't count successful requests
-  skipFailedRequests?: boolean // Don't count failed requests
-}
-
-interface RateLimitStore {
-  count: number
-  resetTime: number
-}
-
-// In-memory store for rate limiting (use Redis in production)
-const rateLimitMap = new Map<string, RateLimitStore>()
-
-/**
- * Rate limiting middleware
- * @param config Rate limit configuration
- * @returns Middleware function
- */
-export function rateLimit(config: RateLimitConfig) {
-  return async (request: NextRequest): Promise<NextResponse | null> => {
-    // Get client identifier (IP address or user ID)
-    const identifier =
-      request.headers.get('x-forwarded-for')?.split(',')[0] ||
-      request.headers.get('x-real-ip') ||
-      'unknown'
-
-    const key = `rate-limit:${identifier}:${request.nextUrl.pathname}`
-    const now = Date.now()
-
-    // Get or create rate limit entry
-    let entry = rateLimitMap.get(key)
-
-    // Reset if window has expired
-    if (!entry || now > entry.resetTime) {
-      entry = {
-        count: 0,
-        resetTime: now + config.windowMs
-      }
-      rateLimitMap.set(key, entry)
-    }
-
-    // Increment request count
-    entry.count++
-
-    // Check if limit exceeded
-    if (entry.count > config.maxRequests) {
-      const retryAfter = Math.ceil((entry.resetTime - now) / 1000)
-
-      return NextResponse.json(
-        {
-          error: config.message || 'Too many requests, please try again later',
-          retryAfter
-        },
-        {
-          status: 429,
-          headers: {
-            'Retry-After': retryAfter.toString(),
-            'X-RateLimit-Limit': config.maxRequests.toString(),
-            'X-RateLimit-Remaining': '0',
-            'X-RateLimit-Reset': new Date(entry.resetTime).toISOString()
-          }
-        }
-      )
-    }
-
-    // Clean up old entries periodically
-    if (Math.random() < 0.01) { // 1% chance
-      const expiredKeys: string[] = []
-      rateLimitMap.forEach((value, key) => {
-        if (now > value.resetTime + 60000) { // 1 minute grace period
-          expiredKeys.push(key)
-        }
-      })
-      expiredKeys.forEach(key => rateLimitMap.delete(key))
-    }
-
-    return null // Allow request
-  }
-}
+// Re-export rate limit creator for backward compatibility
+export const rateLimit = createRateLimit
 
 /**
  * Preset rate limiters for common use cases
+ * Now using Redis with automatic fallback to in-memory storage
  */
-export const RateLimiters = {
-  // Authentication endpoints (strict)
-  auth: rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 5,
-    message: 'Too many authentication attempts, please try again in 15 minutes'
-  }),
-
-  // General API endpoints
-  api: rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    maxRequests: 60,
-    message: 'Too many requests, please slow down'
-  }),
-
-  // File upload endpoints
-  upload: rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    maxRequests: 10,
-    message: 'Too many uploads, please wait before uploading again'
-  }),
-
-  // Search endpoints
-  search: rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    maxRequests: 30,
-    message: 'Too many search requests'
-  })
-}
+export const RateLimiters = RedisRateLimiters
 
 // =============================================================================
 // INPUT SANITIZATION

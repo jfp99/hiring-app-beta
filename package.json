@@ -38,6 +38,7 @@
     "canvas": "^3.2.0",
     "framer-motion": "^12.23.24",
     "ics": "^3.8.1",
+    "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.545.0",
     "mammoth": "^1.11.0",
