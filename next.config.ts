@@ -77,11 +77,13 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Required for Next.js
-              "style-src 'self' 'unsafe-inline'", // Required for Tailwind
+              // Note: In production, use nonce-based CSP instead of unsafe-inline
+              // For development, we temporarily allow these for Next.js compatibility
+              "script-src 'self' 'unsafe-eval' https://vercel.live", // unsafe-eval required for Next.js dev
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Tailwind requires unsafe-inline
               "img-src 'self' data: https: blob:",
-              "font-src 'self' data:",
-              "connect-src 'self' https:",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' https: wss:",
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'"

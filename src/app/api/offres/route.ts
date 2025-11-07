@@ -5,6 +5,7 @@ import { logger } from '@/app/lib/logger';
 import { RateLimiters, isValidObjectId } from '@/app/lib/security';
 import { z } from 'zod';
 import { ObjectId } from 'mongodb';
+import { auth } from '@/app/lib/auth-helpers';
 
 // Validation schemas
 const offreSchema = z.object({
@@ -113,6 +114,21 @@ export async function POST(request: NextRequest) {
     return rateLimitResponse;
   }
 
+  // Check authentication - only authenticated users can create job offers
+  const session = await auth();
+  if (!session || !session.user) {
+    logger.warn('Unauthorized job offer creation attempt', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Unauthorized - Authentication required'
+      },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = await request.json();
 
@@ -155,7 +171,8 @@ export async function POST(request: NextRequest) {
 
     logger.info('Job offer created successfully', {
       id: result.insertedId.toString(),
-      titre: validatedData.titre
+      titre: validatedData.titre,
+      createdBy: session.user.email || 'unknown'
     });
 
     return NextResponse.json({
@@ -186,6 +203,21 @@ export async function PUT(request: NextRequest) {
       ip: request.headers.get('x-forwarded-for') || 'unknown'
     });
     return rateLimitResponse;
+  }
+
+  // Check authentication - only authenticated users can update job offers
+  const session = await auth();
+  if (!session || !session.user) {
+    logger.warn('Unauthorized job offer update attempt', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Unauthorized - Authentication required'
+      },
+      { status: 401 }
+    );
   }
 
   try {
@@ -268,7 +300,10 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    logger.info('Job offer updated successfully', { id });
+    logger.info('Job offer updated successfully', {
+      id,
+      updatedBy: session.user.email || 'unknown'
+    });
 
     return NextResponse.json({
       success: true,
@@ -297,6 +332,21 @@ export async function DELETE(request: NextRequest) {
       ip: request.headers.get('x-forwarded-for') || 'unknown'
     });
     return rateLimitResponse;
+  }
+
+  // Check authentication - only authenticated users can delete job offers
+  const session = await auth();
+  if (!session || !session.user) {
+    logger.warn('Unauthorized job offer deletion attempt', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Unauthorized - Authentication required'
+      },
+      { status: 401 }
+    );
   }
 
   try {
@@ -345,7 +395,10 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    logger.info('Job offer deleted successfully', { id });
+    logger.info('Job offer deleted successfully', {
+      id,
+      deletedBy: session.user.email || 'unknown'
+    });
 
     return NextResponse.json({
       success: true,

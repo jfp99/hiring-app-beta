@@ -30,10 +30,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           // Email whitelist check for admin access
-          const ALLOWED_ADMIN_EMAILS = ['hugo@hi-ring.fr', 'izia@hi-ring.fr']
+          const allowedAdminEmails = process.env.ADMIN_EMAIL_WHITELIST?.split(',').map(e => e.trim().toLowerCase()) || []
           const normalizedEmail = email.toLowerCase()
 
-          if (!ALLOWED_ADMIN_EMAILS.includes(normalizedEmail)) {
+          if (allowedAdminEmails.length === 0) {
+            console.log(`⚠️ [AUTH] Warning: ADMIN_EMAIL_WHITELIST not configured`)
+            return null
+          }
+
+          if (!allowedAdminEmails.includes(normalizedEmail)) {
             console.log(`❌ [AUTH] Email not in whitelist: ${email}`)
             return null
           }

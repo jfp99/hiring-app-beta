@@ -5,6 +5,7 @@ import { logger } from '@/app/lib/logger';
 import { RateLimiters, isValidObjectId } from '@/app/lib/security';
 import { z } from 'zod';
 import { ObjectId } from 'mongodb';
+import { auth } from '@/app/lib/auth-helpers';
 
 // Validation schema
 const newsletterSchema = z.object({
@@ -183,6 +184,21 @@ export async function DELETE(request: NextRequest) {
     return rateLimitResponse;
   }
 
+  // Check authentication - only authenticated users can delete newsletter subscribers
+  const session = await auth();
+  if (!session || !session.user) {
+    logger.warn('Unauthorized newsletter deletion attempt', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Unauthorized - Authentication required'
+      },
+      { status: 401 }
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -229,7 +245,10 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    logger.info('Newsletter subscriber deleted successfully', { id });
+    logger.info('Newsletter subscriber deleted successfully', {
+      id,
+      deletedBy: session.user.email || 'unknown'
+    });
 
     return NextResponse.json({
       success: true,
