@@ -6,6 +6,7 @@ import Providers from './providers'
 import { Toaster } from './components/ui/Toaster'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
+import ErrorBoundary from './components/ErrorBoundary'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -117,7 +118,9 @@ export default function RootLayout({
       </head>
       <body className={montserrat.className} suppressHydrationWarning>
         <Providers>
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
           <Toaster />
           <SpeedInsights />
           <Analytics />

@@ -5,6 +5,8 @@ import { hashPassword, generateInviteToken } from '@/app/lib/auth-enhanced'
 import { auth } from '@/app/lib/auth-helpers'
 import { UserRole, PERMISSIONS, hasPermission } from '@/app/types/auth'
 import { z } from 'zod'
+import { logger } from '@/app/lib/logger'
+import { RateLimiters, createSafeRegex, isValidObjectId } from '@/app/lib/security'
 
 // Validation schemas
 const createUserSchema = z.object({
@@ -28,10 +30,20 @@ const updateUserSchema = z.object({
 
 // GET: List all users (with filters)
 export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for users GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
     // Check authentication
     const session = await auth()
     if (!session || !session.user) {
+      logger.warn('Unauthorized access attempt to users GET');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -40,6 +52,9 @@ export async function GET(request: NextRequest) {
 
     // Check permission
     if (!hasPermission(session.user as any, PERMISSIONS.USER_VIEW)) {
+      logger.warn('Forbidden access attempt to users GET', {
+        userId: (session.user as any)?.id || session.user?.email
+      });
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -70,10 +85,11 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
+      const safeSearchRegex = createSafeRegex(search);
       query.$or = [
-        { email: { $regex: search, $options: 'i' } },
-        { firstName: { $regex: search, $options: 'i' } },
-        { lastName: { $regex: search, $options: 'i' } }
+        { email: safeSearchRegex },
+        { firstName: safeSearchRegex },
+        { lastName: safeSearchRegex }
       ]
     }
 
@@ -107,6 +123,8 @@ export async function GET(request: NextRequest) {
       lastLoginAt: user.lastLoginAt
     }))
 
+    logger.info('Users fetched successfully', { count: formattedUsers.length, userId: (session.user as any)?.id });
+
     return NextResponse.json({
       success: true,
       users: formattedUsers,
@@ -114,7 +132,9 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error: unknown) {
-    console.error('❌ [USERS] Error fetching users:', error)
+    logger.error('Failed to fetch users', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -124,10 +144,20 @@ export async function GET(request: NextRequest) {
 
 // POST: Create a new user or send invite
 export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for users POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
     // Check authentication
     const session = await auth()
     if (!session || !session.user) {
+      logger.warn('Unauthorized access attempt to users POST');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -136,6 +166,9 @@ export async function POST(request: NextRequest) {
 
     // Check permission
     if (!hasPermission(session.user as any, PERMISSIONS.USER_CREATE)) {
+      logger.warn('Forbidden access attempt to users POST', {
+        userId: (session.user as any)?.id || session.user?.email
+      });
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -182,7 +215,7 @@ export async function POST(request: NextRequest) {
       userData.password = '' // No password yet
 
       // TODO: Send invite email with token
-      console.log('📧 [USERS] Invite token generated:', token)
+      logger.debug('Invite token generated', { email: validatedData.email })
     } else {
       // Create user with password
       if (!validatedData.password) {
@@ -198,7 +231,11 @@ export async function POST(request: NextRequest) {
     // Insert user
     const result = await db.collection('users').insertOne(userData)
 
-    console.log('✅ [USERS] User created:', validatedData.email)
+    logger.info('User created successfully', {
+      email: validatedData.email,
+      userId: result.insertedId.toString(),
+      sendInvite: validatedData.sendInvite
+    });
 
     return NextResponse.json({
       success: true,
@@ -210,13 +247,16 @@ export async function POST(request: NextRequest) {
 
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
+      logger.warn('User creation validation failed', { errors: error.errors });
       return NextResponse.json(
         { error: 'Invalid input', details: (error as any).errors },
         { status: 400 }
       )
     }
 
-    console.error('❌ [USERS] Error creating user:', error)
+    logger.error('Failed to create user', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -226,10 +266,20 @@ export async function POST(request: NextRequest) {
 
 // PUT: Update user
 export async function PUT(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for users PUT', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
     // Check authentication
     const session = await auth()
     if (!session || !session.user) {
+      logger.warn('Unauthorized access attempt to users PUT');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -240,8 +290,18 @@ export async function PUT(request: NextRequest) {
     const userId = searchParams.get('id')
 
     if (!userId) {
+      logger.warn('User update failed: missing ID');
       return NextResponse.json(
         { error: 'User ID is required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate ObjectId
+    if (!isValidObjectId(userId)) {
+      logger.warn('User update failed: invalid ObjectId', { userId });
+      return NextResponse.json(
+        { error: 'Invalid user ID format' },
         { status: 400 }
       )
     }
@@ -249,6 +309,10 @@ export async function PUT(request: NextRequest) {
     // Check permission
     const isOwnProfile = userId === (session.user as any)?.id || session.user?.email || 'unknown'
     if (!isOwnProfile && !hasPermission(session.user as any, PERMISSIONS.USER_EDIT)) {
+      logger.warn('Forbidden access attempt to users PUT', {
+        userId: (session.user as any)?.id || session.user?.email,
+        targetUserId: userId
+      });
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -283,13 +347,14 @@ export async function PUT(request: NextRequest) {
     )
 
     if (result.matchedCount === 0) {
+      logger.warn('User not found for update', { userId });
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
 
-    console.log('✅ [USERS] User updated:', userId)
+    logger.info('User updated successfully', { userId });
 
     return NextResponse.json({
       success: true,
@@ -298,13 +363,16 @@ export async function PUT(request: NextRequest) {
 
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
+      logger.warn('User update validation failed', { errors: error.errors });
       return NextResponse.json(
         { error: 'Invalid input', details: (error as any).errors },
         { status: 400 }
       )
     }
 
-    console.error('❌ [USERS] Error updating user:', error)
+    logger.error('Failed to update user', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -314,10 +382,20 @@ export async function PUT(request: NextRequest) {
 
 // DELETE: Deactivate user (soft delete)
 export async function DELETE(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for users DELETE', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
     // Check authentication
     const session = await auth()
     if (!session || !session.user) {
+      logger.warn('Unauthorized access attempt to users DELETE');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -326,6 +404,9 @@ export async function DELETE(request: NextRequest) {
 
     // Check permission
     if (!hasPermission(session.user as any, PERMISSIONS.USER_DELETE)) {
+      logger.warn('Forbidden access attempt to users DELETE', {
+        userId: (session.user as any)?.id || session.user?.email
+      });
       return NextResponse.json(
         { error: 'Forbidden: Insufficient permissions' },
         { status: 403 }
@@ -336,14 +417,25 @@ export async function DELETE(request: NextRequest) {
     const userId = searchParams.get('id')
 
     if (!userId) {
+      logger.warn('User deletion failed: missing ID');
       return NextResponse.json(
         { error: 'User ID is required' },
         { status: 400 }
       )
     }
 
+    // Validate ObjectId
+    if (!isValidObjectId(userId)) {
+      logger.warn('User deletion failed: invalid ObjectId', { userId });
+      return NextResponse.json(
+        { error: 'Invalid user ID format' },
+        { status: 400 }
+      )
+    }
+
     // Prevent self-deletion
     if (userId === (session.user as any)?.id || session.user?.email || 'unknown') {
+      logger.warn('Attempted self-deletion', { userId });
       return NextResponse.json(
         { error: 'Cannot delete your own account' },
         { status: 400 }
@@ -367,13 +459,14 @@ export async function DELETE(request: NextRequest) {
     )
 
     if (result.matchedCount === 0) {
+      logger.warn('User not found for deletion', { userId });
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
 
-    console.log('✅ [USERS] User deactivated:', userId)
+    logger.info('User deactivated successfully', { userId });
 
     return NextResponse.json({
       success: true,
@@ -381,7 +474,9 @@ export async function DELETE(request: NextRequest) {
     })
 
   } catch (error: unknown) {
-    console.error('❌ [USERS] Error deleting user:', error)
+    logger.error('Failed to delete user', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -1,28 +1,39 @@
 // app/api/jobs/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { logger } from '@/app/lib/logger';
+import { RateLimiters, createSafeRegex } from '@/app/lib/security';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for jobs GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
     const categorie = searchParams.get('categorie') || '';
     const lieu = searchParams.get('lieu') || '';
     const typeContrat = searchParams.get('typeContrat') || '';
-    
-    console.log('🔍 [JOBS] Fetching jobs with filters:', { search, categorie, lieu, typeContrat });
+
+    logger.debug('Fetching jobs with filters', { search, categorie, lieu, typeContrat });
     
     const { db } = await connectToDatabase();
     
     // Vérifier si la collection offres existe
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
-    
+
     if (!collectionNames.includes('offres')) {
-      console.log('📭 [JOBS] No offres collection found');
-      return NextResponse.json({ 
+      logger.debug('No job offers collection found, returning empty');
+      return NextResponse.json({
         success: true,
-        offres: [] 
+        offres: []
       });
     }
     
@@ -30,36 +41,37 @@ export async function GET(request: Request) {
     
     // Construire la requête de filtrage - seulement les offres actives
     const query: any = { statut: 'active' };
-    
+
     if (search) {
+      const safeSearchRegex = createSafeRegex(search);
       query.$or = [
-        { titre: { $regex: search, $options: 'i' } },
-        { entreprise: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { competences: { $regex: search, $options: 'i' } }
+        { titre: safeSearchRegex },
+        { entreprise: safeSearchRegex },
+        { description: safeSearchRegex },
+        { competences: safeSearchRegex }
       ];
     }
-    
+
     if (categorie && categorie !== 'toutes') {
       query.categorie = categorie;
     }
-    
+
     if (lieu && lieu !== 'tous') {
-      query.lieu = { $regex: lieu, $options: 'i' };
+      query.lieu = createSafeRegex(lieu);
     }
-    
+
     if (typeContrat && typeContrat !== 'tous') {
       query.typeContrat = typeContrat;
     }
-    
-    console.log('📋 [JOBS] MongoDB query:', JSON.stringify(query, null, 2));
+
+    logger.debug('MongoDB query for jobs', { query });
     
     const offres = await offresCollection
       .find(query)
       .sort({ datePublication: -1 })
       .toArray();
-    
-    console.log(`📋 [JOBS] Found ${offres.length} job offers matching filters`);
+
+    logger.info('Job offers fetched successfully', { count: offres.length, filters: { search, categorie, lieu, typeContrat } });
     
     // Formater les données pour la page offres-emploi
     const formattedOffres = offres.map(offre => ({
@@ -74,19 +86,21 @@ export async function GET(request: Request) {
       categorie: offre.categorie || 'Technologie'
     }));
     
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      offres: formattedOffres 
+      offres: formattedOffres
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [JOBS] Error fetching jobs:', error);
+    logger.error('Failed to fetch jobs', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to fetch jobs',
         offres: [] // Retourner un tableau vide en cas d'erreur
-      }, 
+      },
       { status: 500 }
     );
   }
