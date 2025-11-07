@@ -2,8 +2,17 @@
 import { auth } from './src/app/lib/auth'
 import { NextResponse } from 'next/server'
 import { UserRole } from './src/app/types/auth'
+import { validateCsrf } from './src/app/lib/csrf'
 
 export default auth((req) => {
+  // CSRF Protection for API routes
+  if (req.nextUrl.pathname.startsWith('/api/')) {
+    const csrfError = validateCsrf(req)
+    if (csrfError) {
+      return csrfError
+    }
+  }
+
   const token = req.auth
   const path = req.nextUrl.pathname
 
@@ -17,7 +26,8 @@ export default auth((req) => {
     '/auth/register',
     '/auth/forgot-password',
     '/api/jobs', // Public job listings
-    '/api/newsletters' // Newsletter subscription
+    '/api/newsletters', // Newsletter subscription
+    '/api/csrf' // CSRF token generation
   ]
 
   // Check if route is public

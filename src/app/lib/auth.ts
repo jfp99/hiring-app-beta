@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import { connectToDatabase } from './mongodb'
 import { sanitizeEmail } from './security'
 import { UserRole } from '../types/auth'
+import { logger } from './logger'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -17,7 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
-            console.log('❌ [AUTH] Missing credentials')
+            logger.warn('Missing credentials in login attempt')
             return null
           }
 
@@ -25,7 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const email = sanitizeEmail(credentials.email as string)
 
           if (!email) {
-            console.log('❌ [AUTH] Invalid email format')
+            logger.warn('Invalid email format in login attempt')
             return null
           }
 
@@ -34,12 +35,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const normalizedEmail = email.toLowerCase()
 
           if (allowedAdminEmails.length === 0) {
-            console.log(`⚠️ [AUTH] Warning: ADMIN_EMAIL_WHITELIST not configured`)
+            logger.warn('ADMIN_EMAIL_WHITELIST not configured - authentication disabled')
             return null
           }
 
           if (!allowedAdminEmails.includes(normalizedEmail)) {
-            console.log(`❌ [AUTH] Email not in whitelist: ${email}`)
+            logger.warn('Email not in whitelist', { email })
             return null
           }
 
@@ -52,13 +53,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           })
 
           if (!user) {
-            console.log(`❌ [AUTH] User not found: ${email}`)
+            logger.warn('User not found', { email })
             return null
           }
 
           // Check if user is active
           if (!user.isActive) {
-            console.log(`❌ [AUTH] User account is disabled: ${email}`)
+            logger.warn('User account is disabled', { email })
             return null
           }
 
@@ -69,7 +70,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           )
 
           if (!isPasswordValid) {
-            console.log(`❌ [AUTH] Invalid password for user: ${email}`)
+            logger.warn('Invalid password for user', { email })
             return null
           }
 
@@ -84,7 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
           })
 
-          console.log(`✅ [AUTH] User authenticated: ${email}`)
+          logger.info('User authenticated successfully', { email })
 
           // Return user object for JWT
           return {
@@ -97,7 +98,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             avatar: user.avatar
           }
         } catch (error) {
-          console.error('❌ [AUTH] Authorization error:', error)
+          logger.error('Authorization error', {}, error as Error)
           return null
         }
       }
@@ -159,9 +160,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: token?.email as string
           }
         })
-        console.log(`✅ [AUTH] User signed out: ${token?.email}`)
+        logger.info('User signed out successfully', { email: token?.email as string })
       } catch (error) {
-        console.error('❌ [AUTH] Error logging sign out:', error)
+        logger.error('Error logging sign out', {}, error as Error)
       }
     }
   },
