@@ -4,6 +4,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import SocialLinks from './SocialLinks'
+import { CheckCircle, XCircle, Check } from 'lucide-react'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
@@ -33,13 +34,13 @@ export default function Footer() {
       const data = await response.json()
 
       if (data.success) {
-        setMessage(data.message || '✅ Merci pour votre inscription !')
+        setMessage(data.message || 'Merci pour votre inscription !')
         setEmail('')
       } else {
-        setMessage(data.error || '❌ Erreur lors de l\'inscription')
+        setMessage(data.error || 'Erreur lors de l\'inscription')
       }
     } catch  {
-      setMessage('❌ Erreur de connexion')
+      setMessage('Erreur de connexion')
     } finally {
       setLoading(false)
     }
@@ -122,19 +123,27 @@ export default function Footer() {
                     Inscription...
                   </span>
                 ) : (
-                  'S\'abonner ✓'
+                  <span className="flex items-center justify-center gap-2">
+                    S'abonner
+                    <Check className="w-4 h-4" />
+                  </span>
                 )}
               </button>
             </form>
 
             {/* Message de confirmation/erreur */}
             {message && (
-              <div className={`mt-3 p-3 rounded-lg text-sm border ${
-                message.includes('✅') 
-                  ? 'bg-green-500/20 text-green-300 border-green-500/30' 
+              <div className={`mt-3 p-3 rounded-lg text-sm border flex items-center gap-2 ${
+                message.includes('Merci')
+                  ? 'bg-green-500/20 text-green-300 border-green-500/30'
                   : 'bg-red-500/20 text-red-300 border-red-500/30'
               }`}>
-                {message}
+                {message.includes('Merci') ? (
+                  <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                ) : (
+                  <XCircle className="w-4 h-4 flex-shrink-0" />
+                )}
+                <span>{message}</span>
               </div>
             )}
           </div>
