@@ -1,81 +1,111 @@
 // app/api/candidats/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { logger } from '@/app/lib/logger';
+import { RateLimiters } from '@/app/lib/security';
+import { z } from 'zod';
 
-export async function POST(request: Request) {
+// Validation schema
+const candidatSchema = z.object({
+  nom: z.string().min(1, 'Le nom est requis'),
+  email: z.string().email('Email invalide'),
+  telephone: z.string().optional(),
+  sujet: z.string().min(1, 'Le sujet est requis'),
+  message: z.string().min(1, 'Le message est requis')
+});
+
+export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for candidats POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('👤 [CANDIDATS] Creating new candidate contact...');
-    
     const body = await request.json();
-    console.log('📦 [CANDIDATS] Request body:', body);
-    
-    // Validation des champs requis pour les candidats
-    const requiredFields = ['nom', 'email', 'sujet', 'message'];
-    const missingFields = requiredFields.filter(field => !body[field] || body[field].trim() === '');
-    
-    if (missingFields.length > 0) {
-      console.log('❌ [CANDIDATS] Missing required fields:', missingFields);
+
+    // Validate input
+    const validation = candidatSchema.safeParse(body);
+    if (!validation.success) {
+      logger.warn('Candidate validation failed', { errors: validation.error.errors });
       return NextResponse.json(
-        { 
+        {
           success: false,
-          error: 'Tous les champs obligatoires doivent être remplis',
-          missingFields 
-        }, 
+          error: 'Données invalides',
+          details: validation.error.errors
+        },
         { status: 400 }
       );
     }
-    
+
+    const validatedData = validation.data;
+
     const { db } = await connectToDatabase();
-    
+
     const nouveauCandidat = {
-      nom: body.nom.trim(),
-      email: body.email.trim(),
-      telephone: body.telephone?.trim() || '',
-      sujet: body.sujet.trim(),
-      message: body.message.trim(),
+      nom: validatedData.nom.trim(),
+      email: validatedData.email.toLowerCase().trim(),
+      telephone: validatedData.telephone?.trim() || '',
+      sujet: validatedData.sujet.trim(),
+      message: validatedData.message.trim(),
       type: 'candidat',
       date: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       statut: 'nouveau'
     };
-    
-    console.log('💾 [CANDIDATS] Saving candidate to database:', nouveauCandidat);
-    
+
     const result = await db.collection('candidats').insertOne(nouveauCandidat);
-    
-    console.log('✅ [CANDIDATS] Candidate created with id:', result.insertedId);
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    logger.info('Candidate contact created successfully', {
+      id: result.insertedId.toString(),
+      email: validatedData.email
+    });
+
+    return NextResponse.json({
+      success: true,
       message: 'Votre candidature a été envoyée avec succès ! Nous vous recontacterons dans les plus brefs délais.',
       id: result.insertedId.toString()
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [CANDIDATS] Error creating candidate:', error);
+    logger.error('Failed to create candidate contact', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: 'Erreur lors de l\'envoi de votre candidature' 
-      }, 
+        error: 'Erreur lors de l\'envoi de votre candidature'
+      },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for candidats GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('🔍 [CANDIDATS] Fetching candidates...');
-    
+    logger.debug('Fetching candidate contacts');
+
     const { db } = await connectToDatabase();
-    
+
     const candidats = await db.collection('candidats')
       .find({})
       .sort({ date: -1 })
       .toArray();
-    
-    console.log(`📋 [CANDIDATS] Found ${candidats.length} candidates`);
-    
+
+    logger.info('Candidate contacts fetched successfully', { count: candidats.length });
+
     const formattedCandidats = candidats.map(candidat => ({
       id: candidat._id.toString(),
       nom: candidat.nom,
@@ -86,19 +116,21 @@ export async function GET() {
       date: candidat.date,
       statut: candidat.statut
     }));
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       success: true,
-      candidats: formattedCandidats 
+      candidats: formattedCandidats
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [CANDIDATS] Error fetching candidates:', error);
+    logger.error('Failed to fetch candidate contacts', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: 'Failed to fetch candidates' 
-      }, 
+        error: 'Failed to fetch candidates'
+      },
       { status: 500 }
     );
   }

@@ -1,112 +1,134 @@
 // app/api/newsletters/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { logger } from '@/app/lib/logger';
+import { RateLimiters, isValidObjectId } from '@/app/lib/security';
+import { z } from 'zod';
+import { ObjectId } from 'mongodb';
 
-export async function GET() {
+// Validation schema
+const newsletterSchema = z.object({
+  email: z.string().email('Format d\'email invalide')
+});
+
+export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for newsletters GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('📧 [NEWSLETTERS] Fetching newsletters from database...');
-    
+    logger.debug('Fetching newsletters from database');
+
     const { db } = await connectToDatabase();
-    console.log('✅ [NEWSLETTERS] Database connected:', db.databaseName);
     
     // Essayer différents noms de collection pour les newsletters
     const possibleCollections = ['newsletters', 'newsletter', 'abonnements', 'subscribers'];
     let newslettersCollection = null;
     let collectionNameUsed = '';
-    
+
     for (const collectionName of possibleCollections) {
       const exists = await db.listCollections({ name: collectionName }).hasNext();
       if (exists) {
         newslettersCollection = db.collection(collectionName);
         collectionNameUsed = collectionName;
-        console.log(`📋 [NEWSLETTERS] Using collection: ${collectionName}`);
+        logger.debug('Found newsletter collection', { collection: collectionName });
         break;
       }
     }
-    
+
     if (!newslettersCollection) {
-      console.log('📭 [NEWSLETTERS] No newsletter collection found');
-      return NextResponse.json({ 
+      logger.debug('No newsletter collection found, returning empty');
+      return NextResponse.json({
         success: true,
-        newsletters: [] 
+        newsletters: []
       });
     }
-    
+
     const newsletters = await newslettersCollection
       .find({})
       .sort({ date: -1, createdAt: -1, _id: -1 })
       .toArray();
-    
-    console.log(`📨 [NEWSLETTERS] Found ${newsletters.length} newsletter subscriptions`);
-    
+
+    logger.info('Newsletters fetched successfully', {
+      count: newsletters.length,
+      collection: collectionNameUsed
+    });
+
     // Formater les données
     const formattedNewsletters = newsletters.map(newsletter => ({
       id: newsletter._id ? newsletter._id.toString() : `temp-${Date.now()}`,
       email: newsletter.email || newsletter.Email || '',
       date: newsletter.date || newsletter.createdAt || newsletter.subscribedAt || new Date().toISOString()
     }));
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       success: true,
       newsletters: formattedNewsletters,
       collectionUsed: collectionNameUsed
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [NEWSLETTERS] Error fetching newsletters:', error);
+    logger.error('Failed to fetch newsletters', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: 'Failed to fetch newsletters', 
-        details: (error instanceof Error ? error.message : 'Erreur inconnue') 
-      }, 
+        error: 'Failed to fetch newsletters',
+        details: (error instanceof Error ? error.message : 'Erreur inconnue')
+      },
       { status: 500 }
     );
   }
 }
 
-// app/api/newsletters/route.ts - Ajoutez cette fonction
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // Apply rate limiting (stricter for public signup forms to prevent spam)
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for newsletters POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('📧 [NEWSLETTERS] Subscribing to newsletter...');
-
     const body = await request.json();
-    console.log('📦 [NEWSLETTERS] Request body:', body);
 
-    // Validation de l'email
-    if (!body.email || !body.email.trim()) {
+    // Validate input with Zod
+    const validation = newsletterSchema.safeParse(body);
+    if (!validation.success) {
+      logger.warn('Newsletter validation failed', { errors: validation.error.errors });
       return NextResponse.json(
         {
           success: false,
-          error: 'L\'email est requis'
+          error: validation.error.errors[0].message
         },
         { status: 400 }
       );
     }
 
-    // Validation du format email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email.trim())) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Format d\'email invalide'
-        },
-        { status: 400 }
-      );
-    }
+    const { email } = validation.data;
 
     const { db } = await connectToDatabase();
 
     // Utiliser la collection newsletters (la créer si elle n'existe pas)
     const newslettersCollection = db.collection('newsletters');
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     // Vérifier si l'email existe déjà
     const existingSubscriber = await newslettersCollection.findOne({
-      email: body.email.trim().toLowerCase()
+      email: normalizedEmail
     });
 
     if (existingSubscriber) {
+      logger.info('Newsletter subscription attempt with existing email', { email: normalizedEmail });
       return NextResponse.json(
         {
           success: false,
@@ -117,18 +139,19 @@ export async function POST(request: Request) {
     }
 
     const newSubscriber = {
-      email: body.email.trim().toLowerCase(),
+      email: normalizedEmail,
       date: new Date().toISOString(),
       createdAt: new Date().toISOString(),
-      source: 'footer', // Vous pouvez tracker d'où vient l'inscription
+      source: 'footer',
       statut: 'active'
     };
 
-    console.log('💾 [NEWSLETTERS] Saving subscriber to database:', newSubscriber);
-
     const result = await newslettersCollection.insertOne(newSubscriber);
 
-    console.log('✅ [NEWSLETTERS] Subscriber created with id:', result.insertedId);
+    logger.info('Newsletter subscription successful', {
+      id: result.insertedId.toString(),
+      email: normalizedEmail
+    });
 
     return NextResponse.json({
       success: true,
@@ -137,7 +160,9 @@ export async function POST(request: Request) {
     });
 
   } catch (error: unknown) {
-    console.error('❌ [NEWSLETTERS] Error subscribing to newsletter:', error);
+    logger.error('Failed to subscribe to newsletter', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       {
         success: false,
@@ -148,14 +173,22 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    console.log('🗑️ [NEWSLETTERS] Deleting newsletter subscriber...');
+export async function DELETE(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for newsletters DELETE', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
 
+  try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) {
+      logger.warn('Newsletter deletion failed: missing ID');
       return NextResponse.json(
         {
           success: false,
@@ -165,16 +198,28 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    const { ObjectId } = require('mongodb');
+    // Validate ObjectId
+    if (!isValidObjectId(id)) {
+      logger.warn('Newsletter deletion failed: invalid ObjectId', { id });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid newsletter ID format'
+        },
+        { status: 400 }
+      );
+    }
 
-    console.log(`🗑️ [NEWSLETTERS] Deleting ID: ${id}`);
+    const { db } = await connectToDatabase();
+
+    logger.debug('Deleting newsletter subscriber', { id });
 
     const result = await db.collection('newsletters').deleteOne({
       _id: new ObjectId(id)
     });
 
     if (result.deletedCount === 0) {
+      logger.warn('Newsletter subscriber not found for deletion', { id });
       return NextResponse.json(
         {
           success: false,
@@ -184,7 +229,7 @@ export async function DELETE(request: Request) {
       );
     }
 
-    console.log(`✅ [NEWSLETTERS] Newsletter subscriber deleted successfully`);
+    logger.info('Newsletter subscriber deleted successfully', { id });
 
     return NextResponse.json({
       success: true,
@@ -192,7 +237,9 @@ export async function DELETE(request: Request) {
     });
 
   } catch (error: unknown) {
-    console.error('❌ [NEWSLETTERS] Error deleting newsletter subscriber:', error);
+    logger.error('Failed to delete newsletter subscriber', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       {
         success: false,

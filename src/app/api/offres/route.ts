@@ -1,34 +1,73 @@
 // app/api/offres/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { logger } from '@/app/lib/logger';
+import { RateLimiters, isValidObjectId } from '@/app/lib/security';
+import { z } from 'zod';
+import { ObjectId } from 'mongodb';
 
-export async function GET() {
+// Validation schemas
+const offreSchema = z.object({
+  titre: z.string().min(1, 'Le titre est requis'),
+  entreprise: z.string().min(1, 'L\'entreprise est requise'),
+  lieu: z.string().min(1, 'Le lieu est requis'),
+  typeContrat: z.string().min(1, 'Le type de contrat est requis'),
+  salaire: z.string().optional(),
+  description: z.string().min(1, 'La description est requise'),
+  competences: z.string().optional(),
+  emailContact: z.string().email('Email invalide'),
+  categorie: z.string().optional()
+});
+
+const offreUpdateSchema = z.object({
+  titre: z.string().min(1).optional(),
+  entreprise: z.string().min(1).optional(),
+  lieu: z.string().min(1).optional(),
+  typeContrat: z.string().min(1).optional(),
+  salaire: z.string().optional(),
+  description: z.string().min(1).optional(),
+  competences: z.string().optional(),
+  emailContact: z.string().email().optional(),
+  categorie: z.string().optional(),
+  statut: z.enum(['active', 'inactive', 'archived']).optional()
+});
+
+export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for offres GET', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
   try {
-    console.log('🔍 [OFFRES] Fetching job offers from database...');
-    
+    logger.debug('Fetching job offers from database');
+
     const { db } = await connectToDatabase();
-    
+
     // Vérifier si la collection offres existe
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
-    
+
     if (!collectionNames.includes('offres')) {
-      console.log('📭 [OFFRES] offres collection does not exist');
-      return NextResponse.json({ 
+      logger.debug('Job offers collection does not exist, returning empty');
+      return NextResponse.json({
         success: true,
-        offres: [] 
+        offres: []
       });
     }
-    
+
     const offresCollection = db.collection('offres');
-    
+
     const offres = await offresCollection
       .find({})
       .sort({ datePublication: -1, createdAt: -1 })
       .toArray();
-    
-    console.log(`📋 [OFFRES] Found ${offres.length} job offers total`);
-    
+
+    logger.info('Job offers fetched successfully', { count: offres.length });
+
     // Formater les données
     const formattedOffres = offres.map(offre => ({
       id: offre._id.toString(),
@@ -44,105 +83,80 @@ export async function GET() {
       categorie: offre.categorie || 'Technologie',
       statut: offre.statut || 'active'
     }));
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       success: true,
-      offres: formattedOffres 
+      offres: formattedOffres
     });
-    
+
   } catch (error: unknown) {
-    console.error('❌ [OFFRES] Error fetching job offers:', error);
+    logger.error('Failed to fetch job offers', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
-      { 
+      {
         success: false,
         error: 'Failed to fetch job offers'
-      }, 
+      },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    console.log('📝 [OFFRES] Creating new job offer...');
-
-    // Lire le corps de la requête
-    const text = await request.text();
-    console.log('📦 [OFFRES] Raw request body:', text);
-
-    let body;
-    try {
-      body = JSON.parse(text);
-      console.log('📦 [OFFRES] Parsed request body:', body);
-    } catch (parseError) {
-      console.error('❌ [OFFRES] JSON parse error:', parseError);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid JSON format'
-        },
-        { status: 400 }
-      );
-    }
-
-    // DEBUG: Afficher chaque champ individuellement
-    console.log('🔍 [OFFRES] Field check:');
-    console.log('  - titre:', body.titre);
-    console.log('  - entreprise:', body.entreprise);
-    console.log('  - lieu:', body.lieu);
-    console.log('  - typeContrat:', body.typeContrat);
-    console.log('  - description:', body.description);
-    console.log('  - emailContact:', body.emailContact);
-
-    // Validation des champs requis
-    const requiredFields = ['titre', 'entreprise', 'lieu', 'typeContrat', 'description', 'emailContact'];
-    const missingFields: string[] = [];
-
-    requiredFields.forEach(field => {
-      const value = body[field];
-      console.log(`🔍 [OFFRES] Checking field "${field}":`, value, 'Type:', typeof value);
-
-      if (!value || (typeof value === 'string' && value.trim() === '')) {
-        missingFields.push(field);
-      }
+export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for offres POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
     });
+    return rateLimitResponse;
+  }
 
-    console.log('🔍 [OFFRES] Missing fields found:', missingFields);
+  try {
+    const body = await request.json();
 
-    if (missingFields.length > 0) {
+    // Validate input
+    const validation = offreSchema.safeParse(body);
+    if (!validation.success) {
+      logger.warn('Job offer validation failed', { errors: validation.error.errors });
       return NextResponse.json(
         {
           success: false,
-          error: `Champs manquants: ${missingFields.join(', ')}`
+          error: 'Données invalides',
+          details: validation.error.errors
         },
         { status: 400 }
       );
     }
+
+    const validatedData = validation.data;
 
     const { db } = await connectToDatabase();
 
     // Créer la nouvelle offre
     const nouvelleOffre = {
-      titre: body.titre.trim(),
-      entreprise: body.entreprise.trim(),
-      lieu: body.lieu.trim(),
-      typeContrat: body.typeContrat.trim(),
-      salaire: body.salaire?.trim() || 'À négocier',
-      description: body.description.trim(),
-      competences: body.competences?.trim() || '',
-      emailContact: body.emailContact.trim(),
-      categorie: body.categorie?.trim() || 'Technologie',
-      statut: 'active',
+      titre: validatedData.titre.trim(),
+      entreprise: validatedData.entreprise.trim(),
+      lieu: validatedData.lieu.trim(),
+      typeContrat: validatedData.typeContrat.trim(),
+      salaire: validatedData.salaire?.trim() || 'À négocier',
+      description: validatedData.description.trim(),
+      competences: validatedData.competences?.trim() || '',
+      emailContact: validatedData.emailContact.toLowerCase().trim(),
+      categorie: validatedData.categorie?.trim() || 'Technologie',
+      statut: 'active' as const,
       datePublication: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
-    console.log('💾 [OFFRES] Saving offer to database:', nouvelleOffre);
-
     const result = await db.collection('offres').insertOne(nouvelleOffre);
 
-    console.log('✅ [OFFRES] Job offer created with id:', result.insertedId);
+    logger.info('Job offer created successfully', {
+      id: result.insertedId.toString(),
+      titre: validatedData.titre
+    });
 
     return NextResponse.json({
       success: true,
@@ -151,7 +165,9 @@ export async function POST(request: Request) {
     });
 
   } catch (error: unknown) {
-    console.error('❌ [OFFRES] Error creating job offer:', error);
+    logger.error('Failed to create job offer', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       {
         success: false,
@@ -162,14 +178,22 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
-  try {
-    console.log('✏️ [OFFRES] Updating job offer...');
+export async function PUT(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for offres PUT', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
 
+  try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) {
+      logger.warn('Job offer update failed: missing ID');
       return NextResponse.json(
         {
           success: false,
@@ -179,28 +203,54 @@ export async function PUT(request: Request) {
       );
     }
 
-    const body = await request.json();
-    console.log('📦 [OFFRES] Update body:', body);
+    // Validate ObjectId
+    if (!isValidObjectId(id)) {
+      logger.warn('Job offer update failed: invalid ObjectId', { id });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid job offer ID format'
+        },
+        { status: 400 }
+      );
+    }
 
+    const body = await request.json();
+
+    // Validate input
+    const validation = offreUpdateSchema.safeParse(body);
+    if (!validation.success) {
+      logger.warn('Job offer update validation failed', { errors: validation.error.errors });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Données invalides',
+          details: validation.error.errors
+        },
+        { status: 400 }
+      );
+    }
+
+    const validatedData = validation.data;
     const { db } = await connectToDatabase();
-    const { ObjectId } = require('mongodb');
 
     // Préparer les données à mettre à jour
-    const updateData = {
-      titre: body.titre?.trim(),
-      entreprise: body.entreprise?.trim(),
-      lieu: body.lieu?.trim(),
-      typeContrat: body.typeContrat?.trim(),
-      salaire: body.salaire?.trim() || 'À négocier',
-      description: body.description?.trim(),
-      competences: body.competences?.trim() || '',
-      emailContact: body.emailContact?.trim(),
-      categorie: body.categorie?.trim() || 'Technologie',
-      statut: body.statut || 'active',
+    const updateData: Record<string, string> = {
       updatedAt: new Date().toISOString()
     };
 
-    console.log(`✏️ [OFFRES] Updating ID: ${id} with data:`, updateData);
+    if (validatedData.titre) updateData.titre = validatedData.titre.trim();
+    if (validatedData.entreprise) updateData.entreprise = validatedData.entreprise.trim();
+    if (validatedData.lieu) updateData.lieu = validatedData.lieu.trim();
+    if (validatedData.typeContrat) updateData.typeContrat = validatedData.typeContrat.trim();
+    if (validatedData.salaire !== undefined) updateData.salaire = validatedData.salaire?.trim() || 'À négocier';
+    if (validatedData.description) updateData.description = validatedData.description.trim();
+    if (validatedData.competences !== undefined) updateData.competences = validatedData.competences?.trim() || '';
+    if (validatedData.emailContact) updateData.emailContact = validatedData.emailContact.toLowerCase().trim();
+    if (validatedData.categorie) updateData.categorie = validatedData.categorie.trim();
+    if (validatedData.statut) updateData.statut = validatedData.statut;
+
+    logger.debug('Updating job offer', { id });
 
     const result = await db.collection('offres').updateOne(
       { _id: new ObjectId(id) },
@@ -208,6 +258,7 @@ export async function PUT(request: Request) {
     );
 
     if (result.matchedCount === 0) {
+      logger.warn('Job offer not found for update', { id });
       return NextResponse.json(
         {
           success: false,
@@ -217,7 +268,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    console.log(`✅ [OFFRES] Job offer updated successfully`);
+    logger.info('Job offer updated successfully', { id });
 
     return NextResponse.json({
       success: true,
@@ -225,7 +276,9 @@ export async function PUT(request: Request) {
     });
 
   } catch (error: unknown) {
-    console.error('❌ [OFFRES] Error updating job offer:', error);
+    logger.error('Failed to update job offer', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       {
         success: false,
@@ -236,14 +289,22 @@ export async function PUT(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    console.log('🗑️ [OFFRES] Deleting job offer...');
+export async function DELETE(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for offres DELETE', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
 
+  try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (!id) {
+      logger.warn('Job offer deletion failed: missing ID');
       return NextResponse.json(
         {
           success: false,
@@ -253,16 +314,28 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    const { ObjectId } = require('mongodb');
+    // Validate ObjectId
+    if (!isValidObjectId(id)) {
+      logger.warn('Job offer deletion failed: invalid ObjectId', { id });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid job offer ID format'
+        },
+        { status: 400 }
+      );
+    }
 
-    console.log(`🗑️ [OFFRES] Deleting ID: ${id}`);
+    const { db } = await connectToDatabase();
+
+    logger.debug('Deleting job offer', { id });
 
     const result = await db.collection('offres').deleteOne({
       _id: new ObjectId(id)
     });
 
     if (result.deletedCount === 0) {
+      logger.warn('Job offer not found for deletion', { id });
       return NextResponse.json(
         {
           success: false,
@@ -272,7 +345,7 @@ export async function DELETE(request: Request) {
       );
     }
 
-    console.log(`✅ [OFFRES] Job offer deleted successfully`);
+    logger.info('Job offer deleted successfully', { id });
 
     return NextResponse.json({
       success: true,
@@ -280,7 +353,9 @@ export async function DELETE(request: Request) {
     });
 
   } catch (error: unknown) {
-    console.error('❌ [OFFRES] Error deleting job offer:', error);
+    logger.error('Failed to delete job offer', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
     return NextResponse.json(
       {
         success: false,
