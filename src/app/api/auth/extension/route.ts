@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validation = loginSchema.safeParse(body)
     if (!validation.success) {
-      logger.warn('Extension login validation failed', { errors: validation.error.errors })
+      logger.warn('Extension login validation failed', { errors: validation.error.issues })
       return NextResponse.json(
         { error: 'Invalid email or password format' },
         { status: 400, headers: corsHeaders }
