@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   },
 
   // Exclude browser-extension from build
-  webpack: (config, { isServer }) => {
+  webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
     }
@@ -40,6 +40,8 @@ const nextConfig: NextConfig = {
 
   // Security Headers (CRITICAL)
   async headers() {
+    const isDevelopment = process.env.NODE_ENV === 'development'
+
     return [
       {
         // Apply security headers to all routes
@@ -77,9 +79,11 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Note: In production, use nonce-based CSP instead of unsafe-inline
-              // For development, we temporarily allow these for Next.js compatibility
-              "script-src 'self' 'unsafe-eval' https://vercel.live", // unsafe-eval required for Next.js dev
+              // Development: Allow inline scripts for Next.js HMR and dev tooling
+              // Production: Use strict CSP (consider implementing nonce-based CSP for enhanced security)
+              isDevelopment
+                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com"
+                : "script-src 'self' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Tailwind requires unsafe-inline
               "img-src 'self' data: https: blob:",
               "font-src 'self' data: https://fonts.gstatic.com",
