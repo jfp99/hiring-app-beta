@@ -276,7 +276,7 @@ export default function NewCandidatePage() {
                   Ajoutez un nouveau candidat manuellement ou importez son CV
                 </p>
               </div>
-              <Link href="/candidates">
+              <Link href="/admin">
                 <Button variant="tertiary" size="md">
                   ← Retour à la liste
                 </Button>
