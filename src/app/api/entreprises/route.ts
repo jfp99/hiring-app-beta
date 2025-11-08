@@ -32,12 +32,12 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validation = entrepriseSchema.safeParse(body);
     if (!validation.success) {
-      logger.warn('Company validation failed', { errors: validation.error.errors });
+      logger.warn('Company validation failed', { errors: validation.error.issues });
       return NextResponse.json(
         {
           success: false,
           error: 'Données invalides',
-          details: validation.error.errors
+          details: validation.error.issues
         },
         { status: 400 }
       );

@@ -135,12 +135,12 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validation = offreSchema.safeParse(body);
     if (!validation.success) {
-      logger.warn('Job offer validation failed', { errors: validation.error.errors });
+      logger.warn('Job offer validation failed', { errors: validation.error.issues });
       return NextResponse.json(
         {
           success: false,
           error: 'Données invalides',
-          details: validation.error.errors
+          details: validation.error.issues
         },
         { status: 400 }
       );
@@ -252,12 +252,12 @@ export async function PUT(request: NextRequest) {
     // Validate input
     const validation = offreUpdateSchema.safeParse(body);
     if (!validation.success) {
-      logger.warn('Job offer update validation failed', { errors: validation.error.errors });
+      logger.warn('Job offer update validation failed', { errors: validation.error.issues });
       return NextResponse.json(
         {
           success: false,
           error: 'Données invalides',
-          details: validation.error.errors
+          details: validation.error.issues
         },
         { status: 400 }
       );

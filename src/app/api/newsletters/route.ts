@@ -104,11 +104,11 @@ export async function POST(request: NextRequest) {
     // Validate input with Zod
     const validation = newsletterSchema.safeParse(body);
     if (!validation.success) {
-      logger.warn('Newsletter validation failed', { errors: validation.error.errors });
+      logger.warn('Newsletter validation failed', { errors: validation.error.issues });
       return NextResponse.json(
         {
           success: false,
-          error: validation.error.errors[0].message
+          error: validation.error.issues[0].message
         },
         { status: 400 }
       );
