@@ -109,26 +109,31 @@ export async function GET(request: NextRequest) {
 
     // Build query
     const query: MongoQuery = {}
+    const andConditions: MongoQuery[] = []
 
     // Text search (using safe regex to prevent injection)
     if (filters.search) {
       const safeSearchRegex = createSafeRegex(filters.search)
-      query.$or = [
-        { firstName: safeSearchRegex },
-        { lastName: safeSearchRegex },
-        { email: safeSearchRegex },
-        { currentPosition: safeSearchRegex },
-        { currentCompany: safeSearchRegex }
-      ]
+      andConditions.push({
+        $or: [
+          { firstName: safeSearchRegex },
+          { lastName: safeSearchRegex },
+          { email: safeSearchRegex },
+          { currentPosition: safeSearchRegex },
+          { currentCompany: safeSearchRegex }
+        ]
+      })
     }
 
     // Filters
     if (filters.status && filters.status.length > 0) {
       // Check both appStatus (new field) and status (legacy MongoDB field)
-      query.$or = [
-        { appStatus: { $in: filters.status } },
-        { status: { $in: filters.status }, appStatus: { $exists: false } }
-      ]
+      andConditions.push({
+        $or: [
+          { appStatus: { $in: filters.status } },
+          { status: { $in: filters.status }, appStatus: { $exists: false } }
+        ]
+      })
     }
 
     if (filters.experienceLevel && filters.experienceLevel.length > 0) {
@@ -136,7 +141,12 @@ export async function GET(request: NextRequest) {
     }
 
     if (filters.skills && filters.skills.length > 0) {
-      query['skills.name'] = { $in: filters.skills.map(s => createSafeRegex(s)) }
+      // MongoDB doesn't support $regex inside $in, so we use $or with individual regex matches
+      andConditions.push({
+        $or: filters.skills.map(skill => ({
+          'skills.name': createSafeRegex(skill)
+        }))
+      })
     }
 
     if (filters.availability && filters.availability.length > 0) {
@@ -145,10 +155,12 @@ export async function GET(request: NextRequest) {
 
     if (filters.location) {
       const safeLocationRegex = createSafeRegex(filters.location)
-      query.$or = [
-        { 'address.city': safeLocationRegex },
-        { 'address.country': safeLocationRegex }
-      ]
+      andConditions.push({
+        $or: [
+          { 'address.city': safeLocationRegex },
+          { 'address.country': safeLocationRegex }
+        ]
+      })
     }
 
     if (filters.assignedTo) {
@@ -169,6 +181,11 @@ export async function GET(request: NextRequest) {
 
     query.isActive = filters.isActive !== false
     query.isArchived = filters.isArchived === true
+
+    // Combine $or conditions with $and if there are any
+    if (andConditions.length > 0) {
+      query.$and = andConditions
+    }
 
     // Pagination
     const skip = ((filters.page || 1) - 1) * (filters.limit || 20)
