@@ -86,7 +86,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     // Utiliser l'API appropriée selon le type
-    const endpoint = formData.type === 'candidat' ? '/candidats' : '/entreprises';
+    const endpoint = '/contacts';
     
     console.log('📤 [CONTACT] Sending data to:', endpoint, formData);
     
@@ -137,9 +137,10 @@ const handleSubmit = async (e: React.FormEvent) => {
           }}></div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
+        {/* Decorative Elements - Premium Animations */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-20 animate-morph-bg will-change-transform"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-15 animate-parallax-float will-change-transform"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-white rounded-full filter blur-3xl opacity-5 animate-soft-bounce will-change-transform"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -151,21 +152,21 @@ const handleSubmit = async (e: React.FormEvent) => {
                 Contactez-nous
               </SectionHeaderBadge>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight animate-text-blur-in">
                 Parlons de
-                <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-pulse">
+                <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-gradient-flow bg-[length:200%_100%]">
                   Votre Projet
                 </span>
               </h1>
 
-              <p className="text-xl md:text-2xl mb-10 leading-relaxed text-gray-200">
+              <p className="text-xl md:text-2xl mb-10 leading-relaxed text-white/90">
                 Notre équipe de spécialistes est à votre écoute pour transformer vos ambitions en réalité.
               </p>
 
               <div className="flex justify-start w-full px-4 sm:px-0">
                 <a
                   href="#form"
-                  className="group w-full sm:w-auto sm:min-w-[220px] lg:min-w-[280px] bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-4 sm:px-8 lg:px-11 py-3 sm:py-4 lg:py-5 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base lg:text-lg cursor-pointer"
+                  className="group btn-magnetic w-full sm:w-auto sm:min-w-[220px] lg:min-w-[280px] bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-4 sm:px-8 lg:px-11 py-3 sm:py-4 lg:py-5 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base lg:text-lg cursor-pointer animate-premium-glow"
                   onClick={(e) => {
                     e.preventDefault();
                     const formElement = document.getElementById('form');
@@ -176,11 +177,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3">
                     Contactez-nous
-                    <svg className="w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </span>
-                  <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                  <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                 </a>
               </div>
             </div>
@@ -192,7 +193,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
                 <img
                   src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=800&h=600&fit=crop"
-                  alt="Équipe de contact Hi-Ring"
+                  alt="Téléphone professionnel - Contactez l'équipe Hi-Ring pour vos besoins en recrutement"
                   className="w-full h-auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
@@ -225,17 +226,14 @@ const handleSubmit = async (e: React.FormEvent) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<UsersIcon />}>
-              Notre Équipe
+              Contact
             </SectionHeaderBadge>
             <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
-              Rencontrez Nos Spécialistes
+              Les coordonnées
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Des professionnels passionnés, à votre écoute pour vous accompagner
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto animate-stagger">
             {[
               {
                 name: 'Hugo Mathieu',
@@ -245,7 +243,8 @@ const handleSubmit = async (e: React.FormEvent) => {
                 phone: '06 66 74 76 18',
                 specialty: 'Développement Commercial & Stratégie',
                 description: 'Expert en recrutement grande distribution, retail et IT. Maîtrise de l\'espagnol pour accompagner les clients en Espagne.',
-                location: 'Aix-En-Provence, France'
+                location: 'Aix-En-Provence, France',
+                linkedin: 'https://www.linkedin.com/in/hugo-mathieu-hiring/'
               },
               {
                 name: 'Izia Grazilly',
@@ -255,17 +254,18 @@ const handleSubmit = async (e: React.FormEvent) => {
                 phone: '06 09 11 15 98',
                 specialty: 'IT, Data, Infrastructure & Cybersécurité',
                 description: 'Spécialiste en recrutement IT avec une expertise en Data, Infrastructure et Cybersécurité à l\'échelle nationale.',
-                location: 'Marseille, France'
+                location: 'Marseille, France',
+                linkedin: 'https://www.linkedin.com/in/izia-grazilly/'
               }
             ].map((member, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover-lift-premium card-border-glow border border-gray-100 dark:border-gray-700 relative overflow-hidden"
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
                     src={member.image}
-                    alt={member.name}
+                    alt={`Portrait de ${member.name}, ${member.role} - ${member.specialty}`}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -308,6 +308,12 @@ const handleSubmit = async (e: React.FormEvent) => {
                       </svg>
                       {member.email}
                     </a>
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-[#ffaf50ff] transition-colors">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      LinkedIn
+                    </a>
                   </div>
 
                   <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
@@ -338,7 +344,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           {/* Formulaire de contact centré */}
           <div className="max-w-2xl mx-auto">
-            <div id="form" className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+            <div id="form" className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover-lift-premium card-border-glow border border-gray-100 dark:border-gray-700 relative overflow-hidden">
               <div className="p-8">
                 <div className="text-center mb-8">
                   <h3 className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
@@ -347,6 +353,36 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <p className="text-gray-600 dark:text-gray-300">
                     Nous vous répondons sous 24 heures
                   </p>
+                </div>
+
+                {/* Form Progress Indicator */}
+                <div className="form-progress mb-6">
+                  <div className="form-progress-step flex-col items-center">
+                    <div className={`form-progress-dot ${formData.type ? 'completed' : 'active'}`}>
+                      {formData.type ? '✓' : '1'}
+                    </div>
+                    <span className={`form-progress-label ${formData.type ? '' : 'active'}`}>Type</span>
+                  </div>
+                  <div className={`form-progress-line ${formData.type ? 'completed' : ''}`}></div>
+                  <div className="form-progress-step flex-col items-center">
+                    <div className={`form-progress-dot ${
+                      formData.nom && formData.email ? 'completed' :
+                      formData.type ? 'active' : 'pending'
+                    }`}>
+                      {formData.nom && formData.email ? '✓' : '2'}
+                    </div>
+                    <span className={`form-progress-label ${formData.type && !(formData.nom && formData.email) ? 'active' : ''}`}>Infos</span>
+                  </div>
+                  <div className={`form-progress-line ${formData.nom && formData.email ? 'completed' : ''}`}></div>
+                  <div className="form-progress-step flex-col items-center">
+                    <div className={`form-progress-dot ${
+                      formData.sujet && formData.message ? 'completed' :
+                      formData.nom && formData.email ? 'active' : 'pending'
+                    }`}>
+                      {formData.sujet && formData.message ? '✓' : '3'}
+                    </div>
+                    <span className={`form-progress-label ${formData.nom && formData.email && !(formData.sujet && formData.message) ? 'active' : ''}`}>Message</span>
+                  </div>
                 </div>
 
                 {error && (
@@ -529,19 +565,27 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:-translate-y-1 ${
+                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:-translate-y-2 hover:scale-[1.02] relative overflow-hidden ${
                       loading
                         ? 'bg-gray-400 cursor-not-allowed text-white'
-                        : 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] hover:shadow-2xl'
+                        : 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] hover:shadow-2xl animate-premium-glow'
                     }`}
                   >
                     {loading ? (
-                      <span className="flex items-center justify-center gap-2">
+                      <span className="flex items-center justify-center gap-2 relative z-10">
                         <div className="w-5 h-5 border-2 border-[#3b5335ff] border-t-transparent rounded-full animate-spin"></div>
                         Envoi en cours...
                       </span>
                     ) : (
-                      'Envoyer le message'
+                      <>
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                          Envoyer le message
+                          <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                          </svg>
+                        </span>
+                        <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full hover:translate-x-full transition-transform duration-700"></div>
+                      </>
                     )}
                   </button>
                 </form>
@@ -572,7 +616,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 animate-stagger">
             {[
               {
                 title: 'Cabinet d\'Expertise Comptable',
@@ -598,13 +642,13 @@ const handleSubmit = async (e: React.FormEvent) => {
             ].map((recruitment, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 overflow-hidden"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover-lift-premium card-border-glow border border-gray-100 dark:border-gray-700 overflow-hidden"
               >
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={recruitment.image}
-                    alt={recruitment.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    alt={`${recruitment.title} - ${recruitment.category} - Success story Hi-Ring`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                   />
                   <div className={`absolute inset-0 bg-gradient-to-t ${recruitment.color} opacity-50 group-hover:opacity-40 transition-opacity duration-300`}></div>
                   <div className="absolute top-4 left-4">

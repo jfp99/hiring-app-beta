@@ -247,9 +247,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      logger.warn('User creation validation failed', { errors: error.errors });
+      logger.warn('User creation validation failed', { errors: error.issues });
       return NextResponse.json(
-        { error: 'Invalid input', details: (error as any).errors },
+        { error: 'Invalid input', details: error.issues },
         { status: 400 }
       )
     }
@@ -363,9 +363,9 @@ export async function PUT(request: NextRequest) {
 
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      logger.warn('User update validation failed', { errors: error.errors });
+      logger.warn('User update validation failed', { errors: error.issues });
       return NextResponse.json(
-        { error: 'Invalid input', details: (error as any).errors },
+        { error: 'Invalid input', details: error.issues },
         { status: 400 }
       )
     }

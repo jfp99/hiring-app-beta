@@ -40,9 +40,9 @@ export default function Header() {
   }
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${
+    <header className={`sticky top-0 z-50 transition-all duration-500 ${
       isScrolled
-        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 py-1 sm:py-0'
+        ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50 py-1 sm:py-0 header-scrolled'
         : 'bg-cream-100 dark:bg-gray-900 shadow-sm'
     }`}>
       {/* Skip to content link for accessibility */}
@@ -61,13 +61,13 @@ export default function Header() {
               className="group flex items-center"
               onClick={handleLinkClick}
             >
-              <div className="relative bg-cream-100 dark:bg-gray-900 rounded-xl px-4 py-2.5 transition-all duration-300">
+              <div className="relative bg-cream-100 dark:bg-gray-900 rounded-xl px-4 py-2.5 transition-all duration-500 group-hover:shadow-lg">
                 <Image
                   src={Logohiring}
                   alt="Hi-ring Logo"
                   width={180}
                   height={80}
-                  className="h-8 sm:h-14 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                  className="h-8 sm:h-14 w-auto object-contain transition-all duration-500 group-hover:scale-110"
                   priority
                 />
               </div>
@@ -80,21 +80,26 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative group px-6 py-3 rounded-xl font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
+                className={`relative group px-6 py-3 min-h-[44px] flex items-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 hover:scale-105 hover:-translate-y-0.5 ${
                   pathname === item.href
                     ? 'text-primary-700 dark:text-accent-500 bg-accent-500/10 dark:bg-accent-500/20 shadow-inner'
                     : 'text-primary-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-accent-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
               >
-                <span className="font-semibold uppercase text-sm">{item.label}</span>
+                <span className="font-semibold uppercase text-sm tracking-wide">{item.label}</span>
 
-                {/* Indicateur actif */}
+                {/* Indicateur actif avec animation premium */}
                 {pathname === item.href && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-accent-500 rounded-full" />
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full animate-tab-indicator" />
                 )}
 
-                {/* Effet hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-accent-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
+                {/* Effet underline hover - seulement sur les éléments non actifs */}
+                {pathname !== item.href && (
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full group-hover:w-1/2 transition-all duration-500" />
+                )}
+
+                {/* Effet hover background avec animation */}
+                <div className="absolute inset-0 bg-gradient-to-r from-accent-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-all duration-300" />
               </Link>
             ))}
             <div className="ml-2">
@@ -106,11 +111,11 @@ export default function Header() {
           <div className="md:hidden flex items-center gap-1.5">
             <ThemeToggle />
             {!mounted ? (
-              <div className="w-9 h-9 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg" />
+              <div className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg" />
             ) : (
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`p-2 rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
+                className={`p-3 min-w-[44px] min-h-[44px] rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                   isMenuOpen
                     ? 'bg-accent-500 dark:bg-accent-500 text-white'
                     : 'bg-white/10 dark:bg-gray-800 text-white dark:text-gray-200 shadow-md hover:shadow-lg hover:bg-white/20'

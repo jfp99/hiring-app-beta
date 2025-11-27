@@ -52,7 +52,7 @@ export default function Vision() {
     { id: 'approche', label: 'Notre Approche' },
     { id: 'savoir-faire', label: 'Notre Savoir-Faire' },
     { id: 'equipe', label: 'Notre Équipe' },
-    { id: 'clients', label: 'Nos Clients & Mission' }
+    { id: 'clients', label: 'Notre Mission' }
   ]
 
   return (
@@ -72,9 +72,10 @@ export default function Vision() {
           }}></div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-10 animate-bounce"></div>
+        {/* Decorative Elements - Premium Animations */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-20 animate-morph-bg will-change-transform"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-15 animate-parallax-float will-change-transform"></div>
+        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-white rounded-full filter blur-3xl opacity-5 animate-soft-bounce will-change-transform"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -86,38 +87,38 @@ export default function Vision() {
                 Notre Vision
               </SectionHeaderBadge>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight animate-text-blur-in">
                 Révolutionner le
-                <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-pulse">
+                <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-gradient-flow bg-[length:200%_100%]">
                   Recrutement
                 </span>
               </h1>
 
-              <p className="text-xl md:text-2xl mb-10 leading-relaxed text-gray-200">
+              <p className="text-xl md:text-2xl mb-10 leading-relaxed text-white/90">
                 Une approche <span className="font-semibold text-[#ffaf50ff]">humaine</span> et <span className="font-semibold text-[#ffaf50ff]">innovante</span> qui place les talents et les entreprises au cœur de notre mission.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => scrollToTabs('approche')}
-                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
+                  className="group btn-magnetic bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer animate-premium-glow"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Notre Approche
-                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </span>
-                  <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                  <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                 </button>
 
                 <button
                   onClick={() => scrollToTabs('equipe')}
-                  className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
+                  className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer backdrop-blur-sm"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Découvrir l'équipe
-                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-2 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </span>
@@ -132,7 +133,7 @@ export default function Vision() {
               <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
                 <img
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop"
-                  alt="Équipe Hi-Ring Vision"
+                  alt="Équipe de recrutement Hi-Ring en réunion collaborative - Experts en conseil RH"
                   className="w-full h-auto"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/80 to-transparent"></div>
@@ -169,7 +170,7 @@ export default function Vision() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`relative px-4 py-3 font-bold text-sm sm:text-base whitespace-nowrap transition-all duration-300 cursor-pointer ${
+                  className={`relative px-4 py-3 font-bold text-sm sm:text-base whitespace-nowrap transition-all duration-300 cursor-pointer hover:scale-105 ${
                     activeTab === tab.id
                       ? 'text-primary-700 dark:text-accent-500'
                       : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-accent-400'
@@ -177,7 +178,7 @@ export default function Vision() {
                 >
                   {tab.label}
                   {activeTab === tab.id && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 animate-slide-in"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 animate-tab-indicator"></div>
                   )}
                 </button>
               ))}
@@ -187,111 +188,78 @@ export default function Vision() {
       </section>
 
       {/* Tab Content */}
-      <div className="py-20">
+      <div className="py-16">
         {/* Tab 1: Notre Approche */}
         {activeTab === 'approche' && (
-          <section className="py-24">
+          <section className="py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
                   Notre Stratégie d'Accompagnement
                 </SectionHeaderBadge>
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-700 dark:text-accent-500 mb-4">
-                  Une Approche Personnalisée et Exigeante
+                  Une approche personnalisée et exigeante
                 </h2>
                 <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                   Pour connecter les bons talents aux bons projets, nous vous accompagnons à chaque étape avec rigueur et proximité
                 </p>
               </div>
 
-              <div className="relative">
-                {/* Timeline line */}
-                <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-primary-500 to-accent-500"></div>
-
-                <div className="space-y-12">
-                  {[
-                    {
-                      step: '01',
-                      title: 'Comprendre Votre Besoin',
-                      description: 'Échange approfondi avec les différents décideurs pour cerner le contexte du recrutement et vos enjeux stratégiques. Nous identifions vos attentes, votre culture d\'entreprise et votre projet pour définir ensemble un processus de recrutement sur mesure.',
-                      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop',
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                      )
-                    },
-                    {
-                      step: '02',
-                      title: 'L\'Approche',
-                      description: 'Élaboration d\'une stratégie de sourcing construite selon votre besoin : sélection de talents issus de notre vivier interne et de canaux spécialisés, entretiens approfondis pour évaluer compétences techniques et soft skills, validation de l\'alignement entre aspirations des candidats et votre entreprise. Constitution d\'une short-list de talents qualifiés et motivés.',
-                      image: 'https://images.unsplash.com/photo-1556155092-490a1ba16284?w=600&h=400&fit=crop',
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
-                      )
-                    },
-                    {
-                      step: '03',
-                      title: 'L\'Accompagnement',
-                      description: 'Planification et coordination des différentes étapes du recrutement. Débriefs réguliers avec vos interlocuteurs clés, prise de références si nécessaire et aide à la décision. Conseil sur la formulation de l\'offre pour maximiser son attractivité et son acceptation.',
-                      image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop',
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      )
-                    },
-                    {
-                      step: '04',
-                      title: 'L\'Engagement',
-                      description: 'Notre implication se poursuit après la signature. Points de suivi réguliers tout au long de la période d\'essai. Conseils sur vos enjeux de rétention, incluant une phase d\'audit et la définition de leviers d\'action adaptés à votre organisation.',
-                      image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop',
-                      icon: (
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      )
-                    }
-                  ].map((item, index) => (
-                    <div
-                      key={index}
-                      className={`relative flex flex-col md:flex-row items-center gap-8 ${
-                        index % 2 === 1 ? 'md:flex-row-reverse' : ''
-                      }`}
-                    >
-                      {/* Content Card */}
-                      <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transform hover:scale-105 transition-all duration-300">
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="text-gray-900 dark:text-white">
-                            {item.icon}
-                          </div>
-                          <div>
-                            <div className="text-sm font-bold text-accent-500 mb-1">ÉTAPE {item.step}</div>
-                            <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500">{item.title}</h3>
-                          </div>
-                        </div>
-                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.description}</p>
-                      </div>
-
-                      {/* Image */}
-                      <div className="flex-1">
-                        <div className="group relative rounded-2xl overflow-hidden shadow-xl transform hover:scale-105 transition-transform duration-300">
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            width={600}
-                            height={400}
-                            className="w-full h-64 object-cover"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-primary-500/60 to-transparent group-hover:from-primary-500/80 transition-all duration-300"></div>
-                        </div>
-                      </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-stagger">
+                {[
+                  {
+                    step: '01',
+                    title: 'Comprendre votre besoin',
+                    description: 'Échange approfondi avec les différents décideurs pour cerner le contexte du recrutement et vos enjeux stratégiques.',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    )
+                  },
+                  {
+                    step: '02',
+                    title: 'L\'approche',
+                    description: 'Stratégie de sourcing sur mesure, entretiens approfondis et constitution d\'une short-list de talents qualifiés.',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                    )
+                  },
+                  {
+                    step: '03',
+                    title: 'L\'accompagnement',
+                    description: 'Coordination des étapes, débriefs réguliers et conseil sur la formulation de l\'offre.',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    )
+                  },
+                  {
+                    step: '04',
+                    title: 'L\'engagement',
+                    description: 'Suivi post-signature, accompagnement période d\'essai et conseils sur vos enjeux de rétention.',
+                    icon: (
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    )
+                  }
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl p-6 hover-lift-premium border border-gray-100 dark:border-gray-700 card-border-glow"
+                  >
+                    <div className="text-accent-500 mb-4 icon-rotate-hover">
+                      {item.icon}
                     </div>
-                  ))}
-                </div>
+                    <div className="text-sm font-bold text-accent-500 mb-2 tracking-wider">ÉTAPE {item.step}</div>
+                    <h3 className="text-xl font-bold text-primary-700 dark:text-accent-500 mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-400 transition-colors">{item.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{item.description}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -300,7 +268,7 @@ export default function Vision() {
         {/* Tab 2: Notre Savoir-Faire */}
         {activeTab === 'savoir-faire' && (
           <>
-            <section className="py-16">
+            <section className="py-20">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                   <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
@@ -389,14 +357,14 @@ export default function Vision() {
             </section>
 
             {/* Nos Clients Section */}
-            <section className="py-16">
+            <section className="py-20">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                   <SectionHeaderBadge variant="accent" icon={<BuildingIcon />}>
                     Nos Clients
                   </SectionHeaderBadge>
                   <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">
-                    Une Diversité de Clients
+                    Une diversité de clients
                   </h2>
                   <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
                     Qu'il s'agisse de <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">petites structures ou de grands groupes</strong>, nous accompagnons une grande diversité de clients dans des <strong className="text-[#3b5335ff] dark:text-[#ffaf50ff]">environnements multiples et exigeants</strong> sur la France entière mais également à l'étranger.
@@ -479,23 +447,20 @@ export default function Vision() {
                 <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
                   Nos profils
                 </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                  Des spécialistes passionnés qui mettent leur énergie au service de votre recrutement
-                </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-16">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 animate-stagger">
                 {recruteurs.map((recruteur, index) => (
                   <div
                     key={index}
-                    className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden flex flex-col"
+                    className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover-lift-premium border border-gray-100 dark:border-gray-700 relative overflow-hidden flex flex-col card-border-glow"
                   >
                     {/* Large Profile Image Header */}
                     <div className="relative h-64 overflow-hidden">
                       <img
                         src={recruteur.photo}
-                        alt={recruteur.nom}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        alt={`Portrait de ${recruteur.nom}, ${recruteur.poste} chez Hi-Ring`}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#3b5335ff]/90 via-[#3b5335ff]/50 to-transparent"></div>
                       <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -512,103 +477,16 @@ export default function Vision() {
                     </div>
 
                     <div className="p-8 flex flex-col flex-grow">
-                      {/* Description - Variable height */}
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+                      {/* Description */}
+                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
                         {recruteur.description}
                       </p>
-
-                      {/* Spacer to push content below */}
-                      <div className="flex-grow"></div>
-
-                      {/* Citation - Aligned */}
-                      <div className="mb-6 p-4 bg-gradient-to-r from-[#f8f7f3ff] dark:from-gray-700 to-[#f0eee4ff] dark:to-gray-600 rounded-xl border border-gray-200 dark:border-gray-600 relative">
-                        <div className="absolute -top-3 left-4 text-4xl text-[#ffaf50ff]">&ldquo;</div>
-                        <p className="text-gray-700 dark:text-gray-200 italic text-center pt-2">
-                          {recruteur.citation}
-                        </p>
-                      </div>
-
-                      {/* Compétences - Aligned */}
-                      <div className="flex flex-wrap gap-1.5 mb-6 min-h-[48px]">
-                        {recruteur.competences.map((competence, idx) => (
-                          <span
-                            key={idx}
-                            className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-2 py-0.5 rounded-full text-xs font-medium shadow-sm h-fit"
-                          >
-                            {competence}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Stats - Aligned at bottom */}
-                      <div className="grid grid-cols-3 gap-1.5 sm:gap-3 md:gap-4 text-center">
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 sm:p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors flex flex-col items-center justify-center min-h-[50px] sm:min-h-[60px]">
-                          <div className="text-sm sm:text-base md:text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] break-words">
-                            {recruteur.stats.placements}+
-                          </div>
-                          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Placements</div>
-                        </div>
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 sm:p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors flex flex-col items-center justify-center min-h-[50px] sm:min-h-[60px]">
-                          <div className="text-sm sm:text-base md:text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] break-words">
-                            {recruteur.stats.satisfaction}%
-                          </div>
-                          <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">Satisfaction</div>
-                        </div>
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-2 sm:p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors flex flex-col items-center justify-center min-h-[50px] sm:min-h-[60px]">
-                          <div className="text-xs sm:text-sm md:text-base lg:text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] break-words leading-tight">
-                            {recruteur.stats.specialite}
-                          </div>
-                        </div>
-                      </div>
                     </div>
 
                     {/* Barre colorée en bas avec effet hover */}
                     <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                   </div>
                 ))}
-              </div>
-
-              {/* Office/Team Culture Images Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="group relative h-64 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-                  <img
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop"
-                    alt="Équipe en réunion"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <div className="text-white">
-                      <h4 className="font-bold text-lg mb-1">Collaboration</h4>
-                      <p className="text-sm text-white/90">Travail d'équipe quotidien</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="group relative h-64 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-                  <img
-                    src="https://images.unsplash.com/photo-1515169067868-5387ec356754?w=600&h=400&fit=crop"
-                    alt="Espace de travail"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <div className="text-white">
-                      <h4 className="font-bold text-lg mb-1">Innovation</h4>
-                      <p className="text-sm text-white/90">Environnement créatif</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="group relative h-64 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
-                  <img
-                    src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop"
-                    alt="Succès partagé"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-                    <div className="text-white">
-                      <h4 className="font-bold text-lg mb-1">Excellence</h4>
-                      <p className="text-sm text-white/90">Résultats exceptionnels</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </section>

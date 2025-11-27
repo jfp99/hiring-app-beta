@@ -32,95 +32,57 @@ export default function Home() {
           }}></div>
         </div>
 
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-pulse will-change-transform"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-10 will-change-transform" style={{animation: 'bounce-soft 3s ease-in-out infinite'}}></div>
+        {/* Decorative Elements - Premium Animations */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-morph-bg will-change-transform"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-15 animate-parallax-float will-change-transform"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-white rounded-full filter blur-3xl opacity-5 animate-soft-bounce will-change-transform"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="max-w-3xl mx-auto text-center">
             {/* Text Content */}
             <div className={`transform transition-all duration-1000 ${
-              isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
             }`}>
               <SectionHeaderBadge variant="hero" icon={<SparklesIcon />}>
                 Specialiste conseil en recrutement
               </SectionHeaderBadge>
 
-              <h1 className="text-fluid-5xl font-bold mb-4 sm:mb-6 leading-tight">
+              <h1 className="text-fluid-5xl font-bold mb-4 sm:mb-6 leading-tight animate-text-blur-in">
                 Connectons les
-                <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent bg-[length:200%_100%] animate-gradient-x">
+                <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-500 bg-clip-text text-transparent bg-[length:200%_100%] animate-gradient-flow">
                   Talents & Entreprises
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 leading-relaxed text-gray-200">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 leading-relaxed text-white/90">
                 Cabinet de conseil en recrutement fondé par Hugo et Izia. Spécialistes du recrutement IT, Digital, Finance, et Conseil avec une approche personnalisée et exigeante.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                 <Link
                   href="/offres-emploi"
-                  className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-8 py-4 min-h-[44px] rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
+                  className="group btn-magnetic bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-8 py-4 min-h-[44px] rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer animate-premium-glow"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     Découvrir nos offres
-                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                   </span>
-                  <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                  <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                 </Link>
 
                 <Link
                   href="/contact"
-                  className="group border-2 border-white text-white px-8 py-4 min-h-[44px] rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base cursor-pointer"
+                  className="group border-2 border-white text-white px-8 py-4 min-h-[44px] rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 text-sm sm:text-base cursor-pointer backdrop-blur-sm"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Nous contacter
-                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </span>
                 </Link>
-              </div>
-            </div>
-
-            {/* Hero Image */}
-            <div className={`relative transform transition-all duration-700 ${
-              isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
-            }`}>
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-500">
-                <Image
-                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=900&fit=crop&auto=format&q=80"
-                  alt="Équipe professionnelle en réunion"
-                  width={1200}
-                  height={900}
-                  className="w-full h-auto"
-                  priority
-                  fetchPriority="high"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAB//2Q=="
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-500/80 to-transparent"></div>
-              </div>
-
-              {/* Logo */}
-              <div className="absolute bottom-6 right-6">
-                <div className="bg-white/95 dark:bg-white/90 backdrop-blur-sm rounded-xl p-2">
-                  <Image
-                    src="/logohiringsansfond.png"
-                    alt="Hi-Ring Logo"
-                    width={200}
-                    height={200}
-                    className="w-16 h-auto sm:w-20 md:w-24 lg:w-28"
-                    style={{
-                      filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))'
-                    }}
-                    quality={100}
-                    priority
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -128,7 +90,7 @@ export default function Home() {
       </section>
 
       {/* Services Section avec Images */}
-      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
@@ -142,7 +104,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 animate-stagger">
             {[
               {
                 title: 'Recrutements en CDI',
@@ -179,21 +141,21 @@ export default function Home() {
             ].map((service, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden flex flex-col h-full"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 hover-lift-premium overflow-hidden flex flex-col h-full card-border-glow"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden flex-shrink-0">
                   <Image
                     src={service.image}
-                    alt={service.title}
+                    alt={`Illustration du service ${service.title} - Cabinet de recrutement Hi-Ring`}
                     width={600}
                     height={400}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     loading="lazy"
                     quality={80}
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-60`}></div>
+                  <div className={`absolute inset-0 bg-gradient-to-t ${service.color} opacity-60 group-hover:opacity-70 transition-opacity duration-500`}></div>
                 </div>
 
                 {/* Content */}
@@ -216,9 +178,10 @@ export default function Home() {
                   </ul>
                   <Link
                     href={`/services/${service.slug}`}
-                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mt-auto cursor-pointer"
+                    className="w-full block text-center bg-gradient-to-r from-primary-500 to-primary-600 dark:from-accent-500 dark:to-accent-600 dark:!text-white text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300 mt-auto cursor-pointer relative overflow-hidden group/btn"
                   >
-                    En savoir plus →
+                    <span className="relative z-10">En savoir plus →</span>
+                    <div className="absolute inset-0 bg-white/20 transform -translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500"></div>
                   </Link>
                 </div>
               </div>
@@ -228,7 +191,7 @@ export default function Home() {
       </section>
 
       {/* Talent Pool Section - Notre vivier de talents */}
-      <section className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Image */}
@@ -236,7 +199,7 @@ export default function Home() {
               <div className="group relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500">
                 <Image
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=600&fit=crop&auto=format&q=80"
-                  alt="Notre réseau de talents"
+                  alt="Équipe de professionnels collaborant - Vivier de talents qualifiés Hi-Ring"
                   width={800}
                   height={600}
                   className="w-full h-auto"
@@ -295,7 +258,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section hidden className="py-24 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section hidden className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
@@ -340,7 +303,7 @@ export default function Home() {
                 <div className="flex items-center gap-4 mb-6">
                   <Image
                     src={testimonial.avatar}
-                    alt={testimonial.name}
+                    alt={`Photo de ${testimonial.name}, ${testimonial.role}`}
                     width={64}
                     height={64}
                     className="w-16 h-16 rounded-full object-cover ring-4 ring-accent-500/20"
@@ -368,69 +331,57 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 text-white relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}></div>
         </div>
 
+        {/* Premium floating decorations */}
+        <div className="absolute top-10 left-10 w-20 h-20 bg-accent-500 rounded-full filter blur-2xl opacity-20 animate-soft-bounce"></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-white rounded-full filter blur-3xl opacity-10 animate-parallax-float"></div>
+        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-accent-500 rounded-full filter blur-2xl opacity-15 animate-morph-bg"></div>
+
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <SectionHeaderBadge variant="hero" icon={<RocketIcon />} className="mb-8">
             Prêt à Démarrer ?
           </SectionHeaderBadge>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            Transformons Ensemble Votre
-            <span className="block mt-2 text-accent-500">Avenir Professionnel</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight animate-text-blur-in">
+            Transformons ensemble votre
+            <span className="block mt-2 text-accent-500 animate-gradient-flow bg-gradient-to-r from-accent-500 via-accent-400 to-accent-500 bg-clip-text text-transparent bg-[length:200%_100%]">avenir professionnel</span>
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl mb-12 text-gray-200 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl mb-12 text-white/90 max-w-3xl mx-auto leading-relaxed scroll-reveal-delayed">
             Que vous cherchiez le talent idéal ou l'opportunité de vos rêves, notre équipe de spécialistes est là pour vous accompagner vers le succès.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
             <Link
               href="/contact"
-              className="group bg-accent-500 text-primary-700 px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 shadow-lg inline-flex items-center justify-center gap-3 cursor-pointer"
+              className="group btn-magnetic bg-accent-500 text-primary-700 px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center justify-center gap-3 cursor-pointer animate-premium-glow relative overflow-hidden"
             >
-              Commencer Maintenant
-              <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+              <span className="relative z-10 flex items-center gap-3">
+                Commencer Maintenant
+                <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             </Link>
 
             <Link
               href="/offres-emploi"
-              className="group border-2 border-white text-white px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:text-primary-700 transform hover:-translate-y-1 transition-all duration-300 inline-flex items-center justify-center gap-3 cursor-pointer"
+              className="group border-2 border-white text-white px-12 py-5 rounded-xl text-lg font-bold hover:bg-white hover:text-primary-700 transform hover:-translate-y-2 hover:scale-105 transition-all duration-300 inline-flex items-center justify-center gap-3 cursor-pointer backdrop-blur-sm"
             >
               Explorer les Offres
-              <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 group-hover:translate-x-2 group-hover:rotate-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </Link>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-300">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              Sans engagement
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              Réponse sous 24h
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              100% gratuit
-            </div>
-          </div>
         </div>
       </section>
       </main>

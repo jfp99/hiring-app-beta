@@ -4,45 +4,37 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import SocialLinks from './SocialLinks'
-import { CheckCircle, XCircle, Check } from 'lucide-react'
+import { useApi } from '../hooks/useApi'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const { loading, callApi } = useApi()
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!email.trim()) {
       setMessage('Veuillez entrer votre email')
       return
     }
 
-    setLoading(true)
     setMessage('')
 
     try {
-      const response = await fetch('/api/newsletters', {
+      const result = await callApi('/newsletters', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
+        body: { email }
       })
 
-      const data = await response.json()
-
-      if (data.success) {
-        setMessage(data.message || 'Merci pour votre inscription !')
+      if (result.success) {
+        setMessage(result.message || 'Merci pour votre inscription !')
         setEmail('')
       } else {
-        setMessage(data.error || 'Erreur lors de l\'inscription')
+        setMessage(result.error || 'Erreur lors de l\'inscription')
       }
-    } catch  {
+    } catch {
       setMessage('Erreur de connexion')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -53,16 +45,16 @@ export default function Footer() {
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          
+
           {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent">
+            <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-accent-500 via-accent-400 to-accent-600 bg-clip-text text-transparent animate-gradient-flow bg-[length:200%_100%]">
               Hiring
             </h3>
             <span className="text-lg font-semibold text-accent-500">Cabinet de Conseil en Recrutement</span>
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
-              Votre partenaire de confiance pour le recrutement et la mise en relation 
-              des talents avec les entreprises les plus innovantes. 
+              Votre partenaire de confiance pour le recrutement et la mise en relation
+              des talents avec les entreprises les plus innovantes.
               Ensemble, construisons l&#39;avenir du travail.
             </p>
             <SocialLinks />
@@ -81,9 +73,14 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-accent-400 transition-colors duration-300 hover:pl-2 block transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 rounded"
+                    className="group text-gray-300 hover:text-accent-400 transition-all duration-300 block transform hover:-translate-y-1 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 rounded relative link-hover-premium min-h-[44px] flex items-center"
                   >
-                    {link.label}
+                    <span className="flex items-center gap-2">
+                      <svg className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      <span className="group-hover:translate-x-2 transition-transform duration-500">{link.label}</span>
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -102,31 +99,34 @@ export default function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Votre email"
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent placeholder-gray-400 text-white transition-all duration-300"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent placeholder-gray-400 text-white transition-all duration-300 min-h-[44px]"
                 required
                 disabled={loading}
-                suppressHydrationWarning
               />
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 ${
+                className={`w-full py-3 min-h-[44px] rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 relative overflow-hidden btn-magnetic ${
                   loading
                     ? 'bg-gray-400 cursor-not-allowed text-white'
-                    : 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 hover:shadow-lg'
+                    : 'bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 hover:shadow-xl animate-premium-glow'
                 }`}
-                suppressHydrationWarning
               >
                 {loading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <span className="flex items-center justify-center gap-2 relative z-10">
                     <div className="w-4 h-4 border-2 border-primary-700 border-t-transparent rounded-full animate-spin"></div>
                     Inscription...
                   </span>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    S'abonner
-                    <Check className="w-4 h-4" />
-                  </span>
+                  <>
+                    <span className="flex items-center justify-center gap-2 relative z-10">
+                      S'abonner
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full hover:translate-x-full transition-transform duration-700"></div>
+                  </>
                 )}
               </button>
             </form>
@@ -139,9 +139,13 @@ export default function Footer() {
                   : 'bg-red-500/20 text-red-300 border-red-500/30'
               }`}>
                 {message.includes('Merci') ? (
-                  <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 ) : (
-                  <XCircle className="w-4 h-4 flex-shrink-0" />
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 )}
                 <span>{message}</span>
               </div>
@@ -154,7 +158,7 @@ export default function Footer() {
       <div className="border-t border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col items-center space-y-4">
-            
+
             {/* Social Media Icons */}
             <SocialLinks className="justify-center" />
 
@@ -180,7 +184,7 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-gray-400 hover:text-accent-400 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 rounded"
+                  className="text-gray-400 hover:text-accent-400 transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 dark:focus-visible:ring-accent-400 rounded min-h-[44px] flex items-center px-2"
                 >
                   {link.label}
                 </Link>

@@ -39,17 +39,32 @@ export async function GET(request: NextRequest) {
     
     const offresCollection = db.collection('offres');
     
-    // Construire la requête de filtrage - seulement les offres actives
-    const query: any = { statut: 'active' };
+    // Construire la requête de filtrage - offres actives ou sans statut (backward compatibility)
+    const statusFilter = {
+      $or: [
+        { statut: 'active' },
+        { statut: { $exists: false } }
+      ]
+    };
+
+    const query: any = { ...statusFilter };
 
     if (search) {
       const safeSearchRegex = createSafeRegex(search);
-      query.$or = [
-        { titre: safeSearchRegex },
-        { entreprise: safeSearchRegex },
-        { description: safeSearchRegex },
-        { competences: safeSearchRegex }
+      // Use $and to combine status filter with search filter
+      query.$and = [
+        statusFilter,
+        {
+          $or: [
+            { titre: safeSearchRegex },
+            { entreprise: safeSearchRegex },
+            { description: safeSearchRegex },
+            { competences: safeSearchRegex }
+          ]
+        }
       ];
+      // Remove the top-level $or since we're using $and now
+      delete query.$or;
     }
 
     if (categorie && categorie !== 'toutes') {

@@ -44,7 +44,7 @@ export const handleError = (error: unknown) => {
     return {
       error: 'Erreur de validation',
       status: 400,
-      errors: (error as any).errors.map((err: any) => ({
+      errors: error.issues.map((err) => ({
         field: err.path.join('.'),
         message: err.message
       }))

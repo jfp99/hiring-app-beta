@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { logger } from '@/app/lib/logger';
-import { RateLimiters, isValidObjectId } from '@/app/lib/security';
+import { RateLimiters, isValidObjectId, sanitizeObject } from '@/app/lib/security';
 import { auth } from '@/app/lib/auth-helpers';
+import { contactSchema } from '@/app/lib/validation';
 
 export async function GET(request: NextRequest) {
   // Apply rate limiting
@@ -63,6 +64,79 @@ export async function GET(request: NextRequest) {
     }, error as Error);
     return NextResponse.json(
       { error: 'Failed to fetch contacts', details: (error instanceof Error ? error.message : 'Erreur inconnue') },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResponse = await RateLimiters.api(request);
+  if (rateLimitResponse) {
+    logger.warn('Rate limit exceeded for contacts POST', {
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+    return rateLimitResponse;
+  }
+
+  try {
+    const body = await request.json();
+
+    logger.debug('Creating new contact', { type: body.type });
+
+    // Validate input with Zod schema
+    const validation = contactSchema.safeParse(body);
+    if (!validation.success) {
+      logger.warn('Contact validation failed', { errors: validation.error.issues });
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Erreur de validation',
+          details: validation.error.issues.map(e => e.message).join(', ')
+        },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize data
+    const sanitizedData = sanitizeObject(validation.data);
+
+    const { db } = await connectToDatabase();
+
+    // Determine collection based on type
+    const collection = sanitizedData.type === 'candidat' ? 'candidats' : 'entreprises';
+
+    // Add metadata
+    const contactData = {
+      ...sanitizedData,
+      date: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      status: 'new'
+    };
+
+    const result = await db.collection(collection).insertOne(contactData);
+
+    logger.info('Contact created successfully', {
+      id: result.insertedId.toString(),
+      type: sanitizedData.type,
+      collection
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Votre message a été envoyé avec succès. Nous vous recontacterons dans les plus brefs délais.',
+      id: result.insertedId.toString()
+    });
+
+  } catch (error: unknown) {
+    logger.error('Failed to create contact', {
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, error as Error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Erreur lors de l\'envoi du message. Veuillez réessayer.'
+      },
       { status: 500 }
     );
   }
