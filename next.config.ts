@@ -40,8 +40,6 @@ const nextConfig: NextConfig = {
 
   // Security Headers (CRITICAL)
   async headers() {
-    const isDevelopment = process.env.NODE_ENV === 'development'
-
     return [
       {
         // Apply security headers to all routes
@@ -79,11 +77,9 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Development: Allow inline scripts for Next.js HMR and dev tooling
-              // Production: Use strict CSP (consider implementing nonce-based CSP for enhanced security)
-              isDevelopment
-                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com"
-                : "script-src 'self' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com",
+              // Next.js requires 'unsafe-inline' for inline scripts in both dev and production
+              // TODO: Consider implementing nonce-based CSP for enhanced security
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // Tailwind requires unsafe-inline
               "img-src 'self' data: https: blob:",
               "font-src 'self' data: https://fonts.gstatic.com",
