@@ -6,7 +6,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Logohiring from '../../../public/logo-hiring.png'
-import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -102,14 +101,10 @@ export default function Header() {
                 <div className="absolute inset-0 bg-gradient-to-r from-accent-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-all duration-300" />
               </Link>
             ))}
-            <div className="ml-2">
-              <ThemeToggle />
-            </div>
           </div>
 
-          {/* Mobile menu button and theme toggle */}
-          <div className="md:hidden flex items-center gap-1.5">
-            <ThemeToggle />
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
             {!mounted ? (
               <div className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg" />
             ) : (

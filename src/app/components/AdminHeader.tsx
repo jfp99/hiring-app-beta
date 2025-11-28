@@ -9,7 +9,6 @@ import { signOut, useSession } from 'next-auth/react'
 import { Users, Target, Workflow, TrendingUp, Settings, LogOut } from 'lucide-react'
 import Logohiring from '../../../public/logo-hiring.png'
 import NotificationBell from './NotificationBell'
-import ThemeToggle from './ThemeToggle'
 
 export default function AdminHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -107,9 +106,6 @@ export default function AdminHeader() {
 
           {/* Right side: Notifications + User Menu */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Theme Toggle */}
-            <ThemeToggle />
-
             {/* Notification Bell */}
             <NotificationBell />
 
@@ -133,9 +129,6 @@ export default function AdminHeader() {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
-            {/* Theme Toggle for mobile */}
-            <ThemeToggle />
-
             {/* Notification Bell for mobile */}
             <NotificationBell />
 

@@ -4,6 +4,7 @@ import { Montserrat } from 'next/font/google'
 import './globals.css'
 import Providers from './providers'
 import { Toaster } from './components/ui/Toaster'
+import ThemeToggle from './components/ThemeToggle'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -121,6 +122,7 @@ export default function RootLayout({
           <ErrorBoundary>
             {children}
           </ErrorBoundary>
+          <ThemeToggle />
           <Toaster />
           <SpeedInsights />
           <Analytics />
