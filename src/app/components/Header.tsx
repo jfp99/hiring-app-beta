@@ -139,14 +139,14 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-[72px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50 overflow-y-auto z-50">
-            <div className="px-3 pt-4 pb-safe space-y-1.5 max-h-[calc(100vh-72px)]">
+          <div className="md:hidden fixed inset-0 top-[var(--header-height-mobile)] sm:top-[var(--header-height-desktop)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50 overflow-y-auto z-50">
+            <div className="px-3 pt-4 pb-safe space-y-1.5 max-h-[calc(100vh-var(--header-height-mobile))] sm:max-h-[calc(100vh-var(--header-height-desktop))]">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={handleLinkClick}
-                  className={`block px-3 py-2.5 rounded-lg font-medium transition-all duration-300 group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
+                  className={`block px-4 py-3 min-h-[44px] rounded-lg font-medium transition-all duration-300 group relative focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 ${
                     pathname === item.href
                       ? 'bg-gradient-to-r from-accent-500/10 to-primary-500/5 dark:from-accent-500/20 dark:to-accent-500/5 text-primary-700 dark:text-accent-500 border border-accent-500/20 dark:border-accent-500/30'
                       : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-accent-400'

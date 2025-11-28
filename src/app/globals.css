@@ -50,13 +50,17 @@
 
   --dark-text-primary: #f1f5f9;     /* slate-100 - High contrast text (15.8:1) */
   --dark-text-secondary: #cbd5e1;   /* slate-300 - Medium contrast text (9.2:1) */
-  --dark-text-tertiary: #a8b9cf;    /* Custom - WCAG AA compliant text (6.2:1) */
+  --dark-text-tertiary: #c5d4e8;    /* Custom - WCAG AA compliant text (7.2:1) - Improved contrast */
 
   --dark-border-primary: #334155;   /* slate-700 - Strong borders */
   --dark-border-secondary: #1e293b; /* slate-800 - Subtle borders */
 
   --dark-accent-orange: #fb923c;    /* Brighter orange for dark mode (4.8:1 on dark bg) */
   --dark-accent-green: #86efac;     /* Light green for dark mode (7.1:1 on dark bg) */
+
+  /* Header height for consistent positioning */
+  --header-height-mobile: 48px;
+  --header-height-desktop: 80px;
 
   /* Typography Scale - Professional SaaS Standards */
   --font-size-xs: 0.75rem;      /* 12px - Captions, metadata */
@@ -1046,7 +1050,26 @@ body {
   transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(10px);
 }
 
-/* Premium Hover Lift */
+/* Standardized Hover Lift System */
+/* Small lift: buttons, small interactive elements */
+.hover-lift-sm {
+  transition: all 0.3s var(--ease-premium);
+}
+.hover-lift-sm:hover {
+  transform: translateY(-2px);
+}
+
+/* Medium lift: cards, interactive sections */
+.hover-lift-md {
+  transition: all 0.35s var(--ease-premium);
+  will-change: transform;
+}
+.hover-lift-md:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+}
+
+/* Premium Hover Lift - Large lift for hero CTAs and featured elements */
 .hover-lift-premium {
   transition: all 0.4s var(--ease-premium);
   will-change: transform, box-shadow;
@@ -1056,6 +1079,15 @@ body {
   transform: translateY(-12px) scale(1.02);
   box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15),
               0 18px 36px -18px rgba(0, 0, 0, 0.2);
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift-sm:hover,
+  .hover-lift-md:hover,
+  .hover-lift-premium:hover {
+    transform: none;
+  }
 }
 
 /* Magnetic Button Effect */

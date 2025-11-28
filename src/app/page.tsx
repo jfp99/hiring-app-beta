@@ -5,15 +5,25 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect, useCallback } from 'react'
 import { SectionHeaderBadge, SparklesIcon, BriefcaseIcon, RefreshIcon, TargetIcon, UsersIcon, ChatIcon, RocketIcon, StarIcon } from './components/ui/SectionHeaderBadge'
 
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     setIsVisible(true)
   }, [])
+
+  // Keyboard navigation handler for cards
+  const handleCardKeyDown = useCallback((e: React.KeyboardEvent, slug: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      router.push(`/services/${slug}`)
+    }
+  }, [router])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream-100 to-cream-200 dark:from-gray-900 dark:to-gray-800">
@@ -32,10 +42,9 @@ export default function Home() {
           }}></div>
         </div>
 
-        {/* Decorative Elements - Premium Animations */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-morph-bg will-change-transform"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-15 animate-parallax-float will-change-transform"></div>
-        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-white rounded-full filter blur-3xl opacity-5 animate-soft-bounce will-change-transform"></div>
+        {/* Decorative Elements - Optimized Animations with CSS containment */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-accent-500 rounded-full filter blur-3xl opacity-20 animate-morph-bg will-change-transform" style={{contain: 'layout style paint'}}></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent-500 rounded-full filter blur-3xl opacity-15 animate-parallax-float will-change-transform" style={{contain: 'layout style paint'}}></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl mx-auto text-center">
@@ -141,7 +150,10 @@ export default function Home() {
             ].map((service, index) => (
               <div
                 key={index}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 hover-lift-premium overflow-hidden flex flex-col h-full card-border-glow"
+                role="article"
+                tabIndex={0}
+                onKeyDown={(e) => handleCardKeyDown(e, service.slug)}
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 hover-lift-premium overflow-hidden flex flex-col h-full card-border-glow cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
               >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden flex-shrink-0">
@@ -338,10 +350,9 @@ export default function Home() {
           }}></div>
         </div>
 
-        {/* Premium floating decorations */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-accent-500 rounded-full filter blur-2xl opacity-20 animate-soft-bounce"></div>
-        <div className="absolute bottom-10 right-10 w-32 h-32 bg-white rounded-full filter blur-3xl opacity-10 animate-parallax-float"></div>
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-accent-500 rounded-full filter blur-2xl opacity-15 animate-morph-bg"></div>
+        {/* Premium floating decorations - Optimized */}
+        <div className="absolute top-10 left-10 w-20 h-20 bg-accent-500 rounded-full filter blur-2xl opacity-20 animate-soft-bounce" style={{contain: 'layout style paint'}}></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-white rounded-full filter blur-3xl opacity-10 animate-parallax-float" style={{contain: 'layout style paint'}}></div>
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <SectionHeaderBadge variant="hero" icon={<RocketIcon />} className="mb-8">

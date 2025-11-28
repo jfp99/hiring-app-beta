@@ -507,59 +507,125 @@ const handleSubmit = async (e: React.FormEvent) => {
 
                   <div>
                     <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
-                      Email *
+                      Email * {touched.email && !errors.email && formData.email && (
+                        <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                      )}
                     </label>
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 bg-white dark:bg-gray-700 border text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                        errors.email && touched.email
+                          ? 'border-red-500 focus:ring-red-500'
+                          : 'border-gray-300 dark:border-gray-600 focus:ring-[#ffaf50ff]'
+                      }`}
                       required
                       disabled={loading}
                       placeholder="votre@email.com"
                       autoComplete="email"
+                      aria-invalid={!!(errors.email && touched.email)}
+                      aria-describedby={errors.email && touched.email ? 'email-error' : undefined}
                     />
+                    {errors.email && touched.email && (
+                      <p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
-                      Sujet *
+                      Sujet * {touched.sujet && !errors.sujet && formData.sujet.length >= 5 && (
+                        <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                      )}
                     </label>
                     <input
                       type="text"
                       name="sujet"
                       value={formData.sujet}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       placeholder={
                         formData.type === 'candidat'
                           ? "Ex: Candidature Développeur Full Stack"
                           : "Ex: Besoin de recrutement"
                       }
-                      className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                      className={`w-full px-4 py-3 bg-white dark:bg-gray-700 border text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                        errors.sujet && touched.sujet
+                          ? 'border-red-500 focus:ring-red-500'
+                          : 'border-gray-300 dark:border-gray-600 focus:ring-[#ffaf50ff]'
+                      }`}
                       required
                       disabled={loading}
+                      aria-invalid={!!(errors.sujet && touched.sujet)}
+                      aria-describedby={errors.sujet && touched.sujet ? 'sujet-error' : undefined}
                     />
+                    {errors.sujet && touched.sujet && (
+                      <p id="sujet-error" className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {errors.sujet}
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
-                      Message *
+                      Message * {touched.message && !errors.message && formData.message.length >= 20 && (
+                        <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                      )}
                     </label>
                     <textarea
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       rows={6}
                       placeholder={
                         formData.type === 'candidat'
                           ? "Décrivez votre profil, vos compétences et vos attentes..."
                           : "Décrivez vos besoins en recrutement, le poste à pourvoir..."
                       }
-                      className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-[#ffaf50ff] focus:border-transparent transition-all resize-none placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                      className={`w-full px-4 py-3 bg-white dark:bg-gray-700 border text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:border-transparent transition-all resize-none placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                        errors.message && touched.message
+                          ? 'border-red-500 focus:ring-red-500'
+                          : 'border-gray-300 dark:border-gray-600 focus:ring-[#ffaf50ff]'
+                      }`}
                       required
                       disabled={loading}
+                      aria-invalid={!!(errors.message && touched.message)}
+                      aria-describedby="message-info"
                     />
+                    <div id="message-info" className="mt-2 flex justify-between items-center text-sm">
+                      <div>
+                        {errors.message && touched.message ? (
+                          <p className="text-red-600 dark:text-red-400 flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            {errors.message}
+                          </p>
+                        ) : (
+                          <span className="text-gray-500 dark:text-gray-400">Minimum 20 caractères</span>
+                        )}
+                      </div>
+                      <span className={`font-medium ${
+                        formData.message.length >= 20
+                          ? 'text-green-600 dark:text-green-400'
+                          : formData.message.length > 0
+                            ? 'text-amber-600 dark:text-amber-400'
+                            : 'text-gray-400 dark:text-gray-500'
+                      }`}>
+                        {formData.message.length}/20
+                      </span>
+                    </div>
                   </div>
 
                   <button

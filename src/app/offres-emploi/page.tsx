@@ -5,8 +5,25 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useApi } from '../hooks/useApi'
+
+// Custom debounce hook for search optimization
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
 
 interface Offre {
   id: string
@@ -31,6 +48,9 @@ export default function OffresEmploi() {
   const [isVisible, setIsVisible] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
 
+  // Debounce search term by 300ms to reduce API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+
   const { loading, error, callApi } = useApi()
 
   // Format date consistently between server and client
@@ -50,16 +70,16 @@ export default function OffresEmploi() {
     setIsMounted(true)
   }, [])
 
-  // Charger les offres
+  // Charger les offres with debounced search
   useEffect(() => {
     const loadOffres = async () => {
       try {
         const params = new URLSearchParams()
-        if (searchTerm) params.append('search', searchTerm)
+        if (debouncedSearchTerm) params.append('search', debouncedSearchTerm)
         if (filters.categorie !== 'toutes') params.append('categorie', filters.categorie)
         if (filters.lieu !== 'tous') params.append('lieu', filters.lieu)
         if (filters.typeContrat !== 'tous') params.append('typeContrat', filters.typeContrat)
-        
+
         const result = await callApi(`/jobs?${params.toString()}`)
         setOffres(result.offres || [])
       } catch {
@@ -68,7 +88,7 @@ export default function OffresEmploi() {
     }
 
     loadOffres()
-  }, [filters, searchTerm, callApi])
+  }, [filters, debouncedSearchTerm, callApi])
 
   const categories = ['Technologie', 'Management', 'Data']
   const lieux = ['Paris', 'Lyon', 'Toulouse']
