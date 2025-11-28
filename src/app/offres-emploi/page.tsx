@@ -236,9 +236,14 @@ export default function OffresEmploi() {
               </div>
             </div>
 
-            {/* Compteur de résultats */}
-            <div className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-4 py-3 sm:px-6 rounded-xl sm:rounded-2xl font-bold shadow-lg text-center sm:text-left whitespace-nowrap">
-              {offres.length} offre{offres.length > 1 ? 's' : ''}
+            {/* Compteur de résultats - ARIA live region for screen readers */}
+            <div
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-4 py-3 sm:px-6 rounded-xl sm:rounded-2xl font-bold shadow-lg text-center sm:text-left whitespace-nowrap"
+            >
+              {loading ? 'Chargement...' : `${offres.length} offre${offres.length > 1 ? 's' : ''}`}
             </div>
           </div>
 
@@ -294,13 +299,38 @@ export default function OffresEmploi() {
       {/* Liste des offres */}
       <section className="py-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* États de chargement et d'erreur */}
+          {/* États de chargement avec skeleton loaders */}
           {loading && (
-            <div className="flex justify-center py-16">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#ffaf50ff] mb-4"></div>
-                <p className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">Chargement des offres...</p>
-              </div>
+            <div className="grid gap-8" role="status" aria-label="Chargement des offres">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden animate-pulse">
+                  <div className="p-8">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                      <div className="flex-1">
+                        <div className="flex gap-3 mb-4">
+                          <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                          <div className="h-8 w-32 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                        </div>
+                        <div className="h-8 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-lg mb-3"></div>
+                        <div className="flex gap-4 mb-4">
+                          <div className="h-5 w-28 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                          <div className="h-5 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                          <div className="h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded"></div>
+                          <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                      </div>
+                      <div className="lg:w-48">
+                        <div className="h-12 w-full bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+              ))}
+              <span className="sr-only">Chargement des offres en cours...</span>
             </div>
           )}
 
@@ -319,7 +349,7 @@ export default function OffresEmploi() {
 
           {/* Résultats */}
           {!loading && offres.length === 0 ? (
-            <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+            <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover-lift-md border border-gray-100 dark:border-gray-700 relative overflow-hidden">
               <div className="p-12 text-center">
                 <div className="flex justify-center mb-6">
                   <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-full flex items-center justify-center">
@@ -357,10 +387,10 @@ export default function OffresEmploi() {
             </div>
           ) : (
             <div className="grid gap-8">
-              {offres.map((offre, index) => (
-                <div
+              {offres.map((offre) => (
+                <article
                   key={offre.id}
-                  className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+                  className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover-lift-md border border-gray-100 dark:border-gray-700 relative overflow-hidden"
                 >
                   <div className="p-8">
                     <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -415,7 +445,7 @@ export default function OffresEmploi() {
                       <div className="flex flex-col gap-4 lg:items-end">
                         <Link
                           href={`/offres-emploi/${offre.id}`}
-                          className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer min-w-[140px]"
+                          className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl hover-lift-sm font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer min-w-[140px]"
                         >
                           <span className="relative z-10 flex items-center justify-center gap-2">
                             Voir l&#39;offre
@@ -431,7 +461,7 @@ export default function OffresEmploi() {
                   
                   {/* Barre colorée en bas avec effet hover */}
                   <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                </div>
+                </article>
               ))}
             </div>
           )}
