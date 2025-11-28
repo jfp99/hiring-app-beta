@@ -244,7 +244,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 specialty: 'Développement Commercial & Stratégie',
                 description: 'Expert en recrutement grande distribution, retail et IT. Maîtrise de l\'espagnol pour accompagner les clients en Espagne.',
                 location: 'Aix-En-Provence, France',
-                linkedin: 'https://www.linkedin.com/in/hugo-mathieu-hiring/'
+                linkedin: 'https://www.linkedin.com/in/hugo-mathieu-1959b321b/'
               },
               {
                 name: 'Izia Grazilly',
@@ -255,7 +255,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 specialty: 'IT, Data, Infrastructure & Cybersécurité',
                 description: 'Spécialiste en recrutement IT avec une expertise en Data, Infrastructure et Cybersécurité à l\'échelle nationale.',
                 location: 'Marseille, France',
-                linkedin: 'https://www.linkedin.com/in/izia-grazilly/'
+                linkedin: 'https://www.linkedin.com/in/iziagrazilly/'
               }
             ].map((member, index) => (
               <div

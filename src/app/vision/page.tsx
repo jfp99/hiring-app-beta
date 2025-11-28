@@ -17,7 +17,7 @@ const recruteurs = [
     photo: '/team/hugo-mathieu.jpg',
     stats: { experience: 'Multi-sectoriel', satisfaction: 98, specialite: 'IT & Digital', placements: 150 },
     citation: "Une approche personnalisée et exigeante pour connecter les bons talents aux bons projets.",
-    contact: { email: 'hugo@hi-ring.fr', phone: '06 66 74 76 18' }
+    contact: { email: 'hugo@hi-ring.fr', phone: '06 66 74 76 18', linkedin: 'https://www.linkedin.com/in/hugo-mathieu-1959b321b/' }
   },
   {
     nom: 'Izia Grazilly',
@@ -28,7 +28,7 @@ const recruteurs = [
     photo: '/team/izia-grazilly.jpg',
     stats: { experience: 'IT & Tech', satisfaction: 98, specialite: 'Data & Cybersécurité', placements: 200 },
     citation: "Attirer, engager et fidéliser les talents avec adaptabilité et créativité.",
-    contact: { email: 'izia@hi-ring.fr', phone: '06 09 11 15 98' }
+    contact: { email: 'izia@hi-ring.fr', phone: '06 09 11 15 98', linkedin: 'https://www.linkedin.com/in/iziagrazilly/' }
   }
 ]
 
