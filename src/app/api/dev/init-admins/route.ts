@@ -1,14 +1,19 @@
 // src/app/api/dev/init-admins/route.ts
-// Development-only endpoint to initialize authorized admin users
-import { NextResponse } from 'next/server'
+// Secure endpoint to initialize authorized admin users
+import { NextRequest, NextResponse } from 'next/server'
 import { connectToDatabase } from '@/app/lib/mongodb'
 import bcrypt from 'bcryptjs'
 import { UserRole } from '@/app/types/auth'
 
-export async function POST() {
-  // Only allow in development
+export async function POST(request: NextRequest) {
+  // In production, require a secret key
   if (process.env.NODE_ENV !== 'development') {
-    return NextResponse.json({ error: 'Not available in production' }, { status: 403 })
+    const { secret } = await request.json().catch(() => ({ secret: null }))
+    const initSecret = process.env.INIT_ADMIN_SECRET || process.env.NEXTAUTH_SECRET
+
+    if (!secret || secret !== initSecret) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
   }
 
   try {
