@@ -8,6 +8,8 @@ import { UserRole } from '../types/auth'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Link from 'next/link'
+import { Briefcase, User, Mail, Info } from 'lucide-react'
+import { LoadingPage } from '../components/ui/Loading'
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -49,14 +51,7 @@ export default function Dashboard() {
 
   // Loading state
   if (status === 'loading' || !session) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ffaf50ff] mx-auto mb-4"></div>
-          <p className="text-[#3b5335ff] font-medium">Chargement...</p>
-        </div>
-      </div>
-    )
+    return <LoadingPage message="Chargement..." />
   }
 
   // General dashboard for users without specific dashboards yet
@@ -65,7 +60,7 @@ export default function Dashboard() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-20 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white section-padding-lg overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
@@ -86,19 +81,21 @@ export default function Dashboard() {
       </section>
 
       {/* Quick Actions */}
-      <section className="py-20">
+      <section className="section-padding-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-[#3b5335ff] mb-8 text-center">
             Actions Rapides
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-responsive-md">
             {/* View Jobs */}
             <Link
               href="/offres-emploi"
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 p-8 text-center"
             >
-              <div className="text-4xl mb-4">💼</div>
+              <div className="flex justify-center mb-4">
+                <Briefcase className="w-12 h-12 text-accent-500 dark:text-accent-400" />
+              </div>
               <h3 className="text-xl font-bold text-[#3b5335ff] mb-2">
                 Voir les Offres
               </h3>
@@ -112,7 +109,9 @@ export default function Dashboard() {
               href="/profile"
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 p-8 text-center"
             >
-              <div className="text-4xl mb-4">👤</div>
+              <div className="flex justify-center mb-4">
+                <User className="w-12 h-12 text-primary-600 dark:text-primary-400" />
+              </div>
               <h3 className="text-xl font-bold text-[#3b5335ff] mb-2">
                 Mon Profil
               </h3>
@@ -126,7 +125,9 @@ export default function Dashboard() {
               href="/contact"
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 p-8 text-center"
             >
-              <div className="text-4xl mb-4">📧</div>
+              <div className="flex justify-center mb-4">
+                <Mail className="w-12 h-12 text-primary-600 dark:text-primary-400" />
+              </div>
               <h3 className="text-xl font-bold text-[#3b5335ff] mb-2">
                 Support
               </h3>
@@ -139,7 +140,7 @@ export default function Dashboard() {
           {/* Role-specific message */}
           <div className="mt-12 bg-blue-50 border border-blue-200 rounded-2xl p-6">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">ℹ️</span>
+              <Info className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-semibold text-blue-900 mb-2">
                   Tableau de bord personnalisé en cours de développement

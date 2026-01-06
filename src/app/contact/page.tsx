@@ -129,7 +129,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
       <main id="main-content">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white section-padding-xl overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -222,7 +222,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       </section>
 
       {/* Team Section - NEW */}
-      <section className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-[#f8f7f3ff] dark:to-gray-800">
+      <section className="section-padding-lg bg-gradient-to-b from-white dark:from-gray-900 to-[#f8f7f3ff] dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<UsersIcon />}>
@@ -331,7 +331,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-[#f8f7f3ff] dark:to-gray-800">
+      <section className="section-padding-lg bg-gradient-to-b from-white dark:from-gray-900 to-[#f8f7f3ff] dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
@@ -668,7 +668,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       </section>
 
       {/* Recent Recruitments Section */}
-      <section className="py-20 bg-gradient-to-b from-[#f8f7f3ff] dark:from-gray-800 to-white dark:to-gray-900">
+      <section className="section-padding-lg bg-gradient-to-b from-[#f8f7f3ff] dark:from-gray-800 to-white dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
@@ -752,7 +752,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       </section>
 
       {/* Testimonials Section - NEW */}
-      <section hidden className="py-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+      <section hidden className="section-padding-lg bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<ChatIcon />}>

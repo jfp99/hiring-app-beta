@@ -50,7 +50,7 @@
 
   --dark-text-primary: #f1f5f9;     /* slate-100 - High contrast text (15.8:1) */
   --dark-text-secondary: #cbd5e1;   /* slate-300 - Medium contrast text (9.2:1) */
-  --dark-text-tertiary: #c5d4e8;    /* Custom - WCAG AA compliant text (7.2:1) - Improved contrast */
+  --dark-text-tertiary: #e2e8f0;    /* slate-200 - WCAG AAA compliant text (9.5:1) - Enhanced contrast */
 
   --dark-border-primary: #334155;   /* slate-700 - Strong borders */
   --dark-border-secondary: #1e293b; /* slate-800 - Subtle borders */
@@ -142,6 +142,17 @@ body {
   text-rendering: optimizeLegibility;
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+a,
+input,
+textarea,
+select,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Standardized Typography Utility Classes */
@@ -351,6 +362,10 @@ body {
   color: var(--dark-text-tertiary);
 }
 
+.dark .text-gray-300 {
+  color: var(--dark-text-secondary);
+}
+
 /* Border colors */
 .dark .border-gray-200 {
   border-color: var(--dark-border-secondary);
@@ -390,6 +405,17 @@ body {
 
 .dark .focus\:ring-primary-500:focus {
   --tw-ring-color: var(--dark-accent-green);
+}
+
+/* Global focus-visible styling for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--primary-orange);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.dark *:focus-visible {
+  outline-color: var(--dark-accent-orange);
 }
 
 /* Card and surface shadows in dark mode */
@@ -1277,6 +1303,50 @@ body {
 
 .card-border-glow:hover::before {
   opacity: 1;
+}
+
+/* Card Hover Shadow Overlay - Top to Bottom reveal using scaleY */
+.card-hover-shadow {
+  position: relative;
+}
+
+.card-hover-shadow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 175, 80, 0.4) 0%,
+    rgba(255, 175, 80, 0.25) 25%,
+    rgba(255, 175, 80, 0.12) 50%,
+    rgba(255, 175, 80, 0.04) 75%,
+    transparent 100%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
+}
+
+.card-hover-shadow:hover::after {
+  transform: scaleY(1);
+}
+
+/* Dark mode variant */
+.dark .card-hover-shadow::after {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 175, 80, 0.45) 0%,
+    rgba(255, 175, 80, 0.3) 25%,
+    rgba(255, 175, 80, 0.15) 50%,
+    rgba(255, 175, 80, 0.05) 75%,
+    transparent 100%
+  );
 }
 
 /* Image Reveal Effect */

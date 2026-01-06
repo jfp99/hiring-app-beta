@@ -64,7 +64,7 @@ export default function Vision() {
 
       <main id="main-content">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white section-padding-xl overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -78,7 +78,7 @@ export default function Vision() {
         <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-white rounded-full filter blur-3xl opacity-5 animate-soft-bounce will-change-transform"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-responsive-lg items-center">
             {/* Text Content - Left Side */}
             <div className={`transform transition-all duration-1000 ${
               isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'
@@ -191,7 +191,7 @@ export default function Vision() {
       <div className="py-16">
         {/* Tab 1: Notre Approche */}
         {activeTab === 'approche' && (
-          <section className="py-20">
+          <section className="section-padding-lg">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <SectionHeaderBadge variant="accent" icon={<TargetIcon />}>
@@ -268,7 +268,7 @@ export default function Vision() {
         {/* Tab 2: Notre Savoir-Faire */}
         {activeTab === 'savoir-faire' && (
           <>
-            <section className="py-20">
+            <section className="section-padding-lg">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                   <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
@@ -357,7 +357,7 @@ export default function Vision() {
             </section>
 
             {/* Nos Clients Section */}
-            <section className="py-20">
+            <section className="section-padding-lg">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                   <SectionHeaderBadge variant="accent" icon={<BuildingIcon />}>

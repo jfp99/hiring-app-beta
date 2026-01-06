@@ -60,7 +60,7 @@ export default function Header() {
               className="group flex items-center"
               onClick={handleLinkClick}
             >
-              <div className="relative bg-cream-100 dark:bg-gray-900 rounded-xl px-4 py-2.5 transition-all duration-500 group-hover:shadow-lg">
+              <div className="relative bg-transparent rounded-xl px-4 py-2.5 transition-all duration-500 group-hover:shadow-lg">
                 <Image
                   src={Logohiring}
                   alt="Hi-ring Logo"
@@ -79,7 +79,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative group px-6 py-3 min-h-[44px] flex items-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 hover:scale-105 hover:-translate-y-0.5 ${
+                className={`relative group px-6 py-3 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 hover:scale-105 hover:-translate-y-0.5 ${
                   pathname === item.href
                     ? 'text-primary-700 dark:text-accent-500 bg-accent-500/10 dark:bg-accent-500/20 shadow-inner'
                     : 'text-primary-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-accent-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
@@ -87,18 +87,15 @@ export default function Header() {
               >
                 <span className="font-semibold uppercase text-sm tracking-wide">{item.label}</span>
 
-                {/* Indicateur actif avec animation premium */}
+                {/* Indicateur actif - ombre colorée */}
                 {pathname === item.href && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full animate-tab-indicator" />
+                  <div className="absolute inset-0 rounded-xl shadow-[inset_0_0_20px_rgba(255,175,80,0.3)] dark:shadow-[inset_0_0_20px_rgba(255,175,80,0.4)]" />
                 )}
 
-                {/* Effet underline hover - seulement sur les éléments non actifs */}
+                {/* Effet hover shadow - ombre qui apparaît de haut en bas */}
                 {pathname !== item.href && (
-                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-accent-500 to-accent-600 rounded-full group-hover:w-1/2 transition-all duration-500" />
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-accent-500/30 via-accent-500/15 to-transparent opacity-0 group-hover:opacity-100 transform origin-top scale-y-0 group-hover:scale-y-100 transition-all duration-300 ease-out" />
                 )}
-
-                {/* Effet hover background avec animation */}
-                <div className="absolute inset-0 bg-gradient-to-r from-accent-500/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-all duration-300" />
               </Link>
             ))}
           </div>
@@ -134,7 +131,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-[var(--header-height-mobile)] sm:top-[var(--header-height-desktop)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50 overflow-y-auto z-50">
+          <div className="md:hidden fixed inset-0 top-[var(--header-height-mobile)] sm:top-[var(--header-height-desktop)] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50 overflow-y-auto z-[60]">
             <div className="px-3 pt-4 pb-safe space-y-1.5 max-h-[calc(100vh-var(--header-height-mobile))] sm:max-h-[calc(100vh-var(--header-height-desktop))]">
               {navItems.map((item) => (
                 <Link

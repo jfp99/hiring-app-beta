@@ -103,7 +103,7 @@ export default function OffresEmploi() {
 
       <main id="main-content">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white section-padding-xl overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -297,7 +297,7 @@ export default function OffresEmploi() {
       </section>
 
       {/* Liste des offres */}
-      <section className="py-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+      <section className="section-padding-lg bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* États de chargement avec skeleton loaders */}
           {loading && (
@@ -469,7 +469,7 @@ export default function OffresEmploi() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-gray-800 dark:to-gray-900 text-white">
+      <section className="section-padding-lg bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-gray-800 dark:to-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Vous ne trouvez pas votre bonheur ?

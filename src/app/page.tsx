@@ -67,7 +67,7 @@ export default function Home() {
                 Cabinet de conseil en recrutement fondé par Hugo et Izia. Spécialistes du recrutement IT, Digital, Finance, et Conseil avec une approche personnalisée et exigeante.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-responsive-sm justify-center">
                 <Link
                   href="/offres-emploi"
                   className="group btn-magnetic bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-8 py-4 min-h-[44px] rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer animate-premium-glow"
@@ -99,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* Services Section avec Images */}
-      <section className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section className="section-padding-lg bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<BriefcaseIcon />}>
@@ -113,7 +113,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 animate-stagger">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-responsive-md animate-stagger">
             {[
               {
                 title: 'Recrutements en CDI',
@@ -153,10 +153,10 @@ export default function Home() {
                 role="article"
                 tabIndex={0}
                 onKeyDown={(e) => handleCardKeyDown(e, service.slug)}
-                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 hover-lift-premium overflow-hidden flex flex-col h-full card-border-glow cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 hover-lift-premium flex flex-col h-full card-border-glow card-hover-shadow cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
               >
                 {/* Image */}
-                <div className="relative h-48 overflow-hidden flex-shrink-0">
+                <div className="relative z-10 h-48 overflow-hidden flex-shrink-0">
                   <Image
                     src={service.image}
                     alt={`Illustration du service ${service.title} - Cabinet de recrutement Hi-Ring`}
@@ -171,17 +171,17 @@ export default function Home() {
                 </div>
 
                 {/* Content */}
-                <div className="p-8 flex flex-col flex-grow">
-                  <h3 className="text-2xl font-bold text-primary-700 dark:text-accent-500 mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
+                <div className="relative z-10 p-4 sm:p-6 lg:p-8 flex flex-col flex-grow">
+                  <h3 className="text-xl sm:text-2xl font-bold text-primary-700 dark:text-accent-500 mb-2 sm:mb-3 group-hover:text-primary-600 dark:group-hover:text-accent-600 transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 leading-relaxed">
                     {service.description}
                   </p>
-                  <ul className="space-y-3 mb-6 flex-grow">
+                  <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 flex-grow">
                     {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-gray-700 dark:text-gray-300">
-                        <svg className="w-5 h-5 text-accent-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <li key={featureIndex} className="flex items-center text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500 mr-2 sm:mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
                         {feature}
@@ -203,9 +203,9 @@ export default function Home() {
       </section>
 
       {/* Talent Pool Section - Notre vivier de talents */}
-      <section className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section className="section-padding-lg bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-responsive-lg items-center">
             {/* Image */}
             <div className="relative">
               <div className="group relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-all duration-500">
@@ -244,24 +244,24 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <button className="w-full text-left bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2">
-                  <div className="mb-2">
-                    <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <button className="group relative w-full text-left bg-primary-500/10 dark:bg-primary-500/20 rounded-xl p-3 sm:p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 card-hover-shadow">
+                  <div className="relative z-10 mb-2">
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
-                  <div className="font-semibold text-primary-700 dark:text-accent-500">Sourcing Ciblé</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Profils qualifiés et motivés</div>
+                  <div className="relative z-10 font-semibold text-sm sm:text-base text-primary-700 dark:text-accent-500">Sourcing Ciblé</div>
+                  <div className="relative z-10 text-xs sm:text-sm text-gray-600 dark:text-gray-400">Profils qualifiés et motivés</div>
                 </button>
-                <button className="w-full text-left bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2">
-                  <div className="mb-2">
-                    <svg className="w-8 h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button className="group relative w-full text-left bg-accent-500/10 dark:bg-accent-500/20 rounded-xl p-3 sm:p-4 transform hover:scale-105 hover:shadow-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 card-hover-shadow">
+                  <div className="relative z-10 mb-2">
+                    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                   </div>
-                  <div className="font-semibold text-primary-700 dark:text-accent-500">Accompagnement</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Suivi personnalisé</div>
+                  <div className="relative z-10 font-semibold text-sm sm:text-base text-primary-700 dark:text-accent-500">Accompagnement</div>
+                  <div className="relative z-10 text-xs sm:text-sm text-gray-600 dark:text-gray-400">Suivi personnalisé</div>
                 </button>
               </div>
             </div>
@@ -270,7 +270,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section hidden className="py-20 bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
+      <section hidden className="section-padding-lg bg-gradient-to-b from-white dark:from-gray-900 to-cream-100 dark:to-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <SectionHeaderBadge variant="accent" icon={<StarIcon />}>
@@ -284,7 +284,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-responsive-md">
             {[
               {
                 name: 'Sophie Martin',
@@ -310,9 +310,11 @@ export default function Home() {
             ].map((testimonial, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 transform hover:-translate-y-2"
+                className="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 sm:p-8 transform hover:-translate-y-2 overflow-hidden"
               >
-                <div className="flex items-center gap-4 mb-6">
+                {/* Hover shadow effect from top */}
+                <div className="absolute inset-0 bg-gradient-to-b from-accent-500/25 via-accent-500/10 to-transparent rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 [clip-path:inset(100%_0_0_0)] group-hover:[clip-path:inset(0_0_0_0)] transition-[clip-path] !duration-500" />
+                <div className="relative flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <Image
                     src={testimonial.avatar}
                     alt={`Photo de ${testimonial.name}, ${testimonial.role}`}
@@ -328,14 +330,14 @@ export default function Home() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
                   </div>
                 </div>
-                <div className="flex gap-1 mb-4">
+                <div className="relative flex gap-1 mb-3 sm:mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-accent-500" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 italic leading-relaxed">"{testimonial.content}"</p>
+                <p className="relative text-sm sm:text-base text-gray-600 dark:text-gray-300 italic leading-relaxed">"{testimonial.content}"</p>
               </div>
             ))}
           </div>
@@ -343,7 +345,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 text-white relative overflow-hidden">
+      <section className="section-padding-lg bg-gradient-to-br from-primary-500 via-primary-600 to-primary-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,

@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/app/components/ui/Button'
 import { Input } from '@/app/components/ui/Input'
+import { LoadingSpinner } from '@/app/components/ui/Loading'
 import Link from 'next/link'
 
 interface FilterState {
@@ -557,28 +558,38 @@ export default function AdminCandidatesHub() {
               {loading && !isRefreshing ? (
                 <div className="flex items-center justify-center py-32">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-500 mx-auto mb-4"></div>
-                    <p className="text-gray-500">Chargement des candidats...</p>
+                    <LoadingSpinner size="lg" variant="accent" className="mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400">Chargement des candidats...</p>
                   </div>
                 </div>
               ) : candidates.length === 0 ? (
-                <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                  <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Aucun candidat trouvé
-                  </h3>
-                  <p className="text-gray-500 mb-6">
-                    Essayez de modifier vos filtres ou d'ajouter de nouveaux candidats
-                  </p>
-                  <div className="flex items-center justify-center gap-4">
-                    <Button variant="tertiary" size="md" onClick={clearFilters}>
-                      Réinitialiser les filtres
-                    </Button>
-                    <Link href="/candidates/new">
-                      <Button variant="secondary" size="md" leftIcon={<UserPlus className="w-5 h-5" />}>
-                        Ajouter un candidat
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 text-center relative overflow-hidden">
+                  {/* Decorative gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent-500/5 via-transparent to-primary-500/5 dark:from-accent-500/10 dark:to-primary-500/10" />
+                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-accent-500/10 rounded-full blur-3xl" />
+                  <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary-500/10 rounded-full blur-3xl" />
+
+                  <div className="relative">
+                    <div className="relative mb-6">
+                      <Users className="w-20 h-20 text-gray-200 dark:text-gray-700 mx-auto" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-accent-500/20 to-primary-500/20 blur-2xl opacity-50 mx-auto w-20 h-20" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      Aucun candidat trouvé
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                      Commencez par ajouter votre premier candidat ou ajustez vos filtres pour voir plus de résultats
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                      <Button variant="tertiary" size="md" onClick={clearFilters}>
+                        Réinitialiser les filtres
                       </Button>
-                    </Link>
+                      <Link href="/candidates/new">
+                        <Button variant="secondary" size="md" leftIcon={<UserPlus className="w-5 h-5" />}>
+                          Ajouter un candidat
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ) : (
