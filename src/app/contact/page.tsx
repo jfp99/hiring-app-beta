@@ -458,7 +458,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <div>
                       <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
                         Nom complet * {touched.nom && !errors.nom && (
-                          <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                          <span className="text-accent-600 dark:text-accent-400 ml-2">✓</span>
                         )}
                       </label>
                       <input
@@ -508,7 +508,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <div>
                     <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
                       Email * {touched.email && !errors.email && formData.email && (
-                        <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                        <span className="text-accent-600 dark:text-accent-400 ml-2">✓</span>
                       )}
                     </label>
                     <input
@@ -542,7 +542,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <div>
                     <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
                       Sujet * {touched.sujet && !errors.sujet && formData.sujet.length >= 5 && (
-                        <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                        <span className="text-accent-600 dark:text-accent-400 ml-2">✓</span>
                       )}
                     </label>
                     <input
@@ -579,7 +579,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <div>
                     <label className="block text-sm font-medium text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2">
                       Message * {touched.message && !errors.message && formData.message.length >= 20 && (
-                        <span className="text-green-600 dark:text-green-400 ml-2">✓</span>
+                        <span className="text-accent-600 dark:text-accent-400 ml-2">✓</span>
                       )}
                     </label>
                     <textarea
@@ -618,7 +618,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       </div>
                       <span className={`font-medium ${
                         formData.message.length >= 20
-                          ? 'text-green-600 dark:text-green-400'
+                          ? 'text-accent-600 dark:text-accent-400'
                           : formData.message.length > 0
                             ? 'text-amber-600 dark:text-amber-400'
                             : 'text-gray-400 dark:text-gray-500'

@@ -347,9 +347,9 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                     </div>
 
                     {offre.salaire && offre.salaire !== 'À négocier' && (
-                      <div className="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border border-green-200 dark:border-green-800 rounded-xl p-6">
-                        <h3 className="text-xl font-bold text-green-800 dark:text-green-300 mb-2">Rémunération attractive</h3>
-                        <p className="text-green-700 dark:text-green-400 font-semibold text-lg">{offre.salaire}</p>
+                      <div className="mt-6 bg-gradient-to-r from-accent-50 to-accent-100 dark:from-accent-900/30 dark:to-accent-800/30 border border-accent-200 dark:border-accent-800 rounded-xl p-6">
+                        <h3 className="text-xl font-bold text-accent-700 dark:text-accent-300 mb-2">Rémunération attractive</h3>
+                        <p className="text-accent-600 dark:text-accent-400 font-semibold text-lg">{offre.salaire}</p>
                       </div>
                     )}
                   </div>
@@ -400,7 +400,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
                       <span className="text-gray-600 dark:text-gray-400">Salaire</span>
-                      <span className="font-semibold text-green-600 dark:text-green-400">{offre.salaire}</span>
+                      <span className="font-semibold text-accent-600 dark:text-accent-400">{offre.salaire}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
                       <span className="text-gray-600 dark:text-gray-400">Localisation</span>

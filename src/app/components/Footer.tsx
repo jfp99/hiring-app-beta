@@ -135,7 +135,7 @@ export default function Footer() {
             {message && (
               <div className={`mt-3 p-3 rounded-lg text-sm border flex items-center gap-2 ${
                 message.includes('Merci')
-                  ? 'bg-green-500/20 text-green-300 border-green-500/30'
+                  ? 'bg-accent-500/20 text-accent-300 border-accent-500/30'
                   : 'bg-red-500/20 text-red-300 border-red-500/30'
               }`}>
                 {message.includes('Merci') ? (
@@ -194,7 +194,7 @@ export default function Footer() {
             {/* Trust Badges */}
             <div className="flex items-center space-x-3 text-xs text-gray-400">
               <div className="flex items-center space-x-1">
-                <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-accent-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                 </svg>
                 <span>Site sécurisé</span>
