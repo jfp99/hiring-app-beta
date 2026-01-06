@@ -95,10 +95,10 @@ function JobOfferCard({ data }: { data: Partial<OffreFormData> }) {
       <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
         <span className="text-xs text-gray-500 flex items-center gap-1">
           <Calendar className="w-3 h-3" />
-          Aujourd'hui
+          Aujourd&apos;hui
         </span>
         <button className="px-4 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all">
-          Voir l'offre
+          Voir l&apos;offre
         </button>
       </div>
     </article>

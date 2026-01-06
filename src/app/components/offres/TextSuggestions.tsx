@@ -256,7 +256,6 @@ export default function TextSuggestions({
   }, [category, typeContrat, categorie, searchQuery])
 
   const config = CATEGORY_CONFIG[category]
-  const Icon = config.icon
 
   return (
     <div className="mt-2">
