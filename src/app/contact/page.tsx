@@ -20,13 +20,17 @@ export default function Contact() {
   })
 
   const [isVisible, setIsVisible] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const [errors, setErrors] = useState<{[key: string]: string}>({})
   const [touched, setTouched] = useState<{[key: string]: boolean}>({})
 
   const { loading, error, callApi } = useApi()
 
   useEffect(() => {
-    setIsVisible(true)
+    setMounted(true)
+    // Small delay for animation
+    const timer = setTimeout(() => setIsVisible(true), 50)
+    return () => clearTimeout(timer)
   }, [])
 
   const validateField = (name: string, value: string): string => {

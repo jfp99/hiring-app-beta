@@ -50,11 +50,13 @@ export default auth((req) => {
   // Define role-based access control
   const roleAccess: Record<string, UserRole[]> = {
     '/admin': [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+    '/candidates': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.RECRUITER], // Protected candidate management
     '/recruiter': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.RECRUITER],
     '/client': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CLIENT],
     '/hiring-manager': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.HIRING_MANAGER],
     '/candidate': [UserRole.CANDIDATE],
     '/dashboard': Object.values(UserRole), // All authenticated users
+    '/api/candidates': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.RECRUITER], // Protected API
     '/api/users': [UserRole.SUPER_ADMIN, UserRole.ADMIN],
     '/api/admin': [UserRole.SUPER_ADMIN, UserRole.ADMIN]
   }
