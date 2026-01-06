@@ -43,20 +43,20 @@
   --dark-green: #2a3d26ff;
   --darker-green: #1e2c1aff;
 
-  /* Dark Mode Color Palette - WCAG AA Compliant */
-  --dark-bg-primary: #0f172a;       /* slate-900 - Main background */
-  --dark-bg-secondary: #1e293b;     /* slate-800 - Cards, elevated surfaces */
-  --dark-bg-tertiary: #334155;      /* slate-700 - Hover states */
+  /* Dark Mode Color Palette - Softer, eye-friendly */
+  --dark-bg-primary: #1a1f2e;       /* Softer dark blue - easier on eyes */
+  --dark-bg-secondary: #242b3d;     /* Cards, elevated surfaces - warmer tone */
+  --dark-bg-tertiary: #3a4459;      /* Hover states - softer contrast */
 
-  --dark-text-primary: #f1f5f9;     /* slate-100 - High contrast text (15.8:1) */
-  --dark-text-secondary: #cbd5e1;   /* slate-300 - Medium contrast text (9.2:1) */
-  --dark-text-tertiary: #e2e8f0;    /* slate-200 - WCAG AAA compliant text (9.5:1) - Enhanced contrast */
+  --dark-text-primary: #f8f7f3;     /* Cream white - matches brand, softer than pure white */
+  --dark-text-secondary: #d4d2cb;   /* Muted cream - medium contrast */
+  --dark-text-tertiary: #b8b5ad;    /* Soft gray-cream - subtle text */
 
-  --dark-border-primary: #334155;   /* slate-700 - Strong borders */
-  --dark-border-secondary: #1e293b; /* slate-800 - Subtle borders */
+  --dark-border-primary: #3a4459;   /* Softer borders */
+  --dark-border-secondary: #2d3548; /* Subtle borders */
 
-  --dark-accent-orange: #fb923c;    /* Brighter orange for dark mode (4.8:1 on dark bg) */
-  --dark-accent-green: #86efac;     /* Light green for dark mode (7.1:1 on dark bg) */
+  --dark-accent-orange: #ffb866;    /* Softer orange for dark mode - less harsh */
+  --dark-accent-green: #f8f7f3;     /* Cream white instead of neon green - elegant & readable */
 
   /* Header height for consistent positioning */
   --header-height-mobile: 48px;
@@ -418,17 +418,17 @@ select,
   outline-color: var(--dark-accent-orange);
 }
 
-/* Card and surface shadows in dark mode */
+/* Card and surface shadows in dark mode - Softer, less harsh */
 .dark .shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
 }
 
 .dark .shadow-xl {
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.35), 0 10px 10px -5px rgba(0, 0, 0, 0.15);
 }
 
 .dark .shadow-2xl {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
 }
 
 /* Hover states with better visibility */
@@ -938,21 +938,21 @@ select,
    PREMIUM ANIMATIONS - Professional Recruitment UI
    ============================================ */
 
-/* Premium Easing Functions */
+/* Premium Easing Functions - Smooth & Elegant */
 :root {
-  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-premium: cubic-bezier(0.25, 0.46, 0.45, 0.94);  /* Smooth ease-out */
+  --ease-bounce: cubic-bezier(0.34, 1.2, 0.64, 1);       /* Subtle bounce - less aggressive */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);           /* Standard smooth */
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);         /* Gentle ease-in */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);        /* Smooth ease-out */
+  --ease-elastic: cubic-bezier(0.34, 1.15, 0.64, 1);     /* Very subtle elastic - no overshoot */
 }
 
-/* Stagger Animation System */
+/* Stagger Animation System - Gentle entrance */
 @keyframes staggerFadeIn {
   0% {
     opacity: 0;
-    transform: translateY(30px) scale(0.95);
+    transform: translateY(16px) scale(0.98);
   }
   100% {
     opacity: 1;
@@ -962,7 +962,7 @@ select,
 
 .animate-stagger > * {
   opacity: 0;
-  animation: staggerFadeIn 0.6s var(--ease-premium) forwards;
+  animation: staggerFadeIn 0.5s var(--ease-smooth) forwards;
 }
 
 .animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
@@ -972,12 +972,12 @@ select,
 .animate-stagger > *:nth-child(5) { animation-delay: 400ms; }
 .animate-stagger > *:nth-child(6) { animation-delay: 500ms; }
 
-/* Scroll Reveal Animation */
+/* Scroll Reveal Animation - Smooth entrance */
 @keyframes scrollReveal {
   0% {
     opacity: 0;
-    transform: translateY(60px);
-    filter: blur(10px);
+    transform: translateY(24px);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
@@ -988,20 +988,20 @@ select,
 
 .scroll-reveal {
   opacity: 0;
-  animation: scrollReveal 0.8s var(--ease-out-expo) forwards;
+  animation: scrollReveal 0.6s var(--ease-smooth) forwards;
 }
 
 .scroll-reveal-delayed {
   opacity: 0;
-  animation: scrollReveal 0.8s var(--ease-out-expo) 0.2s forwards;
+  animation: scrollReveal 0.6s var(--ease-smooth) 0.15s forwards;
 }
 
-/* Text Blur In Effect */
+/* Text Blur In Effect - Subtle blur */
 @keyframes textBlurIn {
   0% {
     opacity: 0;
-    filter: blur(12px);
-    transform: translateY(10px);
+    filter: blur(6px);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;
@@ -1011,14 +1011,14 @@ select,
 }
 
 .animate-text-blur-in {
-  animation: textBlurIn 0.8s var(--ease-out-expo) forwards;
+  animation: textBlurIn 0.6s var(--ease-smooth) forwards;
 }
 
-/* Character by Character Animation */
+/* Character by Character Animation - Gentle reveal */
 @keyframes charReveal {
   0% {
     opacity: 0;
-    transform: translateY(50px) rotateX(-90deg);
+    transform: translateY(20px) rotateX(-30deg);
   }
   100% {
     opacity: 1;
@@ -1028,7 +1028,7 @@ select,
 
 .animate-char-reveal {
   display: inline-block;
-  animation: charReveal 0.6s var(--ease-bounce) forwards;
+  animation: charReveal 0.5s var(--ease-smooth) forwards;
   transform-origin: bottom;
 }
 
@@ -1050,20 +1050,20 @@ select,
   animation: gradientFlow 4s ease infinite;
 }
 
-/* Premium Glow Effect */
+/* Premium Glow Effect - Subtle pulsing */
 @keyframes premiumGlow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 175, 80, 0.3),
-                0 0 40px rgba(255, 175, 80, 0.1);
+    box-shadow: 0 0 15px rgba(255, 175, 80, 0.2),
+                0 0 30px rgba(255, 175, 80, 0.08);
   }
   50% {
-    box-shadow: 0 0 30px rgba(255, 175, 80, 0.5),
-                0 0 60px rgba(255, 175, 80, 0.2);
+    box-shadow: 0 0 20px rgba(255, 175, 80, 0.3),
+                0 0 40px rgba(255, 175, 80, 0.12);
   }
 }
 
 .animate-premium-glow {
-  animation: premiumGlow 3s ease-in-out infinite;
+  animation: premiumGlow 4s ease-in-out infinite;
 }
 
 /* Card 3D Tilt Effect */
@@ -1076,10 +1076,10 @@ select,
   transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(10px);
 }
 
-/* Standardized Hover Lift System */
+/* Standardized Hover Lift System - Smooth & Subtle */
 /* Small lift: buttons, small interactive elements */
 .hover-lift-sm {
-  transition: all 0.3s var(--ease-premium);
+  transition: transform 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
 }
 .hover-lift-sm:hover {
   transform: translateY(-2px);
@@ -1087,24 +1087,24 @@ select,
 
 /* Medium lift: cards, interactive sections */
 .hover-lift-md {
-  transition: all 0.35s var(--ease-premium);
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
   will-change: transform;
 }
 .hover-lift-md:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.1);
 }
 
-/* Premium Hover Lift - Large lift for hero CTAs and featured elements */
+/* Premium Hover Lift - Elegant lift for featured elements */
 .hover-lift-premium {
-  transition: all 0.4s var(--ease-premium);
+  transition: transform 0.35s var(--ease-smooth), box-shadow 0.35s var(--ease-smooth);
   will-change: transform, box-shadow;
 }
 
 .hover-lift-premium:hover {
-  transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15),
-              0 18px 36px -18px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.12),
+              0 12px 24px -12px rgba(0, 0, 0, 0.08);
 }
 
 /* Respect reduced motion preferences */
@@ -1116,33 +1116,33 @@ select,
   }
 }
 
-/* Magnetic Button Effect */
+/* Magnetic Button Effect - Subtle glow */
 .btn-magnetic {
   position: relative;
-  transition: transform 0.3s var(--ease-premium);
+  transition: transform 0.3s var(--ease-smooth);
 }
 
 .btn-magnetic::before {
   content: '';
   position: absolute;
-  inset: -10px;
+  inset: -8px;
   z-index: -1;
   opacity: 0;
-  background: radial-gradient(circle, rgba(255, 175, 80, 0.4) 0%, transparent 70%);
-  transition: opacity 0.3s ease;
+  background: radial-gradient(circle, rgba(255, 175, 80, 0.25) 0%, transparent 70%);
+  transition: opacity 0.35s var(--ease-smooth);
 }
 
 .btn-magnetic:hover::before {
   opacity: 1;
 }
 
-/* Icon Rotate Hover */
+/* Icon Rotate Hover - Gentle rotation */
 .icon-rotate-hover {
-  transition: transform 0.4s var(--ease-elastic);
+  transition: transform 0.5s var(--ease-smooth);
 }
 
 .group:hover .icon-rotate-hover {
-  transform: rotate(360deg);
+  transform: rotate(180deg);
 }
 
 /* Underline Slide Effect */
@@ -1245,41 +1245,35 @@ select,
   animation: morphBg 8s ease-in-out infinite;
 }
 
-/* Parallax Float */
+/* Parallax Float - Smooth gentle drift */
 @keyframes parallaxFloat {
   0%, 100% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-15px) translateX(10px) rotate(2deg);
+    transform: translateY(0) translateX(0);
   }
   50% {
-    transform: translateY(-5px) translateX(-5px) rotate(-1deg);
-  }
-  75% {
-    transform: translateY(-20px) translateX(5px) rotate(1deg);
+    transform: translateY(-8px) translateX(4px);
   }
 }
 
 .animate-parallax-float {
-  animation: parallaxFloat 6s ease-in-out infinite;
+  animation: parallaxFloat 8s ease-in-out infinite;
 }
 
-/* Soft Bounce */
+/* Soft Bounce - Gentle floating effect */
 @keyframes softBounce {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-4px);
   }
 }
 
 .animate-soft-bounce {
-  animation: softBounce 2s ease-in-out infinite;
+  animation: softBounce 3s ease-in-out infinite;
 }
 
-/* Card Border Glow */
+/* Card Border Glow - Subtle accent */
 .card-border-glow {
   position: relative;
   overflow: hidden;
@@ -1289,23 +1283,23 @@ select,
   content: '';
   position: absolute;
   inset: 0;
-  padding: 2px;
-  background: linear-gradient(135deg, var(--primary-orange), var(--primary-green), var(--primary-orange));
-  background-size: 300% 300%;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 175, 80, 0.6), rgba(59, 83, 53, 0.4), rgba(255, 175, 80, 0.6));
+  background-size: 200% 200%;
   border-radius: inherit;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   opacity: 0;
-  animation: gradientFlow 3s ease infinite;
-  transition: opacity 0.4s ease;
+  animation: gradientFlow 5s ease infinite;
+  transition: opacity 0.35s var(--ease-smooth);
   pointer-events: none;
 }
 
 .card-border-glow:hover::before {
-  opacity: 1;
+  opacity: 0.8;
 }
 
-/* Card Hover Shadow Overlay - Top to Bottom reveal using scaleY */
+/* Card Hover Shadow Overlay - Smooth top to bottom reveal */
 .card-hover-shadow {
   position: relative;
 }
@@ -1319,17 +1313,16 @@ select,
   bottom: 0;
   background: linear-gradient(
     180deg,
-    rgba(255, 175, 80, 0.4) 0%,
-    rgba(255, 175, 80, 0.25) 25%,
-    rgba(255, 175, 80, 0.12) 50%,
-    rgba(255, 175, 80, 0.04) 75%,
+    rgba(255, 184, 102, 0.2) 0%,
+    rgba(255, 184, 102, 0.12) 30%,
+    rgba(255, 184, 102, 0.05) 60%,
     transparent 100%
   );
   border-radius: inherit;
   pointer-events: none;
   transform: scaleY(0);
   transform-origin: top center;
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s var(--ease-smooth);
   z-index: 5;
 }
 
@@ -1337,14 +1330,13 @@ select,
   transform: scaleY(1);
 }
 
-/* Dark mode variant */
+/* Dark mode variant - softer glow */
 .dark .card-hover-shadow::after {
   background: linear-gradient(
     180deg,
-    rgba(255, 175, 80, 0.45) 0%,
-    rgba(255, 175, 80, 0.3) 25%,
-    rgba(255, 175, 80, 0.15) 50%,
-    rgba(255, 175, 80, 0.05) 75%,
+    rgba(255, 184, 102, 0.18) 0%,
+    rgba(255, 184, 102, 0.1) 30%,
+    rgba(255, 184, 102, 0.04) 60%,
     transparent 100%
   );
 }
