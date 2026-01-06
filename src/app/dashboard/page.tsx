@@ -138,16 +138,16 @@ export default function Dashboard() {
           </div>
 
           {/* Role-specific message */}
-          <div className="mt-12 bg-blue-50 border border-blue-200 rounded-2xl p-6">
+          <div className="mt-12 bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800 rounded-2xl p-6">
             <div className="flex items-start gap-3">
-              <Info className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+              <Info className="w-6 h-6 text-accent-600 dark:text-accent-400 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-blue-900 mb-2">
+                <h4 className="font-semibold text-primary-700 dark:text-cream-100 mb-2">
                   Tableau de bord personnalisé en cours de développement
                 </h4>
-                <p className="text-blue-800">
+                <p className="text-gray-700 dark:text-gray-300">
                   Votre tableau de bord personnalisé pour le rôle{' '}
-                  <span className="font-semibold">{(session.user as any)?.role}</span> sera bientôt disponible.
+                  <span className="font-semibold text-accent-600 dark:text-accent-400">{(session.user as any)?.role}</span> sera bientôt disponible.
                   En attendant, vous pouvez utiliser les fonctionnalités ci-dessus.
                 </p>
               </div>
