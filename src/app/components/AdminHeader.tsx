@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
-import { Users, Target, Workflow, TrendingUp, Settings, LogOut } from 'lucide-react'
+import { Users, Target, Workflow, TrendingUp, Settings, LogOut, FileText } from 'lucide-react'
 import Logohiring from '../../../public/logo-hiring.png'
 import NotificationBell from './NotificationBell'
 
@@ -26,7 +26,8 @@ export default function AdminHeader() {
   }, [])
 
   const navItems: Array<{ href: string; label: string; icon: React.ComponentType<{ className?: string }>; badge?: string }> = [
-    { href: '/admin', label: 'Candidats Hub', icon: Users, badge: 'CRM' },
+    { href: '/admin', label: 'Candidats', icon: Users, badge: 'CRM' },
+    { href: '/admin/offres', label: 'Offres', icon: FileText },
     { href: '/admin/processes', label: 'Processus', icon: Target },
     { href: '/admin/workflows', label: 'Workflows', icon: Workflow },
     { href: '/admin/analytics-enhanced', label: 'Analytics', icon: TrendingUp },
@@ -74,23 +75,23 @@ export default function AdminHeader() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-1 xl:space-x-1.5">
             {navItems.map((item) => {
               const Icon = item.icon
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative group px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ease-in-out flex items-center gap-2.5 ${
+                  className={`relative group px-2 xl:px-3 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out flex items-center gap-1.5 xl:gap-2 ${
                     pathname === item.href
                       ? 'text-[#3b5335ff] bg-[#ffaf50ff]/10 shadow-sm dark:bg-[#ffaf50ff]/5'
                       : 'text-[#3b5335ff]/80 dark:text-gray-300 hover:text-[#3b5335ff] dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-800/50'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="font-semibold text-sm">{item.label}</span>
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-semibold text-xs xl:text-sm whitespace-nowrap">{item.label}</span>
                   {item.badge && (
-                    <span className="px-2 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] text-xs font-bold rounded-full shadow-sm">
+                    <span className="hidden xl:inline px-1.5 py-0.5 bg-[#ffaf50ff] text-[#3b5335ff] text-[10px] xl:text-xs font-bold rounded-full shadow-sm">
                       {item.badge}
                     </span>
                   )}
@@ -105,17 +106,17 @@ export default function AdminHeader() {
           </div>
 
           {/* Right side: Notifications + User Menu */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-4">
             {/* Notification Bell */}
             <NotificationBell />
 
             {/* User Menu */}
-            <div className="flex items-center gap-3 pl-4 border-l border-gray-300 dark:border-gray-700">
-              <div className="text-right">
-                <div className="text-sm font-medium text-[#3b5335ff] dark:text-gray-200">
+            <div className="flex items-center gap-2 xl:gap-3 pl-2 xl:pl-4 border-l border-gray-300 dark:border-gray-700">
+              <div className="text-right hidden xl:block">
+                <div className="text-xs xl:text-sm font-medium text-[#3b5335ff] dark:text-gray-200 truncate max-w-[120px]">
                   {session?.user?.name || session?.user?.email || 'Admin'}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">Administrateur</div>
+                <div className="text-[10px] xl:text-xs text-gray-500 dark:text-gray-400">Administrateur</div>
               </div>
               <button
                 onClick={handleLogout}
@@ -128,7 +129,7 @@ export default function AdminHeader() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-2">
             {/* Notification Bell for mobile */}
             <NotificationBell />
 
@@ -156,7 +157,7 @@ export default function AdminHeader() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50">
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-gray-200/50 dark:border-gray-700/50">
             <div className="px-4 pt-2 pb-6 space-y-2">
               {/* User Info Mobile */}
               <div className="pb-3 mb-3 border-b border-gray-200 dark:border-gray-700">
