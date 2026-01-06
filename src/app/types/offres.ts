@@ -135,7 +135,12 @@ export interface OffreEnhanced {
   // Scheduling
   scheduling?: OffreScheduling
 
-  // Template
+  // Template - root level flags for API compatibility
+  isTemplate?: boolean
+  templateName?: string | null
+  sourceTemplateId?: string | null
+
+  // Template metadata (legacy)
   template?: OffreTemplateData
 
   // Analytics (read-only, computed)
@@ -184,11 +189,19 @@ export interface OffreFormData {
   bannerUrl?: string
   videoUrl?: string
 
-  // SEO
+  // SEO (individual fields)
   slug?: string
   metaTitle?: string
   metaDescription?: string
   keywords?: string[]
+
+  // SEO (as object for API)
+  seo?: {
+    slug?: string
+    metaTitle?: string
+    metaDescription?: string
+    keywords?: string[]
+  }
 
   // Scheduling
   scheduledPublishDate?: string

@@ -13,8 +13,7 @@ import {
   ChevronDown,
   X,
   Briefcase,
-  Building2,
-  MapPin
+  Building2
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -22,15 +21,19 @@ import type { OffreTemplate, OffreFormData } from '@/app/types/offres'
 import { CATEGORIES, CONTRACT_TYPES } from '@/app/types/offres'
 
 interface TemplateSelectorProps {
-  templates: OffreTemplate[]
-  onSelect: (template: OffreTemplate) => void
-  onCreateNew: () => void
+  templates?: OffreTemplate[]
+  onSelect: (template: OffreTemplate | Partial<OffreFormData>) => void
+  onCreateNew?: () => void
   isLoading?: boolean
 }
 
-interface TemplateSelectorModalProps extends TemplateSelectorProps {
+interface TemplateSelectorModalProps {
   isOpen: boolean
   onClose: () => void
+  templates?: OffreTemplate[]
+  onSelect: (template: OffreTemplate | Partial<OffreFormData>) => void
+  onCreateNew?: () => void
+  isLoading?: boolean
 }
 
 // Predefined templates for quick start
@@ -296,7 +299,7 @@ export default function TemplateSelector({
 
   // Combine default and custom templates
   const allTemplates = useMemo(() => {
-    return [...DEFAULT_TEMPLATES, ...templates]
+    return [...DEFAULT_TEMPLATES, ...(templates || [])]
   }, [templates])
 
   // Filter templates
@@ -372,13 +375,15 @@ export default function TemplateSelector({
         </button>
 
         {/* Create new */}
-        <button
-          onClick={onCreateNew}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Nouveau template
-        </button>
+        {onCreateNew && (
+          <button
+            onClick={onCreateNew}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Nouveau template
+          </button>
+        )}
       </div>
 
       {/* Filter dropdowns */}
@@ -477,18 +482,20 @@ export default function TemplateSelector({
         <div className="text-center py-12">
           <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            Aucun template trouv\u00e9
+            Aucun template trouve
           </h3>
           <p className="text-gray-500 dark:text-gray-400 mb-4">
-            Essayez de modifier vos filtres ou cr\u00e9ez un nouveau template.
+            Essayez de modifier vos filtres ou creez un nouveau template.
           </p>
-          <button
-            onClick={onCreateNew}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Cr\u00e9er un template
-          </button>
+          {onCreateNew && (
+            <button
+              onClick={onCreateNew}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Creer un template
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -506,7 +513,7 @@ export function TemplateSelectorModal({
 }: TemplateSelectorModalProps) {
   if (!isOpen) return null
 
-  const handleSelect = (template: OffreTemplate) => {
+  const handleSelect = (template: OffreTemplate | Partial<OffreFormData>) => {
     onSelect(template)
     onClose()
   }
@@ -537,10 +544,10 @@ export function TemplateSelectorModal({
           <TemplateSelector
             templates={templates}
             onSelect={handleSelect}
-            onCreateNew={() => {
+            onCreateNew={onCreateNew ? () => {
               onCreateNew()
               onClose()
-            }}
+            } : undefined}
             isLoading={isLoading}
           />
         </div>

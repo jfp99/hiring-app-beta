@@ -309,7 +309,7 @@ export default function OffreKanbanBoard({
       id: status,
       title: config.label,
       color: config.color,
-      icon: STATUT_ICONS[status].name,
+      icon: status,
       offers: columnOffers,
       count: columnOffers.length
     }
