@@ -2,12 +2,12 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import dynamic from 'next/dynamic'
 import { MapPin, Maximize2, Minimize2, X, Building2, Briefcase, Euro } from 'lucide-react'
 import Link from 'next/link'
 
-// French city coordinates
+// French city coordinates (major cities + variations)
 const CITY_COORDINATES: Record<string, [number, number]> = {
+  // Major cities
   'Paris': [48.8566, 2.3522],
   'Lyon': [45.7640, 4.8357],
   'Marseille': [43.2965, 5.3698],
@@ -18,8 +18,42 @@ const CITY_COORDINATES: Record<string, [number, number]> = {
   'Strasbourg': [48.5734, 7.7521],
   'Nice': [43.7102, 7.2620],
   'Montpellier': [43.6108, 3.8767],
-  'Remote': [46.6034, 2.3488], // Center of France for remote
-  'Hybride': [46.6034, 2.3488]
+  'Rennes': [48.1173, -1.6778],
+  'Grenoble': [45.1885, 5.7245],
+  'Rouen': [49.4432, 1.0999],
+  'Toulon': [43.1242, 5.9280],
+  'Clermont-Ferrand': [45.7772, 3.0870],
+  'Le Havre': [49.4944, 0.1079],
+  'Reims': [49.2583, 4.0317],
+  'Saint-Étienne': [45.4397, 4.3872],
+  'Angers': [47.4784, -0.5632],
+  'Dijon': [47.3220, 5.0415],
+  'Brest': [48.3904, -4.4861],
+  'Le Mans': [48.0061, 0.1996],
+  'Aix-en-Provence': [43.5297, 5.4474],
+  'Amiens': [49.8941, 2.2958],
+  'Tours': [47.3941, 0.6848],
+  'Limoges': [45.8336, 1.2611],
+  'Metz': [49.1193, 6.1757],
+  'Besançon': [47.2378, 6.0241],
+  'Orléans': [47.9029, 1.9039],
+  'Caen': [49.1829, -0.3707],
+  'Perpignan': [42.6887, 2.8948],
+  'Nancy': [48.6921, 6.1844],
+  // Île-de-France suburbs
+  'Boulogne-Billancourt': [48.8352, 2.2410],
+  'Saint-Denis': [48.9362, 2.3574],
+  'Nanterre': [48.8924, 2.2072],
+  'Versailles': [48.8014, 2.1301],
+  'Courbevoie': [48.8966, 2.2566],
+  'La Défense': [48.8918, 2.2386],
+  'Issy-les-Moulineaux': [48.8242, 2.2700],
+  'Levallois-Perret': [48.8933, 2.2883],
+  // Remote/Hybrid
+  'Remote': [46.6034, 2.3488],
+  'Hybride': [46.6034, 2.3488],
+  'Télétravail': [46.6034, 2.3488],
+  'France': [46.6034, 2.3488]
 }
 
 // France center for default view
@@ -49,22 +83,61 @@ interface CityCluster {
   offers: JobOffer[]
 }
 
+// City aliases for common variations
+const CITY_ALIASES: Record<string, string> = {
+  'aix': 'Aix-en-Provence',
+  'st etienne': 'Saint-Étienne',
+  'saint etienne': 'Saint-Étienne',
+  'clermont': 'Clermont-Ferrand',
+  'defense': 'La Défense',
+  'la defense': 'La Défense',
+  'boulogne': 'Boulogne-Billancourt',
+  'issy': 'Issy-les-Moulineaux',
+  'levallois': 'Levallois-Perret',
+  'saint denis': 'Saint-Denis',
+  'st denis': 'Saint-Denis',
+  'le havre': 'Le Havre',
+  'le mans': 'Le Mans',
+}
+
+// Find matching city from lieu string (handles "Paris, France", "AIX", "Lyon et Paris", etc.)
+function findCityFromLieu(lieu: string): string | null {
+  const lieuLower = lieu.toLowerCase().trim()
+
+  // First check aliases for common short names
+  for (const [alias, city] of Object.entries(CITY_ALIASES)) {
+    if (lieuLower.includes(alias)) {
+      return city
+    }
+  }
+
+  // Check each city in our coordinates map
+  for (const city of Object.keys(CITY_COORDINATES)) {
+    if (lieuLower.includes(city.toLowerCase())) {
+      return city
+    }
+  }
+
+  // No match found
+  return null
+}
+
 function clusterOffersByCity(offers: JobOffer[]): CityCluster[] {
   const clusters: Record<string, CityCluster> = {}
 
   offers.forEach(offer => {
-    const city = offer.lieu
-    const coords = CITY_COORDINATES[city]
+    const matchedCity = findCityFromLieu(offer.lieu)
 
-    if (coords) {
-      if (!clusters[city]) {
-        clusters[city] = {
-          city,
+    if (matchedCity) {
+      const coords = CITY_COORDINATES[matchedCity]
+      if (!clusters[matchedCity]) {
+        clusters[matchedCity] = {
+          city: matchedCity,
           coordinates: coords,
           offers: []
         }
       }
-      clusters[city].offers.push(offer)
+      clusters[matchedCity].offers.push(offer)
     }
   })
 

@@ -6,6 +6,12 @@ import Footer from '../../components/Footer'
 import Link from 'next/link'
 import { useEffect, useState, use } from 'react'
 import { useApi } from '../../hooks/useApi'
+import { useFavorites } from '../../hooks/useFavorites'
+import {
+  MapPin, Building2, Briefcase, Calendar, Euro, Mail,
+  ArrowLeft, Share2, Heart, CheckCircle2,
+  GraduationCap, Award, Sparkles, Users
+} from 'lucide-react'
 
 interface Offre {
   id: string
@@ -15,83 +21,88 @@ interface Offre {
   typeContrat: string
   salaire: string
   description: string
+  descriptionHtml?: string
   competences: string
   emailContact: string
   datePublication: string
   categorie: string
   statut: string
+  // Enhanced fields
+  responsabilites?: string[]
+  qualifications?: string[]
+  avantages?: string[]
+  media?: {
+    logoUrl?: string
+    bannerUrl?: string
+    videoUrl?: string
+  }
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+  }
 }
 
 export default function OffreDetail({ params }: { params: Promise<{ id: string }> }) {
-  // Unwrap the params Promise
   const unwrappedParams = use(params)
   const [offre, setOffre] = useState<Offre | null>(null)
-  const [activeSection, setActiveSection] = useState('description')
   const { loading, error, callApi } = useApi()
+  const { isFavorite, toggleFavorite } = useFavorites()
+  const [showShareToast, setShowShareToast] = useState(false)
 
   useEffect(() => {
     const loadOffre = async () => {
       try {
-        console.log('🔍 [OFFRE-DETAIL] Loading offer with ID:', unwrappedParams.id)
-
-        // Utiliser l'API offres existante pour récupérer toutes les offres
         const result = await callApi('/offres')
-
         if (result.success && result.offres) {
-          // Trouver l'offre spécifique par ID
           const foundOffre = result.offres.find((o: Offre) => o.id === unwrappedParams.id)
-
           if (foundOffre) {
-            console.log('✅ [OFFRE-DETAIL] Offer found:', foundOffre.titre)
             setOffre(foundOffre)
-          } else {
-            console.log('❌ [OFFRE-DETAIL] Offer not found with ID:', unwrappedParams.id)
-            setOffre(null)
           }
-        } else {
-          console.log('❌ [OFFRE-DETAIL] No offers found in response')
-          setOffre(null)
         }
       } catch (err) {
-        console.error('❌ [OFFRE-DETAIL] Error loading offer:', err)
-        setOffre(null)
+        console.error('Error loading offer:', err)
       }
     }
-
     loadOffre()
   }, [unwrappedParams.id, callApi])
 
-  // Générer des données dérivées pour l'affichage
-  const responsabilites = offre?.description 
-    ? offre.description.split('.').filter(item => item.trim().length > 0).slice(0, 5)
-    : []
+  const handleShare = async () => {
+    const url = window.location.href
+    if (navigator.share) {
+      await navigator.share({
+        title: offre?.titre,
+        text: `Offre d'emploi: ${offre?.titre} chez ${offre?.entreprise}`,
+        url
+      })
+    } else {
+      await navigator.clipboard.writeText(url)
+      setShowShareToast(true)
+      setTimeout(() => setShowShareToast(false), 2000)
+    }
+  }
 
-  const qualifications = offre?.competences 
-    ? offre.competences.split(',').map(q => q.trim()).filter(q => q.length > 0)
-    : []
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
 
-  const avantages = [
-    "Salaire compétitif",
-    "Environnement de travail dynamique",
-    "Opportunités d'évolution",
-    "Formation continue",
-    "Télétravail partiel possible",
-    "Mutuelle entreprise"
-  ]
-
-  const sections = [
-    { id: 'description', label: 'Description' },
-    { id: 'responsabilites', label: 'Responsabilités' },
-    { id: 'qualifications', label: 'Compétences' },
-    { id: 'avantages', label: 'Avantages' }
-  ]
+  // Helper to check if a field has content
+  const hasContent = (value: unknown): boolean => {
+    if (!value) return false
+    if (typeof value === 'string') return value.trim() !== ''
+    if (Array.isArray(value)) return value.length > 0
+    return true
+  }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#ffaf50ff] mb-4"></div>
-          <p className="text-[#3b5335ff] dark:text-[#ffaf50ff] font-semibold">Chargement de l&#39;offre...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Chargement de l&apos;offre...</p>
         </div>
       </div>
     )
@@ -99,26 +110,26 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
 
   if (error || !offre) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden p-8 max-w-md w-full mx-4">
-            <div className="text-center">
-              <div className="text-4xl mb-4">😵</div>
-              <h2 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">
-                Offre non trouvée
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-8">
-                {error || "L'offre que vous recherchez n'existe pas ou a été supprimée."}
-              </p>
-              <Link 
-                href="/offres-emploi"
-                className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] px-8 py-3 rounded-lg font-bold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 inline-block"
-              >
-                Retour aux offres
-              </Link>
+        <div className="flex items-center justify-center min-h-[60vh] px-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Briefcase className="w-8 h-8 text-red-500" />
             </div>
-            <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Offre non trouvee
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              {error || "Cette offre n'existe pas ou a ete supprimee."}
+            </p>
+            <Link
+              href="/offres-emploi"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Retour aux offres
+            </Link>
           </div>
         </div>
         <Footer />
@@ -126,338 +137,301 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     )
   }
 
+  const isFav = isFavorite(offre.id)
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
-      
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#2a3d26ff] via-[#3b5335ff] to-[#2a3d26ff] text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[#ffaf50ff] rounded-full filter blur-3xl opacity-10 animate-pulse"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <span className="bg-[#ffaf50ff] text-[#3b5335ff] px-6 py-2 rounded-full font-bold text-lg shadow-lg">
-                {offre.categorie}
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              {offre.titre}
-            </h1>
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <span className="bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
-                {offre.entreprise}
-              </span>
-              <span className="bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
-                {offre.lieu}
-              </span>
-              <span className="bg-[#ffaf50ff] text-[#3b5335ff] px-4 py-2 rounded-full font-bold">
-                {offre.typeContrat}
-              </span>
-              {offre.salaire && offre.salaire !== 'À négocier' && (
-                <span className="bg-green-500 text-white px-4 py-2 rounded-full font-bold">
-                  {offre.salaire}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis intéressé(e) par le poste de ${offre.titre} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Postuler maintenant
-                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-              </a>
-              <Link
-                href="/offres-emploi"
-                className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  Voir toutes les offres
-                  <svg className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </span>
-              </Link>
-            </div>
-          </div>
+
+      {/* Share toast */}
+      {showShareToast && (
+        <div className="fixed top-20 right-4 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg animate-fade-in">
+          Lien copie !
         </div>
-      </section>
+      )}
 
-      {/* Navigation des sections */}
-      <section className="py-3 sm:py-6 md:py-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-          {/* Desktop view - 4 buttons in a row */}
-          <div className="hidden sm:flex flex-wrap justify-center gap-2 md:gap-4">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={`px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl font-bold text-sm md:text-base transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
-                  activeSection === section.id
-                    ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] dark:text-gray-900 shadow-lg'
-                    : 'bg-white dark:bg-gray-700 text-[#3b5335ff] dark:text-[#ffaf50ff] hover:bg-gray-50 dark:hover:bg-gray-600 shadow-md hover:shadow-lg'
-                }`}
-              >
-                {section.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Mobile view - 2x2 grid for better space usage */}
-          <div className="grid grid-cols-2 gap-2 sm:hidden">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
-                className={`px-3 py-2 rounded-lg font-bold text-xs transition-all duration-300 active:scale-95 cursor-pointer ${
-                  activeSection === section.id
-                    ? 'bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-[#3b5335ff] dark:text-gray-900 shadow-lg'
-                    : 'bg-white dark:bg-gray-700 text-[#3b5335ff] dark:text-[#ffaf50ff] shadow-md active:shadow-lg'
-                }`}
-              >
-                {section.label}
-              </button>
-            ))}
-          </div>
+      {/* Back navigation */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Link
+            href="/offres-emploi"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Retour aux offres
+          </Link>
         </div>
-      </section>
+      </div>
 
-      {/* Contenu détaillé */}
-      <section className="py-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Contenu principal */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Section Description */}
-              {activeSection === 'description' && (
-                <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                  <div className="p-8">
-                    <h2 className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Description du poste</h2>
-                    <div className="prose prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
-                      <p className="text-lg mb-6">{offre.description}</p>
-
-                      <div className="bg-gradient-to-r from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl border border-gray-200 dark:border-gray-600 mt-6">
-                        <h3 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">Ce qui rend ce poste unique</h3>
-                        <ul className="space-y-3 text-gray-700 dark:text-gray-300">
-                          <li className="flex items-center gap-3">
-                            <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full"></span>
-                            Opportunité de travailler sur des projets innovants chez {offre.entreprise}
-                          </li>
-                          <li className="flex items-center gap-3">
-                            <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full"></span>
-                            Environnement dynamique et collaboratif à {offre.lieu}
-                          </li>
-                          <li className="flex items-center gap-3">
-                            <span className="w-2 h-2 bg-[#ffaf50ff] rounded-full"></span>
-                            Contrat {offre.typeContrat} avec des perspectives d'évolution
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+      {/* Main content */}
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left column - Main content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Header card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              {/* Banner if exists */}
+              {offre.media?.bannerUrl && (
+                <div className="h-32 bg-gradient-to-r from-primary-600 to-primary-700">
+                  <img
+                    src={offre.media.bannerUrl}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               )}
 
-              {/* Section Responsabilités */}
-              {activeSection === 'responsabilites' && (
-                <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                  <div className="p-8">
-                    <h2 className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Responsabilités principales</h2>
-                    <div className="space-y-4">
-                      {responsabilites.map((responsabilite, index) => (
-                        <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors group/item">
-                          <span className="w-8 h-8 bg-[#ffaf50ff] rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold group-hover/item:scale-110 transition-transform duration-300">
-                            {index + 1}
-                          </span>
-                          <span className="text-gray-700 dark:text-gray-300 text-lg">{responsabilite.trim()}.</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="h-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+              <div className="p-6 sm:p-8">
+                {/* Category & Contract badges */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {hasContent(offre.categorie) && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
+                      <Briefcase className="w-3.5 h-3.5" />
+                      {offre.categorie}
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 rounded-full text-sm font-medium">
+                    {offre.typeContrat}
+                  </span>
                 </div>
-              )}
 
-              {/* Section Compétences */}
-              {activeSection === 'qualifications' && (
-                <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                  <div className="p-8">
-                    <h2 className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Compétences recherchées</h2>
-                    
-                    {qualifications.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {qualifications.map((qualification, index) => (
-                          <div key={index} className="group/item bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 p-6">
-                            <div className="flex items-start gap-3">
-                              <span className="w-3 h-3 bg-green-500 rounded-full group-hover/item:scale-125 transition-transform duration-300 flex-shrink-0 mt-1.5"></span>
-                              <p className="text-gray-700 dark:text-gray-300 font-medium">{qualification}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-8">
-                        <p className="text-gray-500 dark:text-gray-400 text-lg">
-                          Aucune compétence spécifique requise.
-                          <br />
-                          L'entreprise recherche avant tout de la motivation et de la capacité d'apprentissage.
-                        </p>
-                      </div>
-                    )}
+                {/* Title */}
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                  {offre.titre}
+                </h1>
 
-                    <div className="mt-8 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
-                      <h3 className="text-xl font-bold text-blue-800 dark:text-blue-300 mb-3">Soft Skills appréciées</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {['Autonomie', 'Esprit d\'équipe', 'Curiosité', 'Adaptabilité', 'Communication'].map((skill, index) => (
-                          <span key={index} className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full text-sm">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                {/* Key info */}
+                <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-gray-400" />
+                    <span className="font-medium text-gray-900 dark:text-white">{offre.entreprise}</span>
                   </div>
-                  <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                </div>
-              )}
-
-              {/* Section Avantages */}
-              {activeSection === 'avantages' && (
-                <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                  <div className="p-8">
-                    <h2 className="text-3xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-6">Avantages & bénéfices</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {avantages.map((avantage, index) => (
-                        <div key={index} className="group/item bg-white dark:bg-gray-700 rounded-xl border-2 border-[#ffaf50ff] hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-6">
-                          <div className="flex items-center gap-3">
-                            <span className="text-[#ffaf50ff] text-xl">✓</span>
-                            <p className="text-gray-700 dark:text-gray-200 font-semibold group-hover/item:text-[#3b5335ff] dark:group-hover/item:text-[#ffaf50ff] transition-colors duration-300">
-                              {avantage}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {offre.salaire && offre.salaire !== 'À négocier' && (
-                      <div className="mt-6 bg-gradient-to-r from-accent-50 to-accent-100 dark:from-accent-900/30 dark:to-accent-800/30 border border-accent-200 dark:border-accent-800 rounded-xl p-6">
-                        <h3 className="text-xl font-bold text-accent-700 dark:text-accent-300 mb-2">Rémunération attractive</h3>
-                        <p className="text-accent-600 dark:text-accent-400 font-semibold text-lg">{offre.salaire}</p>
-                      </div>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-400" />
+                    <span>{offre.lieu}</span>
                   </div>
-                  <div className="h-2 bg-gradient-to-r from-[#2a3d26ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                  {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
+                    <div className="flex items-center gap-2">
+                      <Euro className="w-4 h-4 text-gray-400" />
+                      <span className="font-medium text-green-600 dark:text-green-400">{offre.salaire}</span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Carte entreprise */}
-              <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">À propos de l&#39;entreprise</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-[#ffaf50ff] dark:to-[#ff9500ff] rounded-xl flex items-center justify-center text-white dark:text-[#3b5335ff] font-bold text-lg">
-                        {offre.entreprise.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-800 dark:text-gray-200">{offre.entreprise}</p>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">Recrute activement</p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors">
-                        <div className="text-lg font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">⭐</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">Entreprise notée 4.8/5</div>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 group-hover:bg-white dark:group-hover:bg-gray-600 transition-colors">
-                        <div className="text-lg font-bold text-[#3b5335ff] dark:text-[#ffaf50ff]">🚀</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">Croissance rapide</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              </div>
-
-              {/* Carte poste */}
-              <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-4">Détails du poste</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-gray-600 dark:text-gray-400">Type de contrat</span>
-                      <span className="font-semibold text-[#3b5335ff] dark:text-[#ffaf50ff]">{offre.typeContrat}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-gray-600 dark:text-gray-400">Salaire</span>
-                      <span className="font-semibold text-accent-600 dark:text-accent-400">{offre.salaire}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-gray-600 dark:text-gray-400">Localisation</span>
-                      <span className="font-semibold text-[#3b5335ff] dark:text-[#ffaf50ff]">{offre.lieu}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-gray-600 dark:text-gray-400">Publiée le</span>
-                      <span className="font-semibold text-[#3b5335ff] dark:text-[#ffaf50ff]">
-                        {new Date(offre.datePublication).toLocaleDateString('fr-FR', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              </div>
-
-              {/* CTA Sidebar */}
-              <div className="group bg-gradient-to-r from-[#3b5335ff] to-[#2a3d26ff] dark:from-gray-700 dark:to-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 relative overflow-hidden">
-                <div className="p-6 text-white text-center">
-                  <h4 className="text-lg font-bold mb-3">Intéressé(e) par cette offre ?</h4>
-                  <p className="text-sm opacity-90 mb-4">
-                    Postulez maintenant et rejoignez {offre.entreprise}
-                  </p>
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                   <a
-                    href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis intéressé(e) par le poste de ${offre.titre} chez ${offre.entreprise} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                    className="group block w-full bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-4 py-3 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm mb-3 cursor-pointer"
+                    href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors"
                   >
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      Postuler par email
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </span>
-                    <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                    <Mail className="w-4 h-4" />
+                    Postuler
                   </a>
-                  <Link
-                    href="/contact"
-                    className="group block w-full border-2 border-white text-white px-4 py-3 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transform hover:-translate-y-1 transition-all duration-300 text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm cursor-pointer"
+                  <button
+                    onClick={() => toggleFavorite(offre.id)}
+                    className={`p-3 rounded-xl border transition-colors ${
+                      isFav
+                        ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-red-200 hover:text-red-500'
+                    }`}
                   >
-                    <span className="flex items-center justify-center gap-2">
-                      Nous contacter
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                      </svg>
-                    </span>
-                  </Link>
+                    <Heart className={`w-5 h-5 ${isFav ? 'fill-current' : ''}`} />
+                  </button>
+                  <button
+                    onClick={handleShare}
+                    className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <Share2 className="w-5 h-5" />
+                  </button>
                 </div>
-                <div className="h-2 bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
               </div>
+            </div>
+
+            {/* Description */}
+            {hasContent(offre.description) && (
+              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-primary-600" />
+                  Description du poste
+                </h2>
+                {offre.descriptionHtml ? (
+                  <div
+                    className="prose prose-gray dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: offre.descriptionHtml }}
+                  />
+                ) : (
+                  <p className="text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
+                    {offre.description}
+                  </p>
+                )}
+              </section>
+            )}
+
+            {/* Responsabilites */}
+            {hasContent(offre.responsabilites) && (
+              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary-600" />
+                  Responsabilites
+                </h2>
+                <ul className="space-y-3">
+                  {offre.responsabilites!.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
+                        {index + 1}
+                      </span>
+                      <span className="text-gray-600 dark:text-gray-400 pt-0.5">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Qualifications */}
+            {hasContent(offre.qualifications) && (
+              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-primary-600" />
+                  Qualifications requises
+                </h2>
+                <ul className="space-y-3">
+                  {offre.qualifications!.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 dark:text-gray-400">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* Avantages */}
+            {hasContent(offre.avantages) && (
+              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Award className="w-5 h-5 text-primary-600" />
+                  Avantages
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {offre.avantages!.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl"
+                    >
+                      <Sparkles className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
+                      <span className="text-gray-700 dark:text-gray-300 text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Competences */}
+            {hasContent(offre.competences) && (
+              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary-600" />
+                  Competences recherchees
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {offre.competences.split(',').map((comp, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm"
+                    >
+                      {comp.trim()}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+
+          {/* Right column - Sidebar */}
+          <div className="space-y-6">
+            {/* Company card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex items-center gap-4 mb-4">
+                {offre.media?.logoUrl ? (
+                  <img
+                    src={offre.media.logoUrl}
+                    alt={offre.entreprise}
+                    className="w-14 h-14 rounded-xl object-cover"
+                  />
+                ) : (
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+                    {offre.entreprise.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div>
+                  <h3 className="font-bold text-gray-900 dark:text-white">{offre.entreprise}</h3>
+                  <p className="text-sm text-gray-500">Recruteur</p>
+                </div>
+              </div>
+              <a
+                href={`mailto:${offre.emailContact}`}
+                className="flex items-center justify-center gap-2 w-full py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
+              >
+                <Mail className="w-4 h-4" />
+                Contacter
+              </a>
+            </div>
+
+            {/* Job details card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Details du poste</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500 text-sm">Type de contrat</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{offre.typeContrat}</span>
+                </div>
+                {hasContent(offre.lieu) && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500 text-sm">Localisation</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{offre.lieu}</span>
+                  </div>
+                )}
+                {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500 text-sm">Salaire</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">{offre.salaire}</span>
+                  </div>
+                )}
+                {hasContent(offre.categorie) && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-500 text-sm">Categorie</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{offre.categorie}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <span className="text-gray-500 text-sm flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4" />
+                    Publiee le
+                  </span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {formatDate(offre.datePublication)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Apply CTA */}
+            <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl shadow-sm p-6 text-white">
+              <h3 className="font-bold text-lg mb-2">Interesse(e) ?</h3>
+              <p className="text-primary-100 text-sm mb-4">
+                Postulez maintenant et rejoignez {offre.entreprise}
+              </p>
+              <a
+                href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} chez ${offre.entreprise} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
+                className="flex items-center justify-center gap-2 w-full py-3 bg-white text-primary-700 rounded-xl font-medium hover:bg-primary-50 transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                Postuler par email
+              </a>
             </div>
           </div>
         </div>
-      </section>
+      </main>
 
       <Footer />
     </div>

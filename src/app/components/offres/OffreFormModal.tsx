@@ -15,7 +15,9 @@ import {
   ChevronRight,
   Plus,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Sparkles,
+  Wand2
 } from 'lucide-react'
 import RichTextEditor from '@/app/components/ui/RichTextEditor'
 import SeoScoreCard from './SeoScoreCard'
@@ -23,6 +25,7 @@ import TextSuggestions from './TextSuggestions'
 import { OffrePreviewCompact } from './OffrePreview'
 import type { OffreFormData, OffreEnhanced, OffreStatut } from '@/app/types/offres'
 import { CATEGORIES, CONTRACT_TYPES, DEFAULT_OFFRE_VALUES, STATUT_CONFIG } from '@/app/types/offres'
+import { applyTemplateDefaults, hasTemplateChanges } from '@/app/lib/categoryTemplates'
 
 interface OffreFormModalProps {
   isOpen: boolean
@@ -53,6 +56,8 @@ export default function OffreFormModal({
   const [isSaving, setIsSaving] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showPreview, setShowPreview] = useState(false)
+  const [showTemplatePrompt, setShowTemplatePrompt] = useState(false)
+  const [pendingCategory, setPendingCategory] = useState<string | null>(null)
 
   // Form data
   const [formData, setFormData] = useState<OffreFormData>({
@@ -142,6 +147,38 @@ export default function OffreFormModal({
       [field]: prev[field].filter((_, i) => i !== index)
     }))
   }, [])
+
+  // Handle category change with template suggestion
+  const handleCategoryChange = useCallback((newCategory: string) => {
+    // Check if template has defaults that could be applied
+    if (hasTemplateChanges(formData, newCategory)) {
+      setPendingCategory(newCategory)
+      setShowTemplatePrompt(true)
+    } else {
+      updateField('categorie', newCategory)
+    }
+  }, [formData, updateField])
+
+  // Apply template defaults for the selected category
+  const applyTemplate = useCallback((overwriteExisting: boolean = false) => {
+    const category = pendingCategory || formData.categorie
+    const updatedData = applyTemplateDefaults(formData, category, overwriteExisting)
+    setFormData(prev => ({ ...prev, ...updatedData }))
+    if (pendingCategory) {
+      setFormData(prev => ({ ...prev, categorie: pendingCategory }))
+    }
+    setShowTemplatePrompt(false)
+    setPendingCategory(null)
+  }, [formData, pendingCategory])
+
+  // Cancel template application
+  const cancelTemplatePrompt = useCallback(() => {
+    if (pendingCategory) {
+      setFormData(prev => ({ ...prev, categorie: pendingCategory }))
+    }
+    setShowTemplatePrompt(false)
+    setPendingCategory(null)
+  }, [pendingCategory])
 
   // Validate form
   const validate = useCallback(() => {
@@ -358,7 +395,7 @@ export default function OffreFormModal({
                     </label>
                     <select
                       value={formData.categorie}
-                      onChange={(e) => updateField('categorie', e.target.value)}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800"
                     >
                       {CATEGORIES.map((cat) => (
@@ -495,6 +532,40 @@ export default function OffreFormModal({
                     />
                   }
                 />
+
+                {/* Quick auto-fill section */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-primary-50 to-accent-50 dark:from-primary-900/20 dark:to-accent-900/20 rounded-xl border border-primary-200 dark:border-primary-800">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                      <Wand2 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-1">
+                        Remplissage automatique
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        Remplir les champs vides avec des suggestions adaptees a la categorie &quot;{formData.categorie}&quot;.
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => applyTemplate(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          Remplir les champs vides
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => applyTemplate(true)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        >
+                          Tout remplacer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -772,6 +843,85 @@ export default function OffreFormModal({
           </div>
         </div>
       </div>
+
+      {/* Template suggestion modal */}
+      {showTemplatePrompt && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-xl">
+                <Sparkles className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Suggestions disponibles
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Categorie: {pendingCategory || formData.categorie}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Des suggestions predefinies sont disponibles pour cette categorie. Voulez-vous remplir automatiquement les champs vides ?
+            </p>
+
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 mb-6">
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Champs qui seront remplis :
+              </h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                {(!formData.responsabilites || formData.responsabilites.length === 0) && (
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-primary-500 rounded-full" />
+                    Responsabilites
+                  </li>
+                )}
+                {(!formData.qualifications || formData.qualifications.length === 0) && (
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-primary-500 rounded-full" />
+                    Qualifications
+                  </li>
+                )}
+                {(!formData.avantages || formData.avantages.length === 0) && (
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-primary-500 rounded-full" />
+                    Avantages
+                  </li>
+                )}
+                {(!formData.competences || formData.competences.trim() === '') && (
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-primary-500 rounded-full" />
+                    Competences
+                  </li>
+                )}
+                {(!formData.description || formData.description.trim() === '') && (
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-primary-500 rounded-full" />
+                    Description
+                  </li>
+                )}
+              </ul>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={cancelTemplatePrompt}
+                className="flex-1 px-4 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium"
+              >
+                Non merci
+              </button>
+              <button
+                onClick={() => applyTemplate(false)}
+                className="flex-1 px-4 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-medium flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-4 h-4" />
+                Remplir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
