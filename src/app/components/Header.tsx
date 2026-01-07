@@ -103,11 +103,11 @@ export default function Header() {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             {!mounted ? (
-              <div className="w-12 h-12 min-w-[48px] min-h-[48px] rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg" />
+              <div className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg" />
             ) : (
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`relative px-3 py-4 min-w-[48px] min-h-[52px] rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 active:scale-95 ${
+                className={`relative p-2.5 min-w-[40px] min-h-[40px] rounded-lg transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-1 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 active:scale-95 ${
                   isMenuOpen
                     ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/30'
                     : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 shadow-lg hover:shadow-xl border border-gray-200/50 dark:border-gray-700 hover:border-accent-300 dark:hover:border-accent-500/50'
@@ -117,21 +117,21 @@ export default function Header() {
                 suppressHydrationWarning
               >
                 {/* Animated hamburger icon */}
-                <div className="relative w-5 h-5 flex flex-col justify-center items-center">
-                  <span className={`absolute h-0.5 w-5 bg-current rounded-full transition-all duration-300 ${
-                    isMenuOpen ? 'rotate-45' : '-translate-y-1.5'
+                <div className="relative w-4 h-4 flex flex-col justify-center items-center">
+                  <span className={`absolute h-0.5 w-4 bg-current rounded-full transition-all duration-300 ${
+                    isMenuOpen ? 'rotate-45' : '-translate-y-1'
                   }`} />
-                  <span className={`absolute h-0.5 w-5 bg-current rounded-full transition-all duration-300 ${
+                  <span className={`absolute h-0.5 w-4 bg-current rounded-full transition-all duration-300 ${
                     isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100'
                   }`} />
-                  <span className={`absolute h-0.5 w-5 bg-current rounded-full transition-all duration-300 ${
-                    isMenuOpen ? '-rotate-45' : 'translate-y-1.5'
+                  <span className={`absolute h-0.5 w-4 bg-current rounded-full transition-all duration-300 ${
+                    isMenuOpen ? '-rotate-45' : 'translate-y-1'
                   }`} />
                 </div>
 
                 {/* Pulse indicator when closed */}
                 {!isMenuOpen && (
-                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-accent-500 rounded-full animate-pulse" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent-500 rounded-full animate-pulse" />
                 )}
               </button>
             )}
