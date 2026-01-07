@@ -88,7 +88,7 @@ export default function Vision() {
               </SectionHeaderBadge>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight animate-text-blur-in">
-                Révolutionner le
+                Simplifier le
                 <span className="block mt-2 bg-gradient-to-r from-[#ffaf50ff] via-[#ff9500ff] to-[#ffaf50ff] bg-clip-text text-transparent animate-gradient-flow bg-[length:200%_100%]">
                   Recrutement
                 </span>
