@@ -107,7 +107,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className={`relative p-3 min-w-[48px] min-h-[48px] rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 active:scale-95 ${
+                className={`relative px-3 py-4 min-w-[48px] min-h-[52px] rounded-xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 dark:focus-visible:ring-accent-400 dark:focus-visible:ring-offset-gray-900 active:scale-95 ${
                   isMenuOpen
                     ? 'bg-accent-500 text-white shadow-lg shadow-accent-500/30'
                     : 'bg-white dark:bg-gray-800 text-primary-700 dark:text-gray-200 shadow-lg hover:shadow-xl border border-gray-200/50 dark:border-gray-700 hover:border-accent-300 dark:hover:border-accent-500/50'
