@@ -97,6 +97,22 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     return true
   }
 
+  // Helper to ensure array type (handles cases where data might be stored as string)
+  const ensureArray = (value: unknown): string[] => {
+    if (!value) return []
+    if (Array.isArray(value)) return value
+    if (typeof value === 'string' && value.trim()) {
+      // Try to split by newlines or semicolons if it's a string
+      return value.split(/[;\n]/).map(s => s.trim()).filter(Boolean)
+    }
+    return []
+  }
+
+  // Helper to check if field has array content
+  const hasArrayContent = (value: unknown): boolean => {
+    return ensureArray(value).length > 0
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -222,14 +238,14 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                   <a
                     href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors"
+                    className="flex-1 sm:flex-none min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 active:scale-95 transition-all"
                   >
                     <Mail className="w-4 h-4" />
                     Postuler
                   </a>
                   <button
                     onClick={() => toggleFavorite(offre.id)}
-                    className={`p-3 rounded-xl border transition-colors ${
+                    className={`min-h-[48px] min-w-[48px] p-3 rounded-xl border transition-all active:scale-95 ${
                       isFav
                         ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-red-200 hover:text-red-500'
@@ -239,7 +255,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   </button>
                   <button
                     onClick={handleShare}
-                    className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    className="min-h-[48px] min-w-[48px] p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all"
                   >
                     <Share2 className="w-5 h-5" />
                   </button>
@@ -268,14 +284,14 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
             )}
 
             {/* Responsabilites */}
-            {hasContent(offre.responsabilites) && (
+            {hasArrayContent(offre.responsabilites) && (
               <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-primary-600" />
                   Responsabilites
                 </h2>
                 <ul className="space-y-3">
-                  {offre.responsabilites!.map((item, index) => (
+                  {ensureArray(offre.responsabilites).map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
                         {index + 1}
@@ -288,14 +304,14 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
             )}
 
             {/* Qualifications */}
-            {hasContent(offre.qualifications) && (
+            {hasArrayContent(offre.qualifications) && (
               <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <GraduationCap className="w-5 h-5 text-primary-600" />
                   Qualifications requises
                 </h2>
                 <ul className="space-y-3">
-                  {offre.qualifications!.map((item, index) => (
+                  {ensureArray(offre.qualifications).map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-600 dark:text-gray-400">{item}</span>
@@ -306,14 +322,14 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
             )}
 
             {/* Avantages */}
-            {hasContent(offre.avantages) && (
+            {hasArrayContent(offre.avantages) && (
               <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <Award className="w-5 h-5 text-primary-600" />
                   Avantages
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {offre.avantages!.map((item, index) => (
+                  {ensureArray(offre.avantages).map((item, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl"
@@ -370,7 +386,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               </div>
               <a
                 href={`mailto:${offre.emailContact}`}
-                className="flex items-center justify-center gap-2 w-full py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
+                className="flex items-center justify-center gap-2 w-full min-h-[44px] py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all text-sm"
               >
                 <Mail className="w-4 h-4" />
                 Contacter
@@ -378,37 +394,37 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
             </div>
 
             {/* Job details card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
               <h3 className="font-bold text-gray-900 dark:text-white mb-4">Details du poste</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between gap-2">
                   <span className="text-gray-500 text-sm">Type de contrat</span>
-                  <span className="font-medium text-gray-900 dark:text-white">{offre.typeContrat}</span>
+                  <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{offre.typeContrat}</span>
                 </div>
                 {hasContent(offre.lieu) && (
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-gray-500 text-sm">Localisation</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{offre.lieu}</span>
+                    <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base truncate max-w-[150px]">{offre.lieu}</span>
                   </div>
                 )}
                 {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-gray-500 text-sm">Salaire</span>
-                    <span className="font-medium text-green-600 dark:text-green-400">{offre.salaire}</span>
+                    <span className="font-medium text-green-600 dark:text-green-400 text-sm sm:text-base">{offre.salaire}</span>
                   </div>
                 )}
                 {hasContent(offre.categorie) && (
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-gray-500 text-sm">Categorie</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{offre.categorie}</span>
+                    <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{offre.categorie}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between gap-2 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700">
                   <span className="text-gray-500 text-sm flex items-center gap-1.5">
                     <Calendar className="w-4 h-4" />
                     Publiee le
                   </span>
-                  <span className="font-medium text-gray-900 dark:text-white">
+                  <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
                     {formatDate(offre.datePublication)}
                   </span>
                 </div>
@@ -416,14 +432,14 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
             </div>
 
             {/* Apply CTA */}
-            <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl shadow-sm p-6 text-white">
-              <h3 className="font-bold text-lg mb-2">Interesse(e) ?</h3>
+            <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl shadow-sm p-5 sm:p-6 text-white">
+              <h3 className="font-bold text-base sm:text-lg mb-2">Interesse(e) ?</h3>
               <p className="text-primary-100 text-sm mb-4">
                 Postulez maintenant et rejoignez {offre.entreprise}
               </p>
               <a
                 href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} chez ${offre.entreprise} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-white text-primary-700 rounded-xl font-medium hover:bg-primary-50 transition-colors"
+                className="flex items-center justify-center gap-2 w-full min-h-[48px] py-3 bg-white text-primary-700 rounded-xl font-medium hover:bg-primary-50 active:scale-95 transition-all"
               >
                 <Mail className="w-4 h-4" />
                 Postuler par email

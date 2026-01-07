@@ -55,7 +55,7 @@ export default function OffresEmploi() {
   const [offres, setOffres] = useState<Offre[]>([])
   const [isVisible, setIsVisible] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const [viewMode, setViewMode] = useState<ViewMode>('list')
+  const [viewMode, setViewMode] = useState<ViewMode>('grid')
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false)
   const [isFavoritesPanelOpen, setIsFavoritesPanelOpen] = useState(false)
 
@@ -182,7 +182,7 @@ export default function OffresEmploi() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <a
                     href="#offres"
-                    className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
+                    className="group min-h-[48px] bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 active:scale-95 transition-all duration-300 font-bold text-center relative overflow-hidden focus:outline-none focus-visible:ring-4 focus-visible:ring-accent-300 focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       Voir les offres
@@ -195,7 +195,7 @@ export default function OffresEmploi() {
 
                   <button
                     onClick={() => setIsAlertsModalOpen(true)}
-                    className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
+                    className="group min-h-[48px] border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 dark:hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 shadow-lg hover:shadow-xl text-center focus:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 text-sm sm:text-base cursor-pointer"
                   >
                     <span className="flex items-center justify-center gap-2">
                       <Bell className="w-4 sm:w-5 h-4 sm:h-5" />
@@ -256,38 +256,38 @@ export default function OffresEmploi() {
             {/* View mode and favorites toggle */}
             <div className="flex items-center justify-between mt-4">
               {/* View mode buttons */}
-              <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
+              <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-lg text-sm font-medium transition-all active:scale-95 ${
                     viewMode === 'list'
                       ? 'bg-white dark:bg-gray-700 text-primary-700 dark:text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
                   }`}
                 >
-                  <List className="w-4 h-4" />
+                  <List className="w-5 h-5" />
                   <span className="hidden sm:inline">Liste</span>
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-lg text-sm font-medium transition-all active:scale-95 ${
                     viewMode === 'grid'
                       ? 'bg-white dark:bg-gray-700 text-primary-700 dark:text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
                   }`}
                 >
-                  <Grid className="w-4 h-4" />
+                  <Grid className="w-5 h-5" />
                   <span className="hidden sm:inline">Grille</span>
                 </button>
                 <button
                   onClick={() => setViewMode('map')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center justify-center gap-2 min-h-[44px] min-w-[44px] px-3 sm:px-4 rounded-lg text-sm font-medium transition-all active:scale-95 ${
                     viewMode === 'map'
                       ? 'bg-white dark:bg-gray-700 text-primary-700 dark:text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
                   }`}
                 >
-                  <Map className="w-4 h-4" />
+                  <Map className="w-5 h-5" />
                   <span className="hidden sm:inline">Carte</span>
                 </button>
               </div>
@@ -295,7 +295,7 @@ export default function OffresEmploi() {
               {/* Favorites button */}
               <button
                 onClick={() => setIsFavoritesPanelOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
+                className="flex items-center gap-2 min-h-[44px] px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 transition-all active:scale-95"
               >
                 <Heart className={`w-4 h-4 ${favorites.length > 0 ? 'text-red-500 fill-current' : ''}`} />
                 <span>Favoris</span>
@@ -313,11 +313,13 @@ export default function OffresEmploi() {
         {viewMode === 'map' && (
           <section className="py-8 bg-white/80 dark:bg-gray-900/80">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <JobMap
-                offers={filteredOffres}
-                onOfferClick={(offer) => handleOfferClick(offer.id)}
-                className="h-[500px]"
-              />
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 overflow-hidden">
+                <JobMap
+                  offers={filteredOffres}
+                  onOfferClick={(offer) => handleOfferClick(offer.id)}
+                  className="h-[500px] rounded-xl"
+                />
+              </div>
             </div>
           </section>
         )}
@@ -362,10 +364,19 @@ export default function OffresEmploi() {
 
               {/* Empty state */}
               {!loading && filteredOffres.length === 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 animate-fade-in">
                   <div className="p-12 text-center">
-                    <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Briefcase className="w-12 h-12 text-gray-400" />
+                    <div className="relative w-32 h-32 mx-auto mb-6">
+                      {/* Animated ring */}
+                      <div className="absolute inset-0 animate-ping opacity-20">
+                        <div className="w-full h-full border-4 border-accent-500 rounded-full"></div>
+                      </div>
+                      {/* Floating icon */}
+                      <div className="relative flex items-center justify-center h-full">
+                        <div className="w-24 h-24 bg-gradient-to-br from-accent-100 to-accent-200 dark:from-accent-900/30 dark:to-accent-800/30 rounded-full flex items-center justify-center animate-bounce" style={{ animationDuration: '3s' }}>
+                          <Briefcase className="w-12 h-12 text-accent-600 dark:text-accent-400" />
+                        </div>
+                      </div>
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                       Aucune offre ne correspond à vos critères
@@ -376,13 +387,13 @@ export default function OffresEmploi() {
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <button
                         onClick={() => setFilters(DEFAULT_FILTERS)}
-                        className="px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:text-white rounded-lg font-bold hover:shadow-lg transition-all"
+                        className="min-h-[44px] px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:text-white rounded-xl font-bold hover:shadow-lg transition-all active:scale-95"
                       >
                         Réinitialiser les filtres
                       </button>
                       <button
                         onClick={() => setIsAlertsModalOpen(true)}
-                        className="px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-lg font-bold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all"
+                        className="min-h-[44px] px-6 py-3 border-2 border-primary-600 text-primary-600 dark:text-primary-400 rounded-xl font-bold hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all active:scale-95"
                       >
                         Créer une alerte
                       </button>
@@ -393,13 +404,15 @@ export default function OffresEmploi() {
 
               {/* Results */}
               {!loading && filteredOffres.length > 0 && (
-                <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'grid gap-8'}>
-                  {filteredOffres.map((offre) => (
-                    viewMode === 'grid' ? (
-                      <GridCard key={offre.id} offre={offre} isMounted={isMounted} formatDate={formatDate} />
-                    ) : (
-                      <ListCard key={offre.id} offre={offre} isMounted={isMounted} formatDate={formatDate} />
-                    )
+                <div className={`animate-stagger ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'grid gap-6'}`}>
+                  {filteredOffres.map((offre, index) => (
+                    <div key={offre.id} style={{ animationDelay: `${Math.min(index * 50, 300)}ms` }}>
+                      {viewMode === 'grid' ? (
+                        <GridCard offre={offre} isMounted={isMounted} formatDate={formatDate} />
+                      ) : (
+                        <ListCard offre={offre} isMounted={isMounted} formatDate={formatDate} />
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
@@ -419,7 +432,7 @@ export default function OffresEmploi() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => setIsAlertsModalOpen(true)}
-                className="group bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 font-bold text-center relative overflow-hidden"
+                className="group min-h-[48px] bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 active:scale-95 transition-all duration-300 font-bold text-center relative overflow-hidden"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <Bell className="w-5 h-5" />
@@ -429,7 +442,7 @@ export default function OffresEmploi() {
               </button>
               <Link
                 href="/contact"
-                className="group border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl text-center"
+                className="group min-h-[48px] border-2 border-white text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white hover:text-primary-700 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 shadow-lg hover:shadow-xl text-center flex items-center justify-center"
               >
                 <span className="flex items-center justify-center gap-2">
                   Candidature spontanée
@@ -472,61 +485,61 @@ export default function OffresEmploi() {
 // List view card component
 function ListCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: boolean; formatDate: (date: string) => string }) {
   return (
-    <article className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all">
-      <div className="p-8">
+    <article className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+      <div className="p-6 sm:p-8">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-          <div className="flex-1">
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-4 py-2 rounded-full text-sm font-bold">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4">
+              <span className="bg-gradient-to-r from-[#ffaf50ff] to-[#ff9500ff] text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold">
                 NOUVEAU
               </span>
-              <span className="bg-[#3b5335ff] text-white px-4 py-2 rounded-full text-sm font-bold">
+              <span className="bg-[#3b5335ff] text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold">
                 {offre.categorie}
               </span>
             </div>
 
-            <h3 className="text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-3 group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-3 group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors line-clamp-2">
               {offre.titre}
             </h3>
 
-            <div className="flex flex-wrap items-center gap-4 mb-4 text-gray-600 dark:text-gray-300">
-              <span className="flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-[#ffaf50ff]" />
-                {offre.entreprise}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-4 text-sm text-gray-600 dark:text-gray-300">
+              <span className="flex items-center gap-2 min-w-0">
+                <Building2 className="w-4 h-4 text-[#ffaf50ff] flex-shrink-0" />
+                <span className="truncate">{offre.entreprise}</span>
               </span>
               <span className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#ffaf50ff]" />
+                <MapPin className="w-4 h-4 text-[#ffaf50ff] flex-shrink-0" />
                 {offre.lieu}
               </span>
               {isMounted && (
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#ffaf50ff]" />
+                <span className="flex items-center gap-2 hidden sm:flex">
+                  <Calendar className="w-4 h-4 text-[#ffaf50ff] flex-shrink-0" />
                   Publiée le {formatDate(offre.datePublication)}
                 </span>
               )}
             </div>
 
-            <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed line-clamp-2">
+            <p className="text-gray-700 dark:text-gray-300 mb-4 sm:mb-6 leading-relaxed line-clamp-2 text-sm sm:text-base">
               {offre.description}
             </p>
 
-            <div className="flex flex-wrap gap-3">
-              <span className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg text-sm font-semibold">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <span className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">
                 {offre.typeContrat}
               </span>
-              <span className="bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 px-4 py-2 rounded-lg text-sm font-semibold">
+              <span className="bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">
                 {offre.salaire}
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 lg:items-end">
+          <div className="flex flex-row lg:flex-col gap-3 lg:items-end">
             <FavoritesButton offerId={offre.id} size="md" />
             <Link
               href={`/offres-emploi/${offre.id}`}
-              className="group/btn bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl font-bold text-center relative overflow-hidden min-w-[140px]"
+              className="group/btn flex-1 lg:flex-none min-h-[44px] bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-lg hover:shadow-xl active:scale-95 font-bold text-center relative overflow-hidden min-w-[120px] sm:min-w-[140px] transition-all"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
+              <span className="relative z-10 flex items-center justify-center gap-2 text-sm sm:text-base">
                 Voir l&apos;offre
                 <svg className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -538,7 +551,7 @@ function ListCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: b
       </div>
 
       {/* Hover effect bar */}
-      <div className="h-2 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+      <div className="h-1.5 bg-gradient-to-r from-[#3b5335ff] to-[#ffaf50ff] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
     </article>
   )
 }
@@ -546,59 +559,59 @@ function ListCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: b
 // Grid view card component
 function GridCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: boolean; formatDate: (date: string) => string }) {
   return (
-    <article className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all h-full flex flex-col">
-      <div className="p-6 flex-1 flex flex-col">
+    <article className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+      <div className="p-5 sm:p-6 flex-1 flex flex-col">
         {/* Header with category and favorite */}
-        <div className="flex items-center justify-between mb-4">
-          <span className="bg-[#3b5335ff] text-white px-3 py-1 rounded-full text-xs font-bold">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <span className="bg-[#3b5335ff] text-white px-2.5 py-1 rounded-full text-xs font-bold">
             {offre.categorie}
           </span>
           <FavoritesButton offerId={offre.id} size="sm" />
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-3 line-clamp-2 group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
+        <h3 className="text-base sm:text-lg font-bold text-[#3b5335ff] dark:text-[#ffaf50ff] mb-2 sm:mb-3 line-clamp-2 group-hover:text-[#2a3d26ff] dark:group-hover:text-[#ff9500ff] transition-colors">
           {offre.titre}
         </h3>
 
         {/* Company and location */}
-        <div className="space-y-2 mb-4 text-sm text-gray-600 dark:text-gray-400">
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-[#ffaf50ff]" />
+        <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4 text-sm text-gray-600 dark:text-gray-400 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <Building2 className="w-4 h-4 text-[#ffaf50ff] flex-shrink-0" />
             <span className="truncate">{offre.entreprise}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-[#ffaf50ff]" />
-            <span>{offre.lieu}</span>
+            <MapPin className="w-4 h-4 text-[#ffaf50ff] flex-shrink-0" />
+            <span className="truncate">{offre.lieu}</span>
           </div>
         </div>
 
         {/* Description */}
-        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-3 flex-1">
+        <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 flex-1">
           {offre.description}
         </p>
 
         {/* Contract and salary */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-lg text-xs font-medium">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+          <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2.5 py-1 rounded-lg text-xs font-medium">
             {offre.typeContrat}
           </span>
-          <span className="bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 px-3 py-1 rounded-lg text-xs font-medium">
+          <span className="bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 px-2.5 py-1 rounded-lg text-xs font-medium">
             {offre.salaire}
           </span>
         </div>
 
         {/* Date */}
         {isMounted && (
-          <div className="text-xs text-gray-400 mb-4">
-            Publiée le {formatDate(offre.datePublication)}
+          <div className="text-xs text-gray-400 mb-3 sm:mb-4">
+            {formatDate(offre.datePublication)}
           </div>
         )}
 
         {/* CTA */}
         <Link
           href={`/offres-emploi/${offre.id}`}
-          className="w-full py-2.5 bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:text-white rounded-xl font-bold text-center text-sm hover:shadow-lg transition-all"
+          className="w-full min-h-[44px] py-2.5 bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:text-white rounded-xl font-bold text-center text-sm hover:shadow-lg active:scale-95 transition-all flex items-center justify-center"
         >
           Voir l&apos;offre
         </Link>

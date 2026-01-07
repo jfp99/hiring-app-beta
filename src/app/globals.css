@@ -63,6 +63,14 @@
   --header-height-mobile: 48px;
   --header-height-desktop: 80px;
 
+  /* Standardized Animation Timing */
+  --duration-quick: 150ms;
+  --duration-standard: 250ms;
+  --duration-dramatic: 400ms;
+
+  /* Touch Target Minimums */
+  --touch-target-min: 44px;
+
   /* Typography Scale - Professional SaaS Standards */
   --font-size-xs: 0.75rem;      /* 12px - Captions, metadata */
   --font-size-sm: 0.875rem;     /* 14px - Small body text, labels */
@@ -644,8 +652,23 @@ select,
 }
 
 .card-hover-lift:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Button Press Feedback */
+.btn-press {
+  transition: transform var(--duration-quick) ease-out;
+}
+
+.btn-press:active {
+  transform: scale(0.95);
+}
+
+/* Touch-friendly button base */
+.touch-target {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
 }
 
 /* Stagger animations for lists */
