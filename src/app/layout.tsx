@@ -8,6 +8,7 @@ import ThemeToggle from './components/ThemeToggle'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
 import ErrorBoundary from './components/ErrorBoundary'
+import CookieConsent from './components/CookieConsent'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -124,6 +125,7 @@ export default function RootLayout({
           </ErrorBoundary>
           <ThemeToggle />
           <Toaster />
+          <CookieConsent />
           <SpeedInsights />
           <Analytics />
         </Providers>
