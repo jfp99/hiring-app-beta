@@ -22,6 +22,7 @@ import {
   BulkActions,
   SelectionCheckbox,
   OffreFormModal,
+  OffrePreviewEditModal,
   TemplateSelectorModal
 } from '@/app/components/offres'
 
@@ -475,8 +476,8 @@ export default function AdminOffresPage() {
         )}
       </div>
 
-      {/* Form Modal */}
-      <OffreFormModal
+      {/* Preview Edit Modal */}
+      <OffrePreviewEditModal
         isOpen={isFormModalOpen}
         onClose={() => {
           setIsFormModalOpen(false)

@@ -12,7 +12,7 @@ const recruteurs = [
     nom: 'Hugo Mathieu',
     poste: 'Responsable Commerce',
     experience: 'Co-fondateur Hi-ring',
-    description: 'Après avoir vécu au Mexique, Hugo maîtrise l\'espagnol et accompagne des clients sur des postes stratégiques en Espagne. Fort de son expérience dans la grande distribution, le retail et l\'IT (où il a encadré une équipe de recrutement IT dans une ESN), il développe une vision concrète du recrutement alliant compréhension des besoins opérationnels, management et approche humaine des relations professionnelles.',
+    description: 'Hugo accompagne les entreprises dans leurs recrutements en France et à l\'international. Son parcours mêle recrutement et développement commercial, avec une expérience significative dans le retail ainsi qu\'en ESN, où il a également managé des équipes commerciales et recrutements. Il évolue au quotidien en français, en anglais et en espagnol. Chez Hiring, il défend une approche du recrutement fondée sur l\'écoute, la compréhension des enjeux réels et la qualité des relations dans le temps.',
     competences: ['Espagnol courant', 'Grande Distribution', 'Retail', 'IT Recruitment', 'Team Management', 'Développement Commercial'],
     photo: '/team/hugo-mathieu.jpg',
     stats: { experience: 'Multi-sectoriel', satisfaction: 98, specialite: 'IT & Digital', placements: 150 },

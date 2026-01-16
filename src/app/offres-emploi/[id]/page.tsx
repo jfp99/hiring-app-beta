@@ -6,11 +6,11 @@ import Footer from '../../components/Footer'
 import Link from 'next/link'
 import { useEffect, useState, use } from 'react'
 import { useApi } from '../../hooks/useApi'
-import { useFavorites } from '../../hooks/useFavorites'
 import {
   MapPin, Building2, Briefcase, Calendar, Euro, Mail,
-  ArrowLeft, Share2, Heart, CheckCircle2,
-  GraduationCap, Award, Sparkles, Users
+  ArrowLeft, CheckCircle2, Shield,
+  GraduationCap, Award, Sparkles, Users, Clock, Send,
+  ExternalLink, ChevronRight
 } from 'lucide-react'
 
 interface Offre {
@@ -27,7 +27,6 @@ interface Offre {
   datePublication: string
   categorie: string
   statut: string
-  // Enhanced fields
   responsabilites?: string[]
   qualifications?: string[]
   avantages?: string[]
@@ -46,8 +45,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
   const unwrappedParams = use(params)
   const [offre, setOffre] = useState<Offre | null>(null)
   const { loading, error, callApi } = useApi()
-  const { isFavorite, toggleFavorite } = useFavorites()
-  const [showShareToast, setShowShareToast] = useState(false)
 
   useEffect(() => {
     const loadOffre = async () => {
@@ -66,21 +63,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     loadOffre()
   }, [unwrappedParams.id, callApi])
 
-  const handleShare = async () => {
-    const url = window.location.href
-    if (navigator.share) {
-      await navigator.share({
-        title: offre?.titre,
-        text: `Offre d'emploi: ${offre?.titre} chez ${offre?.entreprise}`,
-        url
-      })
-    } else {
-      await navigator.clipboard.writeText(url)
-      setShowShareToast(true)
-      setTimeout(() => setShowShareToast(false), 2000)
-    }
-  }
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -89,7 +71,14 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     })
   }
 
-  // Helper to check if a field has content
+  const formatDateEn = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    })
+  }
+
   const hasContent = (value: unknown): boolean => {
     if (!value) return false
     if (typeof value === 'string') return value.trim() !== ''
@@ -97,28 +86,37 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     return true
   }
 
-  // Helper to ensure array type (handles cases where data might be stored as string)
   const ensureArray = (value: unknown): string[] => {
     if (!value) return []
     if (Array.isArray(value)) return value
     if (typeof value === 'string' && value.trim()) {
-      // Try to split by newlines or semicolons if it's a string
       return value.split(/[;\n]/).map(s => s.trim()).filter(Boolean)
     }
     return []
   }
 
-  // Helper to check if field has array content
   const hasArrayContent = (value: unknown): boolean => {
     return ensureArray(value).length > 0
   }
 
+  // Generate tag colors using site palette
+  const getTagColor = (index: number) => {
+    const colors = [
+      'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
+      'bg-accent-100 text-accent-700 dark:bg-accent-900/30 dark:text-accent-300',
+      'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+      'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+      'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300',
+    ]
+    return colors[index % colors.length]
+  }
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-cream-100 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Chargement de l&apos;offre...</p>
+          <div className="w-10 h-10 border-2 border-gray-300 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 text-sm">Chargement...</p>
         </div>
       </div>
     )
@@ -126,22 +124,22 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
 
   if (error || !offre) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-cream-100 dark:bg-gray-900">
         <Header />
         <div className="flex items-center justify-center min-h-[60vh] px-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
-            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Briefcase className="w-8 h-8 text-red-500" />
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-10 max-w-md w-full text-center">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Briefcase className="w-8 h-8 text-gray-400" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               Offre non trouvee
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
               {error || "Cette offre n'existe pas ou a ete supprimee."}
             </p>
             <Link
               href="/offres-emploi"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Retour aux offres
@@ -153,297 +151,243 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     )
   }
 
-  const isFav = isFavorite(offre.id)
+  const competencesList = offre.competences ? offre.competences.split(',').map(c => c.trim()).filter(Boolean) : []
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-cream-100 dark:bg-gray-900">
       <Header />
 
-      {/* Share toast */}
-      {showShareToast && (
-        <div className="fixed top-20 right-4 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg animate-fade-in">
-          Lien copie !
-        </div>
-      )}
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
 
-      {/* Back navigation */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link
-            href="/offres-emploi"
-            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Retour aux offres
-          </Link>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left column - Main content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Header card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-              {/* Banner if exists */}
-              {offre.media?.bannerUrl && (
-                <div className="h-32 bg-gradient-to-r from-primary-600 to-primary-700">
-                  <img
-                    src={offre.media.bannerUrl}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2">
+            {/* Job Header */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-8">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
+                    {offre.titre}
+                  </h1>
+                  <p className="text-primary-600 dark:text-accent-500 font-medium">
+                    {offre.entreprise} - {offre.lieu}
+                  </p>
                 </div>
+                {/* Shield Icon */}
+                <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
+                  {offre.media?.logoUrl ? (
+                    <img
+                      src={offre.media.logoUrl}
+                      alt={offre.entreprise}
+                      className="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded-lg"
+                    />
+                  ) : (
+                    <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-primary-600 dark:text-accent-500" />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* L'ENTREPRISE & LE CONTEXTE */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
+              <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
+                L&apos;ENTREPRISE & LE CONTEXTE
+              </h2>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-[15px]">
+                {offre.entreprise} recherche un(e) {offre.titre} pour rejoindre ses equipes a {offre.lieu}.
+              </p>
+            </div>
+
+            {/* LE POSTE */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
+              <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
+                LE POSTE
+              </h2>
+              {hasContent(offre.description) ? (
+                <>
+                  {offre.descriptionHtml ? (
+                    <div
+                      className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
+                      dangerouslySetInnerHTML={{ __html: offre.descriptionHtml }}
+                    />
+                  ) : (
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed text-[15px]">
+                      {offre.description}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
+                  Description a venir...
+                </p>
               )}
 
-              <div className="p-6 sm:p-8">
-                {/* Category & Contract badges */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {hasContent(offre.categorie) && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
-                      <Briefcase className="w-3.5 h-3.5" />
-                      {offre.categorie}
-                    </span>
-                  )}
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 rounded-full text-sm font-medium">
-                    {offre.typeContrat}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                  {offre.titre}
-                </h1>
-
-                {/* Key info */}
-                <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-gray-400" />
-                    <span className="font-medium text-gray-900 dark:text-white">{offre.entreprise}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span>{offre.lieu}</span>
-                  </div>
-                  {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
-                    <div className="flex items-center gap-2">
-                      <Euro className="w-4 h-4 text-gray-400" />
-                      <span className="font-medium text-green-600 dark:text-green-400">{offre.salaire}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Action buttons */}
-                <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <a
-                    href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                    className="flex-1 sm:flex-none min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-xl font-medium hover:bg-primary-700 active:scale-95 transition-all"
-                  >
-                    <Mail className="w-4 h-4" />
-                    Postuler
-                  </a>
-                  <button
-                    onClick={() => toggleFavorite(offre.id)}
-                    className={`min-h-[48px] min-w-[48px] p-3 rounded-xl border transition-all active:scale-95 ${
-                      isFav
-                        ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-500'
-                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-red-200 hover:text-red-500'
-                    }`}
-                  >
-                    <Heart className={`w-5 h-5 ${isFav ? 'fill-current' : ''}`} />
-                  </button>
-                  <button
-                    onClick={handleShare}
-                    className="min-h-[48px] min-w-[48px] p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all"
-                  >
-                    <Share2 className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Description */}
-            {hasContent(offre.description) && (
-              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-primary-600" />
-                  Description du poste
-                </h2>
-                {offre.descriptionHtml ? (
-                  <div
-                    className="prose prose-gray dark:prose-invert max-w-none"
-                    dangerouslySetInnerHTML={{ __html: offre.descriptionHtml }}
-                  />
+              {/* Vos missions */}
+              <div className="mt-6">
+                <h3 className="text-gray-900 dark:text-white font-semibold mb-3">Vos missions :</h3>
+                {hasArrayContent(offre.responsabilites) ? (
+                  <ul className="space-y-2">
+                    {ensureArray(offre.responsabilites).map((item, index) => (
+                      <li key={index} className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[10px] before:w-1.5 before:h-1.5 before:bg-primary-500 before:rounded-full">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
-                  <p className="text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
-                    {offre.description}
+                  <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
+                    Missions a definir...
                   </p>
                 )}
-              </section>
-            )}
+              </div>
+            </div>
 
-            {/* Responsabilites */}
-            {hasArrayContent(offre.responsabilites) && (
-              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary-600" />
-                  Responsabilites
-                </h2>
-                <ul className="space-y-3">
-                  {ensureArray(offre.responsabilites).map((item, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium">
-                        {index + 1}
-                      </span>
-                      <span className="text-gray-600 dark:text-gray-400 pt-0.5">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            {/* ENVIRONNEMENT TECHNIQUE (Competences) */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
+              <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
+                ENVIRONNEMENT TECHNIQUE
+              </h2>
+              {hasContent(offre.competences) ? (
+                <div className="space-y-2">
+                  <p className="text-gray-700 dark:text-gray-300 text-[15px]">
+                    <span className="font-semibold text-gray-900 dark:text-white">Competences requises : </span>
+                    {offre.competences}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
+                  Environnement technique a preciser...
+                </p>
+              )}
+            </div>
 
-            {/* Qualifications */}
-            {hasArrayContent(offre.qualifications) && (
-              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5 text-primary-600" />
-                  Qualifications requises
-                </h2>
-                <ul className="space-y-3">
+            {/* LE PROFIL */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
+              <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
+                LE PROFIL
+              </h2>
+              {hasArrayContent(offre.qualifications) ? (
+                <ul className="space-y-2">
                   {ensureArray(offre.qualifications).map((item, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-gray-600 dark:text-gray-400">{item}</span>
+                    <li key={index} className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[10px] before:w-1.5 before:h-1.5 before:bg-primary-500 before:rounded-full">
+                      {item}
                     </li>
                   ))}
                 </ul>
-              </section>
-            )}
+              ) : (
+                <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
+                  Profil recherche a definir...
+                </p>
+              )}
+            </div>
 
-            {/* Avantages */}
-            {hasArrayContent(offre.avantages) && (
-              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <Award className="w-5 h-5 text-primary-600" />
-                  Avantages
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* CE QUE L'ON AIME (Avantages) */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
+              <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                CE QUE L&apos;ON <span className="text-accent-500">&#10084;</span>
+              </h2>
+              {hasArrayContent(offre.avantages) ? (
+                <ul className="space-y-2">
                   {ensureArray(offre.avantages).map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl"
-                    >
-                      <Sparkles className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                      <span className="text-gray-700 dark:text-gray-300 text-sm">{item}</span>
-                    </div>
+                    <li key={index} className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed">
+                      {item}
+                    </li>
                   ))}
-                </div>
-              </section>
-            )}
-
-            {/* Competences */}
-            {hasContent(offre.competences) && (
-              <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary-600" />
-                  Competences recherchees
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {offre.competences.split(',').map((comp, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm"
-                    >
-                      {comp.trim()}
-                    </span>
-                  ))}
-                </div>
-              </section>
-            )}
+                </ul>
+              ) : (
+                <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
+                  Avantages a decouvrir...
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Right column - Sidebar */}
-          <div className="space-y-6">
-            {/* Company card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-              <div className="flex items-center gap-4 mb-4">
-                {offre.media?.logoUrl ? (
-                  <img
-                    src={offre.media.logoUrl}
-                    alt={offre.entreprise}
-                    className="w-14 h-14 rounded-xl object-cover"
-                  />
-                ) : (
-                  <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white text-xl font-bold">
-                    {offre.entreprise.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div>
-                  <h3 className="font-bold text-gray-900 dark:text-white">{offre.entreprise}</h3>
-                  <p className="text-sm text-gray-500">Recruteur</p>
+          {/* Right Column - Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-24 space-y-6">
+              {/* Job Info Card */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8">
+                {/* Updated date */}
+                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
+                  <Calendar className="w-4 h-4" />
+                  <span>Publiee le {formatDate(offre.datePublication)}</span>
                 </div>
-              </div>
-              <a
-                href={`mailto:${offre.emailContact}`}
-                className="flex items-center justify-center gap-2 w-full min-h-[44px] py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all text-sm"
-              >
-                <Mail className="w-4 h-4" />
-                Contacter
-              </a>
-            </div>
 
-            {/* Job details card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 sm:p-6">
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Details du poste</h3>
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-gray-500 text-sm">Type de contrat</span>
-                  <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{offre.typeContrat}</span>
+                {/* Job Info */}
+                <div className="space-y-5 mb-8">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Type</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{offre.typeContrat}</span>
+                  </div>
+
+                  {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
+                    <div className="flex justify-between items-center py-1">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">Salaire</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">{offre.salaire}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Localisation</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">{offre.lieu}</span>
+                  </div>
+
+                  {hasContent(offre.categorie) && (
+                    <div className="flex justify-between items-center py-1">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">Categorie</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">{offre.categorie}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Teletravail</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">Hybride</span>
+                  </div>
                 </div>
-                {hasContent(offre.lieu) && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-gray-500 text-sm">Localisation</span>
-                    <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base truncate max-w-[150px]">{offre.lieu}</span>
-                  </div>
-                )}
-                {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-gray-500 text-sm">Salaire</span>
-                    <span className="font-medium text-green-600 dark:text-green-400 text-sm sm:text-base">{offre.salaire}</span>
-                  </div>
-                )}
+
+                {/* Categories */}
                 {hasContent(offre.categorie) && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-gray-500 text-sm">Categorie</span>
-                    <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">{offre.categorie}</span>
+                  <div className="mb-8">
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white block mb-3">Categories</span>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-md text-xs font-medium">
+                        {offre.categorie}
+                      </span>
+                    </div>
                   </div>
                 )}
-                <div className="flex items-center justify-between gap-2 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <span className="text-gray-500 text-sm flex items-center gap-1.5">
-                    <Calendar className="w-4 h-4" />
-                    Publiee le
-                  </span>
-                  <span className="font-medium text-gray-900 dark:text-white text-sm sm:text-base">
-                    {formatDate(offre.datePublication)}
-                  </span>
-                </div>
-              </div>
-            </div>
 
-            {/* Apply CTA */}
-            <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl shadow-sm p-5 sm:p-6 text-white">
-              <h3 className="font-bold text-base sm:text-lg mb-2">Interesse(e) ?</h3>
-              <p className="text-primary-100 text-sm mb-4">
-                Postulez maintenant et rejoignez {offre.entreprise}
-              </p>
-              <a
-                href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} chez ${offre.entreprise} et je vous adresse ma candidature.%0D%0A%0D%0ACordialement`}
-                className="flex items-center justify-center gap-2 w-full min-h-[48px] py-3 bg-white text-primary-700 rounded-xl font-medium hover:bg-primary-50 active:scale-95 transition-all"
-              >
-                <Mail className="w-4 h-4" />
-                Postuler par email
-              </a>
+                {/* CTA Button */}
+                <a
+                  href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} chez ${offre.entreprise}.%0D%0A%0D%0ACordialement`}
+                  className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-semibold transition-colors"
+                >
+                  Ca m&apos;interesse
+                </a>
+              </div>
+
+              {/* Tags Card */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8">
+                <h3 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
+                  Tags
+                </h3>
+                {competencesList.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {competencesList.map((comp, index) => (
+                      <span
+                        key={index}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium ${getTagColor(index)}`}
+                      >
+                        #{comp.toLowerCase().replace(/\s+/g, '')}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400 dark:text-gray-500 italic text-sm">
+                    Aucun tag defini
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
