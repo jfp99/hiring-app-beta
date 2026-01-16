@@ -345,18 +345,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   </div>
                 </div>
 
-                {/* Categories */}
-                {hasContent(offre.categorie) && (
-                  <div className="mb-8">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white block mb-3">Categories</span>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-md text-xs font-medium">
-                        {offre.categorie}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
                 {/* CTA Button */}
                 <Link
                   href={`/contact?sujet=${encodeURIComponent(`Candidature - ${offre.titre}`)}`}
