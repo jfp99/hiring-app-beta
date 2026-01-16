@@ -382,7 +382,7 @@ export default function JobMap({ offers, onOfferClick, className = '' }: JobMapP
       </div>
 
       {/* Map */}
-      <div className="h-64 sm:h-80">
+      <div className="h-full min-h-[256px]">
         <MapContent offers={offers} onOfferClick={onOfferClick} />
       </div>
 

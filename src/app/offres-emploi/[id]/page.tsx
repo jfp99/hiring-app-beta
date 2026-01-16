@@ -358,12 +358,12 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 )}
 
                 {/* CTA Button */}
-                <a
-                  href={`mailto:${offre.emailContact}?subject=Candidature - ${offre.titre}&body=Bonjour,%0D%0A%0D%0AJe suis interesse(e) par le poste de ${offre.titre} chez ${offre.entreprise}.%0D%0A%0D%0ACordialement`}
+                <Link
+                  href={`/contact?sujet=${encodeURIComponent(`Candidature - ${offre.titre}`)}`}
                   className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-semibold transition-colors"
                 >
                   Ca m&apos;interesse
-                </a>
+                </Link>
               </div>
 
               {/* Tags Card */}

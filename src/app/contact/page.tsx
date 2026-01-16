@@ -4,17 +4,21 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { useApi } from '../hooks/useApi'
 import { SectionHeaderBadge, PhoneIcon, UsersIcon, StarIcon, ChatIcon } from '../components/ui/SectionHeaderBadge'
 
-export default function Contact() {
+function ContactForm() {
+  const searchParams = useSearchParams()
+  const sujetFromUrl = searchParams.get('sujet') || ''
+
   const [formData, setFormData] = useState({
     nom: '',
     email: '',
     telephone: '',
-    sujet: '',
+    sujet: sujetFromUrl,
     message: '',
     type: 'candidat'
   })
@@ -32,6 +36,13 @@ export default function Contact() {
     const timer = setTimeout(() => setIsVisible(true), 50)
     return () => clearTimeout(timer)
   }, [])
+
+  // Update sujet if URL param changes
+  useEffect(() => {
+    if (sujetFromUrl) {
+      setFormData(prev => ({ ...prev, sujet: sujetFromUrl }))
+    }
+  }, [sujetFromUrl])
 
   const validateField = (name: string, value: string): string => {
     switch(name) {
@@ -845,5 +856,17 @@ const handleSubmit = async (e: React.FormEvent) => {
 
       <Footer />
     </div>
+  )
+}
+
+export default function Contact() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-[#f8f7f3ff] to-[#f0eee4ff] dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-gray-300 border-t-primary-600 rounded-full animate-spin"></div>
+      </div>
+    }>
+      <ContactForm />
+    </Suspense>
   )
 }

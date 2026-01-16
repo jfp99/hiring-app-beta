@@ -13,7 +13,6 @@ import {
   DEFAULT_FILTERS,
   JobMap,
   AlertsModal,
-  FavoritesButton,
   FavoritesPanel
 } from '../components/offres-public'
 import type { FilterState } from '../components/offres-public'
@@ -46,6 +45,7 @@ interface Offre {
   description: string
   datePublication: string
   categorie: string
+  tags?: string[]
 }
 
 type ViewMode = 'list' | 'grid' | 'map'
@@ -527,14 +527,15 @@ function ListCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: b
               <span className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">
                 {offre.typeContrat}
               </span>
-              <span className="bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold">
-                {offre.salaire}
-              </span>
+              {offre.tags && offre.tags.length > 0 && offre.tags.slice(0, 3).map((tag, index) => (
+                <span key={index} className="bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium">
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
 
           <div className="flex flex-row lg:flex-col gap-3 lg:items-end">
-            <FavoritesButton offerId={offre.id} size="md" />
             <Link
               href={`/offres-emploi/${offre.id}`}
               className="group/btn flex-1 lg:flex-none min-h-[44px] bg-gradient-to-r from-accent-500 to-accent-600 text-primary-700 dark:!text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-lg hover:shadow-xl active:scale-95 font-bold text-center relative overflow-hidden min-w-[120px] sm:min-w-[140px] transition-all"
@@ -561,12 +562,11 @@ function GridCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: b
   return (
     <article className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
       <div className="p-5 sm:p-6 flex-1 flex flex-col">
-        {/* Header with category and favorite */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
+        {/* Header with category */}
+        <div className="mb-3 sm:mb-4">
           <span className="bg-[#3b5335ff] text-white px-2.5 py-1 rounded-full text-xs font-bold">
             {offre.categorie}
           </span>
-          <FavoritesButton offerId={offre.id} size="sm" />
         </div>
 
         {/* Title */}
@@ -591,14 +591,16 @@ function GridCard({ offre, isMounted, formatDate }: { offre: Offre; isMounted: b
           {offre.description}
         </p>
 
-        {/* Contract and salary */}
+        {/* Contract and tags */}
         <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
           <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2.5 py-1 rounded-lg text-xs font-medium">
             {offre.typeContrat}
           </span>
-          <span className="bg-accent-100 dark:bg-accent-900/30 text-accent-700 dark:text-accent-400 px-2.5 py-1 rounded-lg text-xs font-medium">
-            {offre.salaire}
-          </span>
+          {offre.tags && offre.tags.length > 0 && offre.tags.slice(0, 2).map((tag, index) => (
+            <span key={index} className="bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 px-2.5 py-1 rounded-lg text-xs font-medium">
+              {tag}
+            </span>
+          ))}
         </div>
 
         {/* Date */}
