@@ -275,7 +275,7 @@ export async function DELETE(request: NextRequest) {
 
     // Check permissions
     const canDelete =
-      document.uploadedBy === (session.user as any)?.id || session.user?.email || 'unknown' ||
+      document.uploadedBy === ((session.user as any)?.id || session.user?.email || 'unknown') ||
       hasPermission(session.user as any, PERMISSIONS.CANDIDATE_DELETE)
 
     if (!canDelete) {

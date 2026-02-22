@@ -4,13 +4,12 @@
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import Link from 'next/link'
-import { useEffect, useState, use } from 'react'
+import { useEffect, useState, useMemo, use } from 'react'
 import { useApi } from '../../hooks/useApi'
+import DOMPurify from 'dompurify'
 import {
-  MapPin, Building2, Briefcase, Calendar, Euro, Mail,
-  ArrowLeft, CheckCircle2, Shield,
-  GraduationCap, Award, Sparkles, Users, Clock, Send,
-  ExternalLink, ChevronRight
+  Briefcase, Calendar,
+  ArrowLeft, Shield
 } from 'lucide-react'
 
 interface Offre {
@@ -44,6 +43,17 @@ interface Offre {
   }
 }
 
+// Sanitize HTML to prevent XSS
+function sanitizeHtml(html: string): string {
+  if (typeof window === 'undefined') return html
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'blockquote', 'code', 'pre', 'span', 'div'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+  })
+}
+
+const proseClasses = "prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
+
 export default function OffreDetail({ params }: { params: Promise<{ id: string }> }) {
   const unwrappedParams = use(params)
   const [offre, setOffre] = useState<Offre | null>(null)
@@ -59,8 +69,8 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
             setOffre(foundOffre)
           }
         }
-      } catch (err) {
-        console.error('Error loading offer:', err)
+      } catch {
+        // Error is handled by useApi hook
       }
     }
     loadOffre()
@@ -69,14 +79,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
       day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    })
-  }
-
-  const formatDateEn = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      day: '2-digit',
       month: 'long',
       year: 'numeric'
     })
@@ -102,7 +104,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     return ensureArray(value).length > 0
   }
 
-  // Generate tag colors using site palette
   const getTagColor = (index: number) => {
     const colors = [
       'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
@@ -114,13 +115,28 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
     return colors[index % colors.length]
   }
 
+  // Memoize sanitized HTML
+  const sanitized = useMemo(() => {
+    if (!offre) return { description: '', responsabilites: '', qualifications: '', avantages: '' }
+    return {
+      description: offre.descriptionHtml ? sanitizeHtml(offre.descriptionHtml) : '',
+      responsabilites: offre.responsabilitesHtml ? sanitizeHtml(offre.responsabilitesHtml) : '',
+      qualifications: offre.qualificationsHtml ? sanitizeHtml(offre.qualificationsHtml) : '',
+      avantages: offre.avantagesHtml ? sanitizeHtml(offre.avantagesHtml) : '',
+    }
+  }, [offre])
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream-100 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-10 h-10 border-2 border-gray-300 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-500 text-sm">Chargement...</p>
+      <div className="min-h-screen bg-cream-100 dark:bg-gray-900">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="w-10 h-10 border-2 border-gray-300 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-500 text-sm">Chargement...</p>
+          </div>
         </div>
+        <Footer />
       </div>
     )
   }
@@ -135,10 +151,10 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               <Briefcase className="w-8 h-8 text-gray-400" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              Offre non trouvee
+              Offre non trouv&eacute;e
             </h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
-              {error || "Cette offre n'existe pas ou a ete supprimee."}
+              {error || "Cette offre n'existe pas ou a \u00e9t\u00e9 supprim\u00e9e."}
             </p>
             <Link
               href="/offres-emploi"
@@ -177,7 +193,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                     {offre.entreprise} - {offre.lieu}
                   </p>
                 </div>
-                {/* Shield Icon */}
                 <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-primary-50 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
                   {offre.media?.logoUrl ? (
                     <img
@@ -198,7 +213,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 L&apos;ENTREPRISE & LE CONTEXTE
               </h2>
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-[15px]">
-                {offre.entreprise} recherche un(e) {offre.titre} pour rejoindre ses equipes a {offre.lieu}.
+                {offre.entreprise} recherche un(e) {offre.titre} pour rejoindre ses &eacute;quipes &agrave; {offre.lieu}.
               </p>
             </div>
 
@@ -209,10 +224,10 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               </h2>
               {hasContent(offre.description) ? (
                 <>
-                  {offre.descriptionHtml ? (
+                  {sanitized.description ? (
                     <div
-                      className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
-                      dangerouslySetInnerHTML={{ __html: offre.descriptionHtml }}
+                      className={proseClasses}
+                      dangerouslySetInnerHTML={{ __html: sanitized.description }}
                     />
                   ) : (
                     <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed text-[15px]">
@@ -222,17 +237,17 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 </>
               ) : (
                 <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
-                  Description a venir...
+                  Description &agrave; venir...
                 </p>
               )}
 
               {/* Vos missions */}
               <div className="mt-6">
                 <h3 className="text-gray-900 dark:text-white font-semibold mb-3">Vos missions :</h3>
-                {offre.responsabilitesHtml ? (
+                {sanitized.responsabilites ? (
                   <div
-                    className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
-                    dangerouslySetInnerHTML={{ __html: offre.responsabilitesHtml }}
+                    className={proseClasses}
+                    dangerouslySetInnerHTML={{ __html: sanitized.responsabilites }}
                   />
                 ) : hasArrayContent(offre.responsabilites) ? (
                   <ul className="space-y-2">
@@ -244,7 +259,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   </ul>
                 ) : (
                   <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
-                    Missions a definir...
+                    Missions &agrave; d&eacute;finir...
                   </p>
                 )}
               </div>
@@ -258,13 +273,13 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               {hasContent(offre.competences) ? (
                 <div className="space-y-2">
                   <p className="text-gray-700 dark:text-gray-300 text-[15px]">
-                    <span className="font-semibold text-gray-900 dark:text-white">Competences requises : </span>
+                    <span className="font-semibold text-gray-900 dark:text-white">Comp&eacute;tences requises : </span>
                     {offre.competences}
                   </p>
                 </div>
               ) : (
                 <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
-                  Environnement technique a preciser...
+                  Environnement technique &agrave; pr&eacute;ciser...
                 </p>
               )}
             </div>
@@ -274,10 +289,10 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
                 LE PROFIL
               </h2>
-              {offre.qualificationsHtml ? (
+              {sanitized.qualifications ? (
                 <div
-                  className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
-                  dangerouslySetInnerHTML={{ __html: offre.qualificationsHtml }}
+                  className={proseClasses}
+                  dangerouslySetInnerHTML={{ __html: sanitized.qualifications }}
                 />
               ) : hasArrayContent(offre.qualifications) ? (
                 <ul className="space-y-2">
@@ -289,7 +304,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 </ul>
               ) : (
                 <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
-                  Profil recherche a definir...
+                  Profil recherch&eacute; &agrave; d&eacute;finir...
                 </p>
               )}
             </div>
@@ -299,10 +314,10 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                 CE QUE L&apos;ON <span className="text-accent-500">&#10084;</span>
               </h2>
-              {offre.avantagesHtml ? (
+              {sanitized.avantages ? (
                 <div
-                  className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
-                  dangerouslySetInnerHTML={{ __html: offre.avantagesHtml }}
+                  className={proseClasses}
+                  dangerouslySetInnerHTML={{ __html: sanitized.avantages }}
                 />
               ) : hasArrayContent(offre.avantages) ? (
                 <ul className="space-y-2">
@@ -314,7 +329,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 </ul>
               ) : (
                 <p className="text-gray-400 dark:text-gray-500 italic text-[15px]">
-                  Avantages a decouvrir...
+                  Avantages &agrave; d&eacute;couvrir...
                 </p>
               )}
             </div>
@@ -328,7 +343,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                 {/* Updated date */}
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
                   <Calendar className="w-4 h-4" />
-                  <span>Publiee le {formatDate(offre.datePublication)}</span>
+                  <span>Publi&eacute;e le {formatDate(offre.datePublication)}</span>
                 </div>
 
                 {/* Job Info */}
@@ -338,7 +353,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                     <span className="text-sm text-gray-600 dark:text-gray-300">{offre.typeContrat}</span>
                   </div>
 
-                  {hasContent(offre.salaire) && offre.salaire !== 'Non specifie' && (
+                  {hasContent(offre.salaire) && offre.salaire !== 'Non sp\u00e9cifi\u00e9' && (
                     <div className="flex justify-between items-center py-1">
                       <span className="text-sm font-semibold text-gray-900 dark:text-white">Salaire</span>
                       <span className="text-sm text-gray-600 dark:text-gray-300">{offre.salaire}</span>
@@ -352,14 +367,16 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
 
                   {hasContent(offre.categorie) && (
                     <div className="flex justify-between items-center py-1">
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">Categorie</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">Cat&eacute;gorie</span>
                       <span className="text-sm text-gray-600 dark:text-gray-300">{offre.categorie}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between items-center py-1">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Teletravail</span>
-                    <span className="text-sm text-gray-600 dark:text-gray-300">Hybride</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">T&eacute;l&eacute;travail</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-300">
+                      {offre.lieu === 'Remote' ? 'Full remote' : offre.lieu === 'Hybride' ? 'Hybride' : 'Sur site'}
+                    </span>
                   </div>
                 </div>
 
@@ -368,7 +385,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   href={`/contact?sujet=${encodeURIComponent(`Candidature - ${offre.titre}`)}&type=candidat#form`}
                   className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-semibold transition-colors"
                 >
-                  Ca m&apos;interesse
+                  &Ccedil;a m&apos;int&eacute;resse
                 </Link>
               </div>
 
@@ -390,7 +407,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   </div>
                 ) : (
                   <p className="text-gray-400 dark:text-gray-500 italic text-sm">
-                    Aucun tag defini
+                    Aucun tag d&eacute;fini
                   </p>
                 )}
               </div>

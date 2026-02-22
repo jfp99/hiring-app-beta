@@ -1,64 +1,55 @@
 // app/api/debug/route.ts
+// Protected debug endpoint - requires admin authentication
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
+import { auth } from '@/app/lib/auth-helpers';
+import { UserRole } from '@/app/types/auth';
 
 export async function GET() {
+  // Block in production unless explicitly enabled
+  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_DEBUG_API !== 'true') {
+    return NextResponse.json({ error: 'Not available' }, { status: 404 });
+  }
+
+  // Require admin authentication
+  const session = await auth();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  const userRole = (session.user as Record<string, unknown>)?.role;
+  if (userRole !== UserRole.SUPER_ADMIN && userRole !== UserRole.ADMIN) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   try {
-    console.log('🔧 [DEBUG] Starting debug check...');
-    
     const { db } = await connectToDatabase();
-    console.log('✅ [DEBUG] Database connected:', db.databaseName);
-    
-    // Vérifier toutes les collections
+
     const collections = await db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
-    
-    console.log('📋 [DEBUG] Available collections:', collectionNames);
-    
-    // Vérifier le contenu de chaque collection
-    const collectionsData: any = {};
-    
+
+    // Only return counts, no sample data
+    const collectionsData: Record<string, { count: number }> = {};
+
     for (const collectionName of collectionNames) {
       try {
         const count = await db.collection(collectionName).countDocuments();
-        const sample = await db.collection(collectionName).find({}).limit(2).toArray();
-        
-        collectionsData[collectionName] = {
-          count,
-          sample: sample.map(doc => ({
-            ...doc,
-            _id: doc._id.toString()
-          }))
-        };
-      } catch (error: unknown) {
-        collectionsData[collectionName] = {
-          error: (error instanceof Error ? error.message : 'Erreur inconnue'),
-          count: 0,
-          sample: []
-        };
+        collectionsData[collectionName] = { count };
+      } catch {
+        collectionsData[collectionName] = { count: 0 };
       }
     }
-    
-    const response = {
+
+    return NextResponse.json({
       success: true,
       database: db.databaseName,
       collections: collectionNames,
       data: collectionsData,
       timestamp: new Date().toISOString()
-    };
-    
-    console.log('✅ [DEBUG] Debug data collected successfully');
-    
-    return NextResponse.json(response);
-    
-  } catch (error: unknown) {
-    console.error('❌ [DEBUG] Error:', error);
+    });
+
+  } catch {
     return NextResponse.json(
-      { 
-        success: false,
-        error: 'Debug failed', 
-        details: (error instanceof Error ? error.message : 'Erreur inconnue') 
-      }, 
+      { success: false, error: 'Debug failed' },
       { status: 500 }
     );
   }

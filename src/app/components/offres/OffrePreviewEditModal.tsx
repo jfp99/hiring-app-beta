@@ -450,7 +450,7 @@ export default function OffrePreviewEditModal({
                       updateField('description', v)
                       updateField('descriptionHtml', `<p>${v}</p>`)
                     }}
-                    placeholder="Decrivez l'entreprise et le contexte du poste..."
+                    placeholder="Décrivez l'entreprise et le contexte du poste..."
                     className={`text-gray-700 dark:text-gray-300 leading-relaxed text-[15px] block ${errors.description ? 'ring-2 ring-red-500 rounded' : ''}`}
                     multiline
                     as="p"
@@ -472,7 +472,7 @@ export default function OffrePreviewEditModal({
                         updateField('responsabilitesHtml', html)
                         updateField('responsabilites', html)
                       }}
-                      placeholder="Decrivez les missions du poste..."
+                      placeholder="Décrivez les missions du poste..."
                       minHeight="120px"
                       maxHeight="300px"
                     />
@@ -486,7 +486,7 @@ export default function OffrePreviewEditModal({
                   </h2>
                   <div className="space-y-2">
                     <p className="text-gray-700 dark:text-gray-300 text-[15px]">
-                      <span className="font-semibold text-gray-900 dark:text-white">Competences requises : </span>
+                      <span className="font-semibold text-gray-900 dark:text-white">Compétences requises :</span>
                       <EditableText
                         value={formData.competences}
                         onChange={(v) => updateField('competences', v)}
@@ -508,7 +508,7 @@ export default function OffrePreviewEditModal({
                       updateField('qualificationsHtml', html)
                       updateField('qualifications', html)
                     }}
-                    placeholder="Decrivez le profil recherche..."
+                    placeholder="Décrivez le profil recherché..."
                     minHeight="120px"
                     maxHeight="300px"
                   />
@@ -525,7 +525,7 @@ export default function OffrePreviewEditModal({
                       updateField('avantagesHtml', html)
                       updateField('avantages', html)
                     }}
-                    placeholder="Decrivez les avantages du poste..."
+                    placeholder="Décrivez les avantages du poste..."
                     minHeight="120px"
                     maxHeight="300px"
                   />
@@ -540,7 +540,7 @@ export default function OffrePreviewEditModal({
                     {/* Updated date */}
                     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
                       <Calendar className="w-4 h-4" />
-                      <span>Publiee le {formatDate(initialData?.datePublication)}</span>
+                      <span>Publiée le {formatDate(initialData?.datePublication)}</span>
                     </div>
 
                     {/* Job Info */}
@@ -563,18 +563,18 @@ export default function OffrePreviewEditModal({
                         <EditableText
                           value={formData.salaire}
                           onChange={(v) => updateField('salaire', v)}
-                          placeholder="A definir"
+                          placeholder="À définir"
                           className="text-sm text-gray-600 dark:text-gray-300"
                         />
                       </div>
 
                       <div className="flex justify-between items-center py-1">
                         <span className="text-sm font-semibold text-gray-900 dark:text-white">Localisation</span>
-                        <span className="text-sm text-gray-600 dark:text-gray-300">{formData.lieu || 'A definir'}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-300">{formData.lieu || 'À définir'}</span>
                       </div>
 
                       <div className="flex justify-between items-center py-1">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Categorie</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Catégorie</span>
                         <select
                           value={formData.categorie}
                           onChange={(e) => updateField('categorie', e.target.value)}
@@ -587,14 +587,14 @@ export default function OffrePreviewEditModal({
                       </div>
 
                       <div className="flex justify-between items-center py-1">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Teletravail</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">Télétravail</span>
                         <span className="text-sm text-gray-600 dark:text-gray-300">Hybride</span>
                       </div>
                     </div>
 
                     {/* Categories */}
                     <div className="mb-8">
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white block mb-3">Categories</span>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white block mb-3">Catégories</span>
                       <div className="flex flex-wrap gap-2">
                         <span className="px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-md text-xs font-medium">
                           {formData.categorie}
@@ -615,7 +615,7 @@ export default function OffrePreviewEditModal({
 
                     {/* CTA Button (preview) */}
                     <div className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary-600 text-white rounded-lg text-sm font-semibold">
-                      Ca m&apos;interesse
+                      Ça m&apos;intéresse
                     </div>
                   </div>
 
@@ -637,7 +637,7 @@ export default function OffrePreviewEditModal({
                       </div>
                     ) : (
                       <p className="text-gray-400 dark:text-gray-500 italic text-sm">
-                        Ajoutez des competences pour voir les tags
+                        Ajoutez des compétences pour voir les tags
                       </p>
                     )}
                   </div>
@@ -651,7 +651,7 @@ export default function OffrePreviewEditModal({
         {showSettings && (
           <div className="absolute right-0 top-16 bottom-16 w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 shadow-xl overflow-y-auto">
             <div className="p-6 space-y-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white">Parametres SEO</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-white">Paramètres SEO</h3>
 
               {/* Slug */}
               <div>
@@ -700,7 +700,7 @@ export default function OffrePreviewEditModal({
               {/* Banner URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  URL Banniere
+                  URL Bannière
                 </label>
                 <input
                   type="url"
@@ -714,7 +714,7 @@ export default function OffrePreviewEditModal({
               {/* Video URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  URL Video
+                  URL Vidéo
                 </label>
                 <input
                   type="url"

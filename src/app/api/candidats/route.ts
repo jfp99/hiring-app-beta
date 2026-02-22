@@ -94,6 +94,13 @@ export async function GET(request: NextRequest) {
     return rateLimitResponse;
   }
 
+  // Require authentication - PII data
+  const { auth } = await import('@/app/lib/auth-helpers');
+  const session = await auth();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     logger.debug('Fetching candidate contacts');
 

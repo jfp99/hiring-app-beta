@@ -49,7 +49,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-accent-500 via-accent-400 to-accent-600 bg-clip-text text-transparent animate-gradient-flow bg-[length:200%_100%]">
-              Hiring
+              Hi-ring
             </h3>
             <span className="text-lg font-semibold text-accent-500">Cabinet de Conseil en Recrutement</span>
             <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
@@ -159,17 +159,14 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col items-center space-y-4">
 
-            {/* Social Media Icons */}
-            <SocialLinks className="justify-center" />
-
             {/* Copyright */}
             <div className="text-center">
               <div className="text-gray-400 text-xs mb-2">
-                © {currentYear} <span className="text-accent-500 font-semibold">Hiring</span>.
+                © {currentYear} <span className="text-accent-500 font-semibold">Hi-ring</span>.
                 Tous droits réservés.
               </div>
               <div className="bg-gradient-to-r from-accent-500 to-accent-600 bg-clip-text text-transparent font-bold text-xs">
-                2025 HIRING - Cabinet de Recrutement
+                {currentYear} HI-RING - Cabinet de Recrutement
               </div>
             </div>
 

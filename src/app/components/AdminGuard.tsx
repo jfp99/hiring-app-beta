@@ -21,7 +21,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
 
     if (!session || !isAdmin) {
       console.log('❌ Access denied, redirecting to login...')
-      router.push('/auth/login')
+      router.push('/admin/login')
     }
   }, [session, status, router])
 

@@ -260,6 +260,7 @@ export default function RichTextEditor({
   const [charCount, setCharCount] = useState(0)
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: {
@@ -347,7 +348,7 @@ export default function RichTextEditor({
 
         {/* Footer */}
         <div className="flex items-center justify-between px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500">
-          <span>{charCount} caract\u00e8res</span>
+          <span>{charCount} caractères</span>
           <span className="text-gray-400">
             Ctrl+B: Gras | Ctrl+I: Italique | Ctrl+Z: Annuler
           </span>
@@ -380,6 +381,7 @@ export function SimpleRichTextEditor({
   minHeight?: string
 }) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: false,

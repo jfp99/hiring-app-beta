@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         name: `${user.firstName} ${user.lastName}`,
         role: user.role
       },
-      process.env.NEXTAUTH_SECRET || 'default-secret-key',
+      process.env.NEXTAUTH_SECRET!,
       { expiresIn: '30d' }
     )
 
@@ -151,8 +151,8 @@ export async function GET(request: NextRequest) {
     // Verify JWT token
     const decoded = jwt.verify(
       token,
-      process.env.NEXTAUTH_SECRET || 'default-secret-key'
-    ) as any
+      process.env.NEXTAUTH_SECRET!
+    ) as Record<string, string>
 
     // Connect to database to check if user still exists and is active
     const { db } = await connectToDatabase()

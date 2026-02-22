@@ -42,7 +42,6 @@ export async function POST() {
       success: true,
       message: 'Admin user reset successfully',
       email: 'admin@hi-ring.com',
-      password: 'Admin123!@#',
       modified: result.modifiedCount,
       upserted: result.upsertedCount
     })

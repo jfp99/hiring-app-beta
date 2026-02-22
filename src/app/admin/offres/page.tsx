@@ -63,7 +63,7 @@ export default function AdminOffresPage() {
   useEffect(() => {
     if (status === 'loading') return
     if (!session) {
-      router.push('/auth/login')
+      router.push('/admin/login')
     }
   }, [session, status, router])
 
@@ -148,11 +148,11 @@ export default function AdminOffresPage() {
           body: payload
         })
         if (result.success) {
-          toast.success('Offre mise a jour avec succes')
+          toast.success('Offre mise \u00e0 jour avec succ\u00e8s')
           loadOffres()
           setIsFormModalOpen(false)
         } else {
-          toast.error(result.error || 'Erreur lors de la mise a jour')
+          toast.error(result.error || 'Erreur lors de la mise \u00e0 jour')
         }
       } else {
         const result = await callApi('/offres', {
@@ -160,11 +160,11 @@ export default function AdminOffresPage() {
           body: payload
         })
         if (result.success) {
-          toast.success('Offre creee avec succes')
+          toast.success('Offre cr\u00e9\u00e9e avec succ\u00e8s')
           loadOffres()
           setIsFormModalOpen(false)
         } else {
-          toast.error(result.error || 'Erreur lors de la creation')
+          toast.error(result.error || 'Erreur lors de la cr\u00e9ation')
         }
       }
     } catch {
@@ -183,7 +183,7 @@ export default function AdminOffresPage() {
               method: 'DELETE'
             })
             if (result.success) {
-              toast.success('Offre supprimee avec succes')
+              toast.success('Offre supprim\u00e9e avec succ\u00e8s')
               loadOffres()
             } else {
               toast.error(result.error || 'Erreur lors de la suppression')
@@ -208,7 +208,7 @@ export default function AdminOffresPage() {
         method: 'POST'
       })
       if (result.success) {
-        toast.success('Offre dupliquee avec succes')
+        toast.success('Offre dupliqu\u00e9e avec succ\u00e8s')
         loadOffres()
       } else {
         toast.error(result.error || 'Erreur lors de la duplication')
@@ -235,10 +235,10 @@ export default function AdminOffresPage() {
         setOffres(prev => prev.map(o =>
           o.id === offreId ? { ...o, statut: newStatus } : o
         ))
-        toast.success(`Statut mis a jour: ${STATUT_CONFIG[newStatus].label}`)
+        toast.success(`Statut mis \u00e0 jour : ${STATUT_CONFIG[newStatus].label}`)
       }
     } catch {
-      toast.error('Erreur lors de la mise a jour du statut')
+      toast.error('Erreur lors de la mise \u00e0 jour du statut')
       loadOffres() // Reload to reset
     }
   }
@@ -251,7 +251,7 @@ export default function AdminOffresPage() {
         body: action
       })
       if (result.success) {
-        toast.success('Action effectuee avec succes')
+        toast.success('Action effectu\u00e9e avec succ\u00e8s')
         setSelectedIds([])
         loadOffres()
       } else {
@@ -332,7 +332,7 @@ export default function AdminOffresPage() {
                 onClick={loadOffres}
                 disabled={isRefreshing}
                 className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                title="Rafraichir"
+                title="Rafra\u00eechir"
               >
                 <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
@@ -414,7 +414,7 @@ export default function AdminOffresPage() {
               onChange={(e) => setCategoryFilter(e.target.value)}
               className="px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">Toutes categories</option>
+              <option value="all">Toutes catégories</option>
               {CATEGORIES.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
@@ -527,13 +527,13 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="col-span-full bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-gray-200 dark:border-gray-700">
       <Briefcase className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-      <p className="text-gray-500 dark:text-gray-400 mb-4">Aucune offre trouvee</p>
+      <p className="text-gray-500 dark:text-gray-400 mb-4">Aucune offre trouvée</p>
       <button
         onClick={onCreateClick}
         className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
       >
         <Plus className="w-4 h-4" />
-        Creer une nouvelle offre
+        Créer une nouvelle offre
       </button>
     </div>
   )

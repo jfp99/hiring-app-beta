@@ -307,7 +307,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Check permission
-    const isOwnProfile = userId === (session.user as any)?.id || session.user?.email || 'unknown'
+    const isOwnProfile = userId === ((session.user as any)?.id || session.user?.email || 'unknown')
     if (!isOwnProfile && !hasPermission(session.user as any, PERMISSIONS.USER_EDIT)) {
       logger.warn('Forbidden access attempt to users PUT', {
         userId: (session.user as any)?.id || session.user?.email,
@@ -434,7 +434,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Prevent self-deletion
-    if (userId === (session.user as any)?.id || session.user?.email || 'unknown') {
+    if (userId === ((session.user as any)?.id || session.user?.email || 'unknown')) {
       logger.warn('Attempted self-deletion', { userId });
       return NextResponse.json(
         { error: 'Cannot delete your own account' },

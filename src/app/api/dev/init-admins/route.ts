@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
 
       results.push({
         email: admin.email,
-        password: admin.plainPassword,
         created: result.upsertedCount > 0,
         updated: result.modifiedCount > 0
       })

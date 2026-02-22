@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/app/lib/mongodb';
 import { logger } from '@/app/lib/logger';
-import { RateLimiters, isValidObjectId } from '@/app/lib/security';
+import { RateLimiters, isValidObjectId, escapeRegExp } from '@/app/lib/security';
 import { z } from 'zod';
 import { ObjectId } from 'mongodb';
 import { auth } from '@/app/lib/auth-helpers';
@@ -175,12 +175,22 @@ export async function GET(request: NextRequest) {
     } else if (isTemplate === 'false') {
       query.isTemplate = { $ne: true };
     }
+    // Filter out non-public offers for unauthenticated requests
+    const session = await auth();
+    if (!session || !session.user) {
+      // Public access: only show active offers
+      if (!statut) {
+        query.statut = 'active';
+      }
+    }
+
     if (search) {
+      const safeSearch = escapeRegExp(search.slice(0, 100));
       query.$or = [
-        { titre: { $regex: search, $options: 'i' } },
-        { entreprise: { $regex: search, $options: 'i' } },
-        { lieu: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { titre: { $regex: safeSearch, $options: 'i' } },
+        { entreprise: { $regex: safeSearch, $options: 'i' } },
+        { lieu: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 
