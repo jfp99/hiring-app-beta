@@ -13,6 +13,7 @@ import { SectionHeaderBadge, PhoneIcon, UsersIcon, StarIcon, ChatIcon } from '..
 function ContactForm() {
   const searchParams = useSearchParams()
   const sujetFromUrl = searchParams.get('sujet') || ''
+  const typeFromUrl = searchParams.get('type') || 'candidat'
 
   const [formData, setFormData] = useState({
     nom: '',
@@ -20,7 +21,7 @@ function ContactForm() {
     telephone: '',
     sujet: sujetFromUrl,
     message: '',
-    type: 'candidat'
+    type: typeFromUrl
   })
 
   const [isVisible, setIsVisible] = useState(false)
@@ -35,6 +36,19 @@ function ContactForm() {
     // Small delay for animation
     const timer = setTimeout(() => setIsVisible(true), 50)
     return () => clearTimeout(timer)
+  }, [])
+
+  // Auto-scroll to form when navigating with #form hash (e.g. from "Ca m'interesse")
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#form') {
+      const timer = setTimeout(() => {
+        const formElement = document.getElementById('form')
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 500)
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   // Update sujet if URL param changes

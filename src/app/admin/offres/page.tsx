@@ -125,7 +125,21 @@ export default function AdminOffresPage() {
       const payload = {
         ...data,
         statut,
-        seo: data.seo
+        seo: data.seo || {
+          slug: data.slug,
+          metaTitle: data.metaTitle,
+          metaDescription: data.metaDescription,
+          keywords: data.keywords || []
+        },
+        media: {
+          logoUrl: data.logoUrl,
+          bannerUrl: data.bannerUrl,
+          videoUrl: data.videoUrl
+        },
+        scheduling: (data.scheduledPublishDate || data.expirationDate) ? {
+          scheduledPublishDate: data.scheduledPublishDate || undefined,
+          expirationDate: data.expirationDate || undefined
+        } : undefined
       }
 
       if (editingOffre) {
@@ -160,21 +174,31 @@ export default function AdminOffresPage() {
 
   // Delete handler
   const handleDelete = async (offre: OffreEnhanced) => {
-    if (!confirm('Etes-vous sur de vouloir supprimer cette offre ?')) return
-
-    try {
-      const result = await callApi(`/offres?id=${offre.id}`, {
-        method: 'DELETE'
-      })
-      if (result.success) {
-        toast.success('Offre supprimee avec succes')
-        loadOffres()
-      } else {
-        toast.error(result.error || 'Erreur lors de la suppression')
-      }
-    } catch {
-      toast.error('Une erreur est survenue')
-    }
+    toast(`Supprimer "${offre.titre}" ?`, {
+      action: {
+        label: 'Supprimer',
+        onClick: async () => {
+          try {
+            const result = await callApi(`/offres?id=${offre.id}`, {
+              method: 'DELETE'
+            })
+            if (result.success) {
+              toast.success('Offre supprimee avec succes')
+              loadOffres()
+            } else {
+              toast.error(result.error || 'Erreur lors de la suppression')
+            }
+          } catch {
+            toast.error('Une erreur est survenue')
+          }
+        }
+      },
+      cancel: {
+        label: 'Annuler',
+        onClick: () => {}
+      },
+      duration: 8000
+    })
   }
 
   // Duplicate handler

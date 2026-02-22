@@ -161,7 +161,7 @@ function JobDetailPreview({ data }: { data: Partial<OffreFormData> }) {
         </section>
 
         {/* Responsabilit\u00e9s */}
-        {data.responsabilites && data.responsabilites.length > 0 && (
+        {Array.isArray(data.responsabilites) && data.responsabilites.length > 0 && (
           <section className="bg-white rounded-xl p-6 shadow-sm mb-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Responsabilit\u00e9s</h2>
             <ul className="space-y-2">
@@ -178,7 +178,7 @@ function JobDetailPreview({ data }: { data: Partial<OffreFormData> }) {
         )}
 
         {/* Qualifications */}
-        {data.qualifications && data.qualifications.length > 0 && (
+        {Array.isArray(data.qualifications) && data.qualifications.length > 0 && (
           <section className="bg-white rounded-xl p-6 shadow-sm mb-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Qualifications requises</h2>
             <ul className="space-y-2">
@@ -210,7 +210,7 @@ function JobDetailPreview({ data }: { data: Partial<OffreFormData> }) {
         )}
 
         {/* Avantages */}
-        {data.avantages && data.avantages.length > 0 && (
+        {Array.isArray(data.avantages) && data.avantages.length > 0 && (
           <section className="bg-white rounded-xl p-6 shadow-sm mb-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Avantages</h2>
             <div className="grid grid-cols-2 gap-3">

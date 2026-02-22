@@ -27,9 +27,12 @@ interface Offre {
   datePublication: string
   categorie: string
   statut: string
-  responsabilites?: string[]
-  qualifications?: string[]
-  avantages?: string[]
+  responsabilites?: string[] | string
+  qualifications?: string[] | string
+  avantages?: string[] | string
+  responsabilitesHtml?: string
+  qualificationsHtml?: string
+  avantagesHtml?: string
   media?: {
     logoUrl?: string
     bannerUrl?: string
@@ -226,7 +229,12 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               {/* Vos missions */}
               <div className="mt-6">
                 <h3 className="text-gray-900 dark:text-white font-semibold mb-3">Vos missions :</h3>
-                {hasArrayContent(offre.responsabilites) ? (
+                {offre.responsabilitesHtml ? (
+                  <div
+                    className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
+                    dangerouslySetInnerHTML={{ __html: offre.responsabilitesHtml }}
+                  />
+                ) : hasArrayContent(offre.responsabilites) ? (
                   <ul className="space-y-2">
                     {ensureArray(offre.responsabilites).map((item, index) => (
                       <li key={index} className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[10px] before:w-1.5 before:h-1.5 before:bg-primary-500 before:rounded-full">
@@ -266,7 +274,12 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
                 LE PROFIL
               </h2>
-              {hasArrayContent(offre.qualifications) ? (
+              {offre.qualificationsHtml ? (
+                <div
+                  className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
+                  dangerouslySetInnerHTML={{ __html: offre.qualificationsHtml }}
+                />
+              ) : hasArrayContent(offre.qualifications) ? (
                 <ul className="space-y-2">
                   {ensureArray(offre.qualifications).map((item, index) => (
                     <li key={index} className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[10px] before:w-1.5 before:h-1.5 before:bg-primary-500 before:rounded-full">
@@ -286,7 +299,12 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                 CE QUE L&apos;ON <span className="text-accent-500">&#10084;</span>
               </h2>
-              {hasArrayContent(offre.avantages) ? (
+              {offre.avantagesHtml ? (
+                <div
+                  className="prose prose-gray dark:prose-invert max-w-none prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:text-[15px] prose-headings:text-gray-900 dark:prose-headings:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300 prose-li:text-[15px]"
+                  dangerouslySetInnerHTML={{ __html: offre.avantagesHtml }}
+                />
+              ) : hasArrayContent(offre.avantages) ? (
                 <ul className="space-y-2">
                   {ensureArray(offre.avantages).map((item, index) => (
                     <li key={index} className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed">
@@ -347,7 +365,7 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
 
                 {/* CTA Button */}
                 <Link
-                  href={`/contact?sujet=${encodeURIComponent(`Candidature - ${offre.titre}`)}`}
+                  href={`/contact?sujet=${encodeURIComponent(`Candidature - ${offre.titre}`)}&type=candidat#form`}
                   className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-semibold transition-colors"
                 >
                   Ca m&apos;interesse

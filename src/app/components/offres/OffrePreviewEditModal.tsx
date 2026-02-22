@@ -3,11 +3,12 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import {
-  X, Save, FileText, Calendar, Shield, Plus, Trash2,
-  Upload, Image as ImageIcon, Pencil, Check, AlertCircle
+  X, Save, FileText, Calendar, Shield,
+  Upload, Image as ImageIcon, Pencil, AlertCircle
 } from 'lucide-react'
 import type { OffreFormData, OffreEnhanced, OffreStatut } from '@/app/types/offres'
 import { CATEGORIES, CONTRACT_TYPES, DEFAULT_OFFRE_VALUES, STATUT_CONFIG } from '@/app/types/offres'
+import RichTextEditor from '@/app/components/ui/RichTextEditor'
 
 interface OffrePreviewEditModalProps {
   isOpen: boolean
@@ -99,74 +100,6 @@ function EditableText({
   )
 }
 
-// Editable list item component
-function EditableListItem({
-  value,
-  onChange,
-  onDelete,
-  placeholder
-}: {
-  value: string
-  onChange: (value: string) => void
-  onDelete: () => void
-  placeholder: string
-}) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editValue, setEditValue] = useState(value)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [isEditing])
-
-  const handleSave = () => {
-    if (editValue.trim()) {
-      onChange(editValue.trim())
-    }
-    setIsEditing(false)
-  }
-
-  if (isEditing) {
-    return (
-      <li className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[10px] before:w-1.5 before:h-1.5 before:bg-primary-500 before:rounded-full">
-        <input
-          ref={inputRef}
-          type="text"
-          value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSave()
-            if (e.key === 'Escape') setIsEditing(false)
-          }}
-          className="w-full px-2 py-1 border border-primary-500 rounded bg-white dark:bg-gray-800 focus:outline-none text-sm"
-          placeholder={placeholder}
-        />
-      </li>
-    )
-  }
-
-  return (
-    <li
-      className="text-gray-700 dark:text-gray-300 text-[15px] leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[10px] before:w-1.5 before:h-1.5 before:bg-primary-500 before:rounded-full group cursor-pointer hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded py-1 pr-8"
-      onClick={() => setIsEditing(true)}
-    >
-      {value}
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          onDelete()
-        }}
-        className="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-all"
-      >
-        <Trash2 className="w-3 h-3" />
-      </button>
-    </li>
-  )
-}
-
 // Helper to ensure array format
 const ensureArray = (value: unknown): string[] => {
   if (!value) return []
@@ -175,6 +108,15 @@ const ensureArray = (value: unknown): string[] => {
     return value.split(/[;\n]/).map(s => s.trim()).filter(Boolean)
   }
   return []
+}
+
+// Convert legacy array data to HTML for rich text editor
+const arrayToHtml = (value: unknown): string => {
+  if (!value) return ''
+  if (typeof value === 'string') return value
+  const arr = ensureArray(value)
+  if (arr.length === 0) return ''
+  return '<ul>' + arr.map(item => `<li>${item}</li>`).join('') + '</ul>'
 }
 
 // Tag colors
@@ -197,9 +139,11 @@ export default function OffrePreviewEditModal({
   mode
 }: OffrePreviewEditModalProps) {
   const [isSaving, setIsSaving] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [selectedStatus, setSelectedStatus] = useState<OffreStatut>('draft')
   const [showSettings, setShowSettings] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Form data
   const [formData, setFormData] = useState<OffreFormData>({
@@ -213,9 +157,12 @@ export default function OffrePreviewEditModal({
     competences: '',
     emailContact: DEFAULT_OFFRE_VALUES.emailContact || 'contact@hi-ring.fr',
     categorie: 'Technologie',
-    responsabilites: [],
-    qualifications: [],
-    avantages: [],
+    responsabilites: '',
+    qualifications: '',
+    avantages: '',
+    responsabilitesHtml: '',
+    qualificationsHtml: '',
+    avantagesHtml: '',
     slug: '',
     metaTitle: '',
     metaDescription: '',
@@ -224,8 +171,9 @@ export default function OffrePreviewEditModal({
     expirationDate: ''
   })
 
-  // Initialize with existing data
+  // Reset form when modal opens/closes or initialData changes
   useEffect(() => {
+    if (!isOpen) return
     if (initialData) {
       setFormData({
         titre: initialData.titre || '',
@@ -238,9 +186,12 @@ export default function OffrePreviewEditModal({
         competences: initialData.competences || '',
         emailContact: initialData.emailContact || DEFAULT_OFFRE_VALUES.emailContact || '',
         categorie: initialData.categorie || 'Technologie',
-        responsabilites: ensureArray(initialData.responsabilites),
-        qualifications: ensureArray(initialData.qualifications),
-        avantages: ensureArray(initialData.avantages),
+        responsabilites: initialData.responsabilitesHtml || arrayToHtml(initialData.responsabilites) || '',
+        qualifications: initialData.qualificationsHtml || arrayToHtml(initialData.qualifications) || '',
+        avantages: initialData.avantagesHtml || arrayToHtml(initialData.avantages) || '',
+        responsabilitesHtml: initialData.responsabilitesHtml || arrayToHtml(initialData.responsabilites),
+        qualificationsHtml: initialData.qualificationsHtml || arrayToHtml(initialData.qualifications),
+        avantagesHtml: initialData.avantagesHtml || arrayToHtml(initialData.avantages),
         slug: initialData.seo?.slug || '',
         metaTitle: initialData.seo?.metaTitle || '',
         metaDescription: initialData.seo?.metaDescription || '',
@@ -252,8 +203,37 @@ export default function OffrePreviewEditModal({
         expirationDate: initialData.scheduling?.expirationDate || ''
       })
       setSelectedStatus(initialData.statut || 'draft')
+      setErrors({})
+    } else {
+      // Reset to empty form for create mode
+      setFormData({
+        titre: '',
+        entreprise: DEFAULT_OFFRE_VALUES.entreprise || 'Hi-ring',
+        lieu: '',
+        typeContrat: 'CDI',
+        salaire: '',
+        description: '',
+        descriptionHtml: '',
+        competences: '',
+        emailContact: DEFAULT_OFFRE_VALUES.emailContact || 'contact@hi-ring.fr',
+        categorie: 'Technologie',
+        responsabilites: '',
+        qualifications: '',
+        avantages: '',
+        responsabilitesHtml: '',
+        qualificationsHtml: '',
+        avantagesHtml: '',
+        slug: '',
+        metaTitle: '',
+        metaDescription: '',
+        keywords: [],
+        scheduledPublishDate: '',
+        expirationDate: ''
+      })
+      setSelectedStatus('draft')
+      setErrors({})
     }
-  }, [initialData])
+  }, [isOpen, initialData])
 
   // Update field
   const updateField = useCallback(<K extends keyof OffreFormData>(
@@ -269,38 +249,6 @@ export default function OffrePreviewEditModal({
       })
     }
   }, [errors])
-
-  // Array field handlers
-  const addArrayItem = useCallback((field: 'responsabilites' | 'qualifications' | 'avantages', value: string) => {
-    if (!value.trim()) return
-    setFormData((prev) => {
-      const currentArray = ensureArray(prev[field])
-      return {
-        ...prev,
-        [field]: [...currentArray, value.trim()]
-      }
-    })
-  }, [])
-
-  const updateArrayItem = useCallback((field: 'responsabilites' | 'qualifications' | 'avantages', index: number, value: string) => {
-    setFormData((prev) => {
-      const currentArray = ensureArray(prev[field])
-      return {
-        ...prev,
-        [field]: currentArray.map((item, i) => i === index ? value : item)
-      }
-    })
-  }, [])
-
-  const removeArrayItem = useCallback((field: 'responsabilites' | 'qualifications' | 'avantages', index: number) => {
-    setFormData((prev) => {
-      const currentArray = ensureArray(prev[field])
-      return {
-        ...prev,
-        [field]: currentArray.filter((_, i) => i !== index)
-      }
-    })
-  }, [])
 
   // Validate form
   const validate = useCallback(() => {
@@ -333,6 +281,49 @@ export default function OffrePreviewEditModal({
       setIsSaving(false)
     }
   }, [formData, validate, onSave, onClose])
+
+  // Handle file import
+  const handleFileImport = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsImporting(true)
+    try {
+      const body = new FormData()
+      body.append('file', file)
+
+      const res = await fetch('/api/offres/import', {
+        method: 'POST',
+        body,
+      })
+      const result = await res.json()
+
+      if (result.success && result.data) {
+        const d = result.data
+        setFormData(prev => ({
+          ...prev,
+          ...(d.titre && { titre: d.titre }),
+          ...(d.lieu && { lieu: d.lieu }),
+          ...(d.description && { description: d.description }),
+          ...(d.descriptionHtml && { descriptionHtml: d.descriptionHtml }),
+          ...(d.responsabilitesHtml && { responsabilitesHtml: d.responsabilitesHtml, responsabilites: d.responsabilitesHtml }),
+          ...(d.qualificationsHtml && { qualificationsHtml: d.qualificationsHtml, qualifications: d.qualificationsHtml }),
+          ...(d.avantagesHtml && { avantagesHtml: d.avantagesHtml, avantages: d.avantagesHtml }),
+          ...(d.competences && { competences: d.competences }),
+          ...(d.salaire && { salaire: d.salaire }),
+          ...(d.typeContrat && { typeContrat: d.typeContrat }),
+        }))
+      } else {
+        setErrors(prev => ({ ...prev, import: result.error || 'Import failed' }))
+      }
+    } catch {
+      setErrors(prev => ({ ...prev, import: 'Failed to import file' }))
+    } finally {
+      setIsImporting(false)
+      // Reset file input so same file can be re-imported
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }, [])
 
   // Format date
   const formatDate = (dateString?: string) => {
@@ -372,6 +363,22 @@ export default function OffrePreviewEditModal({
               ))}
             </select>
 
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".docx,.pdf"
+              onChange={handleFileImport}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isImporting}
+              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 hover:text-primary-700 hover:bg-primary-50 dark:text-gray-400 dark:hover:text-primary-400 dark:hover:bg-primary-900/20 rounded-lg transition-colors disabled:opacity-50"
+              title="Importer un fichier Word ou PDF"
+            >
+              <Upload className="w-4 h-4" />
+              <span className="hidden sm:inline">{isImporting ? 'Import...' : 'Importer'}</span>
+            </button>
             <button
               onClick={() => setShowSettings(!showSettings)}
               className={`p-2 rounded-lg transition-colors ${showSettings ? 'bg-primary-100 text-primary-700' : 'text-gray-500 hover:bg-gray-100'}`}
@@ -459,20 +466,15 @@ export default function OffrePreviewEditModal({
                   {/* Vos missions */}
                   <div className="mt-4">
                     <h3 className="text-gray-900 dark:text-white font-semibold mb-3">Vos missions :</h3>
-                    <ul className="space-y-2">
-                      {ensureArray(formData.responsabilites).map((item, index) => (
-                        <EditableListItem
-                          key={index}
-                          value={item}
-                          onChange={(v) => updateArrayItem('responsabilites', index, v)}
-                          onDelete={() => removeArrayItem('responsabilites', index)}
-                          placeholder="Mission..."
-                        />
-                      ))}
-                    </ul>
-                    <AddItemButton
-                      onAdd={(value) => addArrayItem('responsabilites', value)}
-                      placeholder="Ajouter une mission..."
+                    <RichTextEditor
+                      content={formData.responsabilitesHtml || ''}
+                      onChange={(html) => {
+                        updateField('responsabilitesHtml', html)
+                        updateField('responsabilites', html)
+                      }}
+                      placeholder="Decrivez les missions du poste..."
+                      minHeight="120px"
+                      maxHeight="300px"
                     />
                   </div>
                 </div>
@@ -500,20 +502,15 @@ export default function OffrePreviewEditModal({
                   <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
                     LE PROFIL
                   </h2>
-                  <ul className="space-y-2">
-                    {ensureArray(formData.qualifications).map((item, index) => (
-                      <EditableListItem
-                        key={index}
-                        value={item}
-                        onChange={(v) => updateArrayItem('qualifications', index, v)}
-                        onDelete={() => removeArrayItem('qualifications', index)}
-                        placeholder="Qualification..."
-                      />
-                    ))}
-                  </ul>
-                  <AddItemButton
-                    onAdd={(value) => addArrayItem('qualifications', value)}
-                    placeholder="Ajouter une qualification..."
+                  <RichTextEditor
+                    content={formData.qualificationsHtml || ''}
+                    onChange={(html) => {
+                      updateField('qualificationsHtml', html)
+                      updateField('qualifications', html)
+                    }}
+                    placeholder="Decrivez le profil recherche..."
+                    minHeight="120px"
+                    maxHeight="300px"
                   />
                 </div>
 
@@ -522,20 +519,15 @@ export default function OffrePreviewEditModal({
                   <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4 flex items-center gap-2">
                     CE QUE L&apos;ON <span className="text-accent-500">&#10084;</span>
                   </h2>
-                  <ul className="space-y-2">
-                    {ensureArray(formData.avantages).map((item, index) => (
-                      <EditableListItem
-                        key={index}
-                        value={item}
-                        onChange={(v) => updateArrayItem('avantages', index, v)}
-                        onDelete={() => removeArrayItem('avantages', index)}
-                        placeholder="Avantage..."
-                      />
-                    ))}
-                  </ul>
-                  <AddItemButton
-                    onAdd={(value) => addArrayItem('avantages', value)}
-                    placeholder="Ajouter un avantage..."
+                  <RichTextEditor
+                    content={formData.avantagesHtml || ''}
+                    onChange={(html) => {
+                      updateField('avantagesHtml', html)
+                      updateField('avantages', html)
+                    }}
+                    placeholder="Decrivez les avantages du poste..."
+                    minHeight="120px"
+                    maxHeight="300px"
                   />
                 </div>
               </div>
@@ -775,69 +767,6 @@ export default function OffrePreviewEditModal({
         </div>
       </div>
     </div>
-  )
-}
-
-// Add item button component
-function AddItemButton({
-  onAdd,
-  placeholder
-}: {
-  onAdd: (value: string) => void
-  placeholder: string
-}) {
-  const [isAdding, setIsAdding] = useState(false)
-  const [value, setValue] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (isAdding && inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [isAdding])
-
-  const handleAdd = () => {
-    if (value.trim()) {
-      onAdd(value.trim())
-      setValue('')
-    }
-    setIsAdding(false)
-  }
-
-  if (isAdding) {
-    return (
-      <div className="flex items-center gap-2 mt-3">
-        <input
-          ref={inputRef}
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={handleAdd}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleAdd()
-            if (e.key === 'Escape') setIsAdding(false)
-          }}
-          placeholder={placeholder}
-          className="flex-1 px-3 py-2 text-sm border border-primary-500 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        />
-        <button
-          onClick={handleAdd}
-          className="p-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-        >
-          <Check className="w-4 h-4" />
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <button
-      onClick={() => setIsAdding(true)}
-      className="flex items-center gap-2 mt-3 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
-    >
-      <Plus className="w-4 h-4" />
-      Ajouter
-    </button>
   )
 }
 

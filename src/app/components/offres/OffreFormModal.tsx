@@ -134,18 +134,20 @@ export default function OffreFormModal({
   // Add item to array field
   const addArrayItem = useCallback((field: 'responsabilites' | 'qualifications' | 'avantages', value: string) => {
     if (!value.trim()) return
-    setFormData((prev) => ({
-      ...prev,
-      [field]: [...prev[field], value.trim()]
-    }))
+    setFormData((prev) => {
+      const current = prev[field]
+      const arr = Array.isArray(current) ? current : []
+      return { ...prev, [field]: [...arr, value.trim()] }
+    })
   }, [])
 
   // Remove item from array field
   const removeArrayItem = useCallback((field: 'responsabilites' | 'qualifications' | 'avantages', index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
-    }))
+    setFormData((prev) => {
+      const current = prev[field]
+      const arr = Array.isArray(current) ? current : []
+      return { ...prev, [field]: arr.filter((_, i) => i !== index) }
+    })
   }, [])
 
   // Handle category change with template suggestion
@@ -485,7 +487,7 @@ export default function OffreFormModal({
                 {/* Responsabilit\u00e9s */}
                 <ArrayFieldEditor
                   label="Responsabilit\u00e9s"
-                  items={formData.responsabilites}
+                  items={Array.isArray(formData.responsabilites) ? formData.responsabilites : []}
                   onAdd={(value) => addArrayItem('responsabilites', value)}
                   onRemove={(index) => removeArrayItem('responsabilites', index)}
                   placeholder="Ajouter une responsabilit\u00e9..."
@@ -502,7 +504,7 @@ export default function OffreFormModal({
                 {/* Qualifications */}
                 <ArrayFieldEditor
                   label="Qualifications requises"
-                  items={formData.qualifications}
+                  items={Array.isArray(formData.qualifications) ? formData.qualifications : []}
                   onAdd={(value) => addArrayItem('qualifications', value)}
                   onRemove={(index) => removeArrayItem('qualifications', index)}
                   placeholder="Ajouter une qualification..."
@@ -519,7 +521,7 @@ export default function OffreFormModal({
                 {/* Avantages */}
                 <ArrayFieldEditor
                   label="Avantages"
-                  items={formData.avantages}
+                  items={Array.isArray(formData.avantages) ? formData.avantages : []}
                   onAdd={(value) => addArrayItem('avantages', value)}
                   onRemove={(index) => removeArrayItem('avantages', index)}
                   placeholder="Ajouter un avantage..."

@@ -122,6 +122,55 @@ export async function POST(request: NextRequest) {
       collection
     });
 
+    // Send email notification to team
+    try {
+      const { default: emailService } = await import('@/app/lib/email');
+
+      const notificationHtml = `
+        <h2>Nouveau message de contact</h2>
+        <p><strong>Type :</strong> ${sanitizedData.type === 'candidat' ? 'Candidat' : 'Entreprise'}</p>
+        <p><strong>Nom :</strong> ${sanitizedData.nom}</p>
+        <p><strong>Email :</strong> ${sanitizedData.email}</p>
+        <p><strong>Telephone :</strong> ${sanitizedData.telephone || 'Non renseigne'}</p>
+        <p><strong>Sujet :</strong> ${sanitizedData.sujet}</p>
+        <hr/>
+        <p><strong>Message :</strong></p>
+        <p>${sanitizedData.message.replace(/\n/g, '<br>')}</p>
+        <hr/>
+        <p style="color: #666; font-size: 12px;">
+          Recu le ${new Date().toLocaleDateString('fr-FR')} a ${new Date().toLocaleTimeString('fr-FR')}
+        </p>
+      `;
+
+      const notificationText = [
+        `Nouveau message de contact`,
+        `Type : ${sanitizedData.type}`,
+        `Nom : ${sanitizedData.nom}`,
+        `Email : ${sanitizedData.email}`,
+        `Telephone : ${sanitizedData.telephone || 'Non renseigne'}`,
+        `Sujet : ${sanitizedData.sujet}`,
+        `---`,
+        `Message : ${sanitizedData.message}`
+      ].join('\n');
+
+      const recipients = ['hugo@hi-ring.fr', 'izia@hi-ring.fr'];
+
+      for (const recipient of recipients) {
+        await emailService.sendEmail({
+          to: recipient,
+          subject: `[Hi-Ring Contact] ${sanitizedData.sujet}`,
+          text: notificationText,
+          html: notificationHtml
+        });
+      }
+
+      logger.info('Contact notification emails sent', { recipients });
+    } catch (emailError) {
+      logger.warn('Failed to send contact notification email', {
+        error: emailError instanceof Error ? emailError.message : 'Unknown error'
+      });
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Votre message a été envoyé avec succès. Nous vous recontacterons dans les plus brefs délais.',

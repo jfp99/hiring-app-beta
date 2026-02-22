@@ -10,15 +10,15 @@ import type { OffreStatut } from '@/app/types/offres';
 
 // Extended validation schemas
 const schedulingSchema = z.object({
-  scheduledPublishDate: z.string().datetime().optional(),
-  expirationDate: z.string().datetime().optional(),
+  scheduledPublishDate: z.string().datetime().optional().or(z.literal('')),
+  expirationDate: z.string().datetime().optional().or(z.literal('')),
   autoArchive: z.boolean().optional()
 }).optional();
 
 const mediaSchema = z.object({
-  logoUrl: z.string().url().optional(),
-  bannerUrl: z.string().url().optional(),
-  videoUrl: z.string().url().optional()
+  logoUrl: z.string().url().optional().or(z.literal('')),
+  bannerUrl: z.string().url().optional().or(z.literal('')),
+  videoUrl: z.string().url().optional().or(z.literal(''))
 }).optional();
 
 const seoSchema = z.object({
@@ -43,10 +43,13 @@ const offreSchema = z.object({
   competences: z.string().optional(),
   categorie: z.string().optional(),
 
-  // Rich content arrays
-  responsabilites: z.array(z.string()).optional(),
-  qualifications: z.array(z.string()).optional(),
-  avantages: z.array(z.string()).optional(),
+  // Rich content (accepts both HTML string and legacy array format)
+  responsabilites: z.union([z.string(), z.array(z.string())]).optional(),
+  qualifications: z.union([z.string(), z.array(z.string())]).optional(),
+  avantages: z.union([z.string(), z.array(z.string())]).optional(),
+  responsabilitesHtml: z.string().optional(),
+  qualificationsHtml: z.string().optional(),
+  avantagesHtml: z.string().optional(),
 
   // Status and workflow
   statut: z.enum(['draft', 'review', 'scheduled', 'active', 'expired', 'archived']).optional(),
@@ -79,10 +82,13 @@ const offreUpdateSchema = z.object({
   emailContact: z.string().email().optional(),
   categorie: z.string().optional(),
 
-  // Rich content arrays
-  responsabilites: z.array(z.string()).optional(),
-  qualifications: z.array(z.string()).optional(),
-  avantages: z.array(z.string()).optional(),
+  // Rich content (accepts both HTML string and legacy array format)
+  responsabilites: z.union([z.string(), z.array(z.string())]).optional(),
+  qualifications: z.union([z.string(), z.array(z.string())]).optional(),
+  avantages: z.union([z.string(), z.array(z.string())]).optional(),
+  responsabilitesHtml: z.string().optional(),
+  qualificationsHtml: z.string().optional(),
+  avantagesHtml: z.string().optional(),
 
   // Status
   statut: z.enum(['draft', 'review', 'scheduled', 'active', 'expired', 'archived']).optional(),
@@ -211,6 +217,9 @@ export async function GET(request: NextRequest) {
       responsabilites: offre.responsabilites || [],
       qualifications: offre.qualifications || [],
       avantages: offre.avantages || [],
+      responsabilitesHtml: offre.responsabilitesHtml || '',
+      qualificationsHtml: offre.qualificationsHtml || '',
+      avantagesHtml: offre.avantagesHtml || '',
 
       // Template system
       isTemplate: offre.isTemplate || false,
@@ -237,6 +246,13 @@ export async function GET(request: NextRequest) {
         applications: 0,
         clickThroughRate: 0
       },
+
+      // Version
+      version: offre.version || 1,
+
+      // Audit fields
+      createdBy: offre.createdBy || null,
+      lastEditedBy: offre.lastEditedBy || null,
 
       // Timestamps
       createdAt: offre.createdAt || new Date().toISOString(),
@@ -344,6 +360,9 @@ export async function POST(request: NextRequest) {
       responsabilites: data.responsabilites || [],
       qualifications: data.qualifications || [],
       avantages: data.avantages || [],
+      responsabilitesHtml: data.responsabilitesHtml || '',
+      qualificationsHtml: data.qualificationsHtml || '',
+      avantagesHtml: data.avantagesHtml || '',
 
       // Template system
       isTemplate: data.isTemplate || false,
@@ -370,6 +389,9 @@ export async function POST(request: NextRequest) {
         applications: 0,
         clickThroughRate: 0
       },
+
+      // Version
+      version: 1,
 
       // Audit trail
       createdBy: session.user.email || 'unknown',
@@ -528,6 +550,9 @@ export async function PUT(request: NextRequest) {
     if (data.responsabilites !== undefined) updateData.responsabilites = data.responsabilites;
     if (data.qualifications !== undefined) updateData.qualifications = data.qualifications;
     if (data.avantages !== undefined) updateData.avantages = data.avantages;
+    if (data.responsabilitesHtml !== undefined) updateData.responsabilitesHtml = data.responsabilitesHtml;
+    if (data.qualificationsHtml !== undefined) updateData.qualificationsHtml = data.qualificationsHtml;
+    if (data.avantagesHtml !== undefined) updateData.avantagesHtml = data.avantagesHtml;
 
     // Template system
     if (data.isTemplate !== undefined) updateData.isTemplate = data.isTemplate;

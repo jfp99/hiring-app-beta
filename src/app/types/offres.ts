@@ -122,9 +122,12 @@ export interface OffreEnhanced {
 
   // Rich content
   descriptionHtml?: string
-  responsabilites: string[]
-  qualifications: string[]
-  avantages: string[]
+  responsabilites: string[] | string
+  qualifications: string[] | string
+  avantages: string[] | string
+  responsabilitesHtml?: string
+  qualificationsHtml?: string
+  avantagesHtml?: string
 
   // Media
   media?: OffreMedia
@@ -180,9 +183,12 @@ export interface OffreFormData {
   categorie: string
 
   // Rich content
-  responsabilites: string[]
-  qualifications: string[]
-  avantages: string[]
+  responsabilites: string[] | string
+  qualifications: string[] | string
+  avantages: string[] | string
+  responsabilitesHtml?: string
+  qualificationsHtml?: string
+  avantagesHtml?: string
 
   // Media URLs
   logoUrl?: string
@@ -332,9 +338,12 @@ export interface BulkActionResponse {
 export const DEFAULT_OFFRE_VALUES: Partial<OffreFormData> = {
   entreprise: 'Hi-ring',
   emailContact: 'contact@hi-ring.fr',
-  responsabilites: [],
-  qualifications: [],
-  avantages: [],
+  responsabilites: '',
+  qualifications: '',
+  avantages: '',
+  responsabilitesHtml: '',
+  qualificationsHtml: '',
+  avantagesHtml: '',
   keywords: []
 }
 
