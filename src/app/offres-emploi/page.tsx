@@ -115,10 +115,13 @@ export default function OffresEmploi() {
   // Filter offers by salary range (client-side for now)
   const filteredOffres = useMemo(() => {
     return offres.filter(offre => {
-      // Extract numeric salary if possible
-      const salaryMatch = offre.salaire?.match(/(\d+)/g)
+      if (!offre.salaire) return true
+
+      // Remove spaces/non-breaking spaces to handle "65 000" → "65000"
+      const cleanSalary = offre.salaire.replace(/[\s\u00a0]/g, '')
+      const salaryMatch = cleanSalary.match(/(\d+)/g)
       if (salaryMatch && salaryMatch.length > 0) {
-        const salary = parseInt(salaryMatch[0]) * (offre.salaire.includes('k') || offre.salaire.includes('K') ? 1000 : 1)
+        const salary = parseInt(salaryMatch[0]) * (cleanSalary.includes('k') || cleanSalary.includes('K') ? 1000 : 1)
         if (salary < debouncedFilters.salaryRange[0] || salary > debouncedFilters.salaryRange[1]) {
           return false
         }
