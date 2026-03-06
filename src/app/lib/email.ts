@@ -189,29 +189,18 @@ class EmailService {
       return { success: false, error: 'Email body (text or HTML) is required' }
     }
 
-    // If no transporter is configured, log to console and return success
+    // If no transporter is configured, try to re-initialize once (cold start recovery)
     if (!this.transporter) {
-      console.log('\n===== EMAIL TO SEND (DEMO MODE) =====')
-      console.log('Provider:', this.provider)
-      console.log('From:', `${fromName} <${fromEmail}>`)
-      console.log('To:', options.to)
-      if (options.cc && options.cc.length > 0) {
-        console.log('CC:', options.cc.join(', '))
-      }
-      if (options.bcc && options.bcc.length > 0) {
-        console.log('BCC:', options.bcc.join(', '))
-      }
-      console.log('Subject:', options.subject)
-      console.log('---')
-      console.log('Text:', options.text || '(HTML only)')
-      if (options.html) {
-        console.log('HTML:', options.html.substring(0, 200) + '...')
-      }
-      console.log('=====================================\n')
+      console.warn('⚠️ No email transporter available, attempting re-initialization...')
+      this.initializeTransporter()
+    }
 
+    // If still no transporter after retry, fail explicitly
+    if (!this.transporter) {
+      console.error('❌ EMAIL SEND FAILED: No transporter configured. Provider:', this.provider)
       return {
-        success: true,
-        messageId: `demo-${Date.now()}@hi-ring.com`
+        success: false,
+        error: `No email transporter configured for provider: ${this.provider}. Check EMAIL_PROVIDER and credentials.`
       }
     }
 
