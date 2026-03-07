@@ -207,16 +207,6 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
               </div>
             </div>
 
-            {/* L'ENTREPRISE & LE CONTEXTE */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
-              <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
-                L&apos;ENTREPRISE & LE CONTEXTE
-              </h2>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-[15px]">
-                {offre.entreprise} recherche un(e) {offre.titre} pour rejoindre ses &eacute;quipes &agrave; {offre.lieu}.
-              </p>
-            </div>
-
             {/* LE POSTE */}
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 sm:p-8 mb-6">
               <h2 className="text-sm font-bold text-primary-600 dark:text-accent-500 uppercase tracking-wider mb-4">
@@ -375,7 +365,12 @@ export default function OffreDetail({ params }: { params: Promise<{ id: string }
                   <div className="flex justify-between items-center py-1">
                     <span className="text-sm font-semibold text-gray-900 dark:text-white">T&eacute;l&eacute;travail</span>
                     <span className="text-sm text-gray-600 dark:text-gray-300">
-                      {offre.lieu === 'Remote' ? 'Full remote' : offre.lieu === 'Hybride' ? 'Hybride' : 'Sur site'}
+                      {(() => {
+                        const lieu = offre.lieu.toLowerCase()
+                        if (lieu.includes('remote') || lieu.includes('t\u00e9l\u00e9travail') || lieu.includes('teletravail')) return 'Full remote'
+                        if (lieu.includes('hybride')) return 'Hybride'
+                        return 'Sur site'
+                      })()}
                     </span>
                   </div>
                 </div>
